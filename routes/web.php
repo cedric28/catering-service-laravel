@@ -17,10 +17,8 @@ Route::get('/', function () {
     //if has a user redirect to home page if not redirect to login
     if (Auth::user()) return redirect()->route('home');
 
-    return redirect()->route('landing-page');
+    return view('auth.login');
 });
-
-Route::get('/', 'Landing\LandingController@index')->name('landing-page');
 
 //register route disable
 Auth::routes(['register' => false, 'reset' => false, 'confirm' => false]);
@@ -29,14 +27,26 @@ Route::middleware('auth')->group(function () {
     //Dashboard
     Route::get('/home', 'HomeController@index')->name('home');
 
-    //Product 
-    Route::resource('/product', 'Product\ProductController')->middleware('can:isAdmin');
-    Route::post('product/fetch/q','Product\ProductFetchController@fetchProduct')->name('activeProduct');
-    Route::get('product/destroy/{id}', 'Product\ProductController@destroy');
+    //Expenses 
+    Route::resource('/expense', 'Expenses\ExpensesController');
+    Route::post('expense/fetch/q','Expenses\ExpensesFetchController@fetchExpense')->name('activeExpense');
+    Route::get('expense/destroy/{id}', 'Expenses\ExpensesController@destroy');
 
     //Category
     Route::resource('/category', 'Category\CategoryController');
     Route::post('category/fetch/q','Category\CategoryFetchController@fetchCategory')->name('activeCategory');
     Route::get('category/destroy/{id}', 'Category\CategoryController@destroy');
+
+    //Roles
+    Route::resource('roles', 'Role\RoleController');
+    Route::post('roles/fetch/q','Role\RoleFetchController@fetchRole')->name('activeRole');
+    Route::get('roles/destroy/{id}', 'Role\RoleController@destroy');
+
+    //Users
+    Route::resource('users', 'User\UserController');
+    Route::get('/profile', 'User\UserController@viewProfile')->name('user-profile');
+    Route::patch('/profile-update', 'User\UserController@updateProfile')->name('update-profile');
+    Route::post('/users/fetch/q', 'User\UserFetchController@fetchUser')->name('activeUser');
+    Route::get('users/destroy/{id}', 'User\UserController@destroy');
     
 });

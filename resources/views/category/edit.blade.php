@@ -57,6 +57,14 @@
                                         </div>
 									</div>
 
+									
+									<div class="form-group row">
+										<label class="col-form-label col-lg-3">Description:</label>
+										<div class="col-lg-9">
+										<textarea rows="3" cols="3" name="description" class="@error('description') is-invalid @enderror form-control" placeholder="Content">{{ $category->description}}</textarea>
+										</div>
+									</div>
+
 									<div class="text-right">
 										<button type="submit" class="btn btn-primary">Save <i class="icon-paperplane ml-2"></i></button>
 									</div>

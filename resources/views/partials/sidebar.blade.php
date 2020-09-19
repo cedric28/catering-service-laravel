@@ -34,7 +34,9 @@
                     </div>
     
                     <div class="ml-3 align-self-center">
-                        <a href="#" class="text-white"><i class="icon-cog3"></i></a>
+                        <a href="{{ route('user-profile')}}" class="text-white">
+                            <i class="icon-cog3"></i>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -48,22 +50,46 @@
     
                 <!-- Main -->
                 <li class="nav-item-header"><div class="text-uppercase font-size-xs line-height-xs">Main</div> <i class="icon-menu" title="Main"></i></li>
-                    @can('isAdmin')
+                  
                     <li class="nav-item">
                         <a href="{{ route('home') }}" class="nav-link {{ (request()->is('home')) ? 'nav-link active' : '' }}"><i class="icon-home4"></i><span>Dashboard</span></a>
                     </li>
-               
-                    <li class="nav-item">
-                        <a href="{{ route('product.index')}}" class="nav-link {{ (request()->is('product*')) ? 'nav-link active' : '' }}"><i class="icon-cube4"></i><span>Product</span></a>
-                    </li>
+                    @can('isAdmin')
+                        <li class="nav-item nav-item-submenu">
+                            <a href="#" class="nav-link"><i class="icon-cube3"></i><span>User Management</span></a>
+                            <ul class="nav nav-group-sub" data-submenu-title="Starter kit">
+                                <li class="nav-item">
+                                    <a href="{{ route('users.index')}}" class="nav-link {{ (request()->is('users*')) ? 'nav-link active' : '' }}">
+                                        <i class="icon-user"></i>
+                                        <span>System User</span>
+                                    </a>
+                                </li>
+                        
+                                <li class="nav-item">
+                                    <a href="{{ route('roles.index')}}" class="nav-link {{ (request()->is('roles*')) ? 'nav-link active' : '' }}">
+                                        <i class="icon-cube4"></i>
+                                        <span>User Role</span>
+                                    </a>
+                                </li>
+                            
+                            </ul>
+                        </li>
                     @endcan
-    
-                    <li class="nav-item">
-                        <a href="{{ route('category.index')}}" class="nav-link {{ (request()->is('category*')) ? 'nav-link active' : '' }}"><i class="icon-folder-plus"></i><span>Category</span></a>
+                    <li class="nav-item nav-item-submenu">
+                        <a href="#" class="nav-link"><i class="icon-cube3"></i><span>Expense Management</span></a>
+                        <ul class="nav nav-group-sub" data-submenu-title="Starter kit">
+                            <li class="nav-item">
+                                <a href="{{ route('expense.index')}}" class="nav-link {{ (request()->is('expense*')) ? 'nav-link active' : '' }}"><i class="icon-cube4"></i><span>Expenses</span></a>
+                            </li>
+                            @can('isAdmin')
+                                <li class="nav-item">
+                                    <a href="{{ route('category.index')}}" class="nav-link {{ (request()->is('category*')) ? 'nav-link active' : '' }}"><i class="icon-folder-plus"></i><span>Expense Categories</span></a>
+                                </li>
+                            @endcan
+                        </ul>
                     </li>
-
-              
-                
+                    
+                   
                 <!-- /layout -->
             </ul>
         </div>

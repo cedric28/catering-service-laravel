@@ -35,8 +35,16 @@
                 <div class="card">
                     <div class="card-header">
                         <h5 class="card-title font-weight-semibold">
-                        <a href="#" class="text-default">{{ strtoupper($category->title) }}</a>
+                        	<a href="#" class="text-default">{{ strtoupper($category->title) }}</a>
                         </h5>
+					</div>
+					<div class="card-body">
+                        <blockquote class="blockquote blockquote-bordered py-2 pl-3 mb-0">
+						
+							<div>
+								<footer class="blockquote-footer">{!! $category->description !!}</footer>
+							</div>
+                        </blockquote>
                     </div>
                 </div>
                 <!-- /clean blog layout #1 -->

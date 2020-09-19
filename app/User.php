@@ -38,10 +38,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    //model relationship one to many to Schedule Model
-    //single model owns any amount of other models.
-    public function schedules()
-    {
-        return $this->hasMany(Schedule::class,'doctor_id','id');
+    public function role() {
+        return $this->belongsTo(Role::class, 'role_id');
     }
 }

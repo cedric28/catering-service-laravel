@@ -14,10 +14,12 @@ class CategorySeeder extends Seeder
     {
         $categories = [
             [ 
-                'title' => 'Laptop'
+                'title' => 'Travel',
+                'description' => 'daily commute',
             ] ,
             [
-                'title' => 'Mobile Phone'
+                'title' => 'Entertainment',
+                'description' => 'movies etc',
             ]
 
         ];
@@ -36,6 +38,7 @@ class CategorySeeder extends Seeder
                 $categoryObj = Category::create([
 
                     'title' => $category['title'],
+                    'description' => $category['description'],
                     'creator_id' => 1,
                     'updater_id' => 1
                 ]);

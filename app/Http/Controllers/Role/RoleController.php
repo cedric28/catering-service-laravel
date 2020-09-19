@@ -1,15 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Category;
+namespace App\Http\Controllers\Role;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\User;
-use App\Category;
-use Carbon\Carbon;
+use App\Role;
 use Validator;
 
-class CategoryController extends Controller
+class RoleController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,11 +15,14 @@ class CategoryController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {   
-        $categories = Category::all();
-        
-        return view("category.index",[
-            'categories' => $categories
+    {
+        //prevent other user to access to this page
+        $this->authorize("isAdmin");
+
+        $roles = Role::all();
+
+        return view('role.index', [
+            'roles' => $roles
         ]);
     }
 
@@ -35,7 +36,7 @@ class CategoryController extends Controller
         //prevent other user to access to this page
         $this->authorize("isAdmin");
 
-        return view("category.create");
+        return view('role.create');
     }
 
     /**
@@ -46,44 +47,38 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-       //prevent other user to access to this page
+        //prevent other user to access to this page
         $this->authorize("isAdmin");
-        /*
+
+         /*
         | @Begin Transaction
         |---------------------------------------------*/
         \DB::beginTransaction();
 
         try {
-             //validate request value
-             $validator = Validator::make($request->all(), [
-                'title' => 'required|string|max:50|unique:categories,title',
-                'description' => 'required|string|max:200'
+
+            $validator = Validator::make($request->all(), [
+                'name' => 'required|unique:roles,name',
             ]);
     
             if ($validator->fails()) {
                 return back()->withErrors($validator->errors())->withInput();
             }
-            
-            //check current user
-            $user = \Auth::user()->id;
-           
-            //save category
-            $category = new Category();
-            $category->title = $request->title;
-            $category->description = $request->description;
-            $category->creator_id = $user;
-            $category->updater_id = $user;
-            $category->save();
+
+         
+            $role = new Role();
+            $role->name = $request->name;
+            $role->save();
+
             /*
             | @End Transaction
             |---------------------------------------------*/
             \DB::commit();
-
-            return redirect()->route('category.create')
-                        ->with('successMsg','Category Save Successful');
-         
+            
+        
+            return redirect()->route('roles.create')
+                            ->with('successMsg','Role created successfully');
         } catch(\Exception $e) {
-             //if error occurs rollback the data from it's previos state
             \DB::rollback();
             return back()->withErrors($e->getMessage());
         }   
@@ -97,14 +92,12 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-         //prevent other user to access to this page
-         $this->authorize("isAdmin");
+        //prevent other user to access to this page
+        $this->authorize("isAdmin");
 
-        $category = Category::withTrashed()->findOrFail($id);
-
-        return view('category.show', [
-            'category' => $category
-        ]);
+        $role = Role::find($id);
+    
+        return view('role.show')->with(['role' => $role]);
     }
 
     /**
@@ -115,15 +108,12 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
-         //prevent other user to access to this page
-         $this->authorize("isAdmin");
+        //prevent other user to access to this page
+        $this->authorize("isAdmin");
 
-        $category = Category::withTrashed()->findOrFail($id);
-
-
-        return view('category.edit', [
-            'category' => $category
-        ]);
+        $role = Role::find($id);
+    
+        return view('role.edit')->with(['role' => $role]);
     }
 
     /**
@@ -135,8 +125,8 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-         //prevent other user to access to this page
-         $this->authorize("isAdmin");
+        //prevent other user to access to this page
+        $this->authorize("isAdmin");
 
         /*
         | @Begin Transaction
@@ -144,35 +134,29 @@ class CategoryController extends Controller
         \DB::beginTransaction();
 
         try {
-            //check category if exist
-            $category = Category::withTrashed()->findOrFail($id);
 
-            //validate the request value
+            $role = Role::findOrFail($id);
+
             $validator = Validator::make($request->all(), [
-                'title' => 'required|string|unique:categories,title,'.$category->id,
-                'description' => 'required|string|max:200'
+                'name' => 'required|unique:roles,name,'.$role->id
             ]);
+    
             if ($validator->fails()) {
                 return back()->withErrors($validator->errors())->withInput();
             }
-            
-            //check current user
-            $user = \Auth::user()->id;
 
-            //save the update value
-            $category->title = $request->title;
-            $category->description = $request->description;
-            $category->updater_id = $user;
-            $category->update();
-            /*
+            $role->name = $request->input('name');
+            $role->save();
+        
+             /*
             | @End Transaction
             |---------------------------------------------*/
             \DB::commit();
+        
+            return redirect()->route('roles.edit', $role->id)
+                            ->with('successMsg','Role updated successfully');
 
-            return back()->with("successMsg","Category Update Successfully");
-         
         } catch(\Exception $e) {
-             //if error occurs rollback the data from it's previos state
             \DB::rollback();
             return back()->withErrors($e->getMessage());
         }
@@ -189,8 +173,7 @@ class CategoryController extends Controller
         //prevent other user to access to this page
         $this->authorize("isAdmin");
 
-        //delete category
-        $category = Category::findOrFail($id);
-        $category->delete();
+        $role = Role::findOrFail($id);
+        $role->delete();
     }
 }

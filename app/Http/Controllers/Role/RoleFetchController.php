@@ -1,26 +1,27 @@
 <?php
 
-namespace App\Http\Controllers\Product;
+namespace App\Http\Controllers\Role;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Product;
+use App\Role;
 
-class ProductFetchController extends Controller
+class RoleFetchController extends Controller
 {
-    public function fetchProduct(Request $request)
+    public function fetchRole(Request $request)
     {
+		 //prevent other user to access to this page
+		 $this->authorize("isAdmin");
+		 
 		//column list in the table Prpducts
         $columns = array(
-			0 => 'title',
-            1 => 'content',
-            2 => 'image',
-			3 => 'created_at',
-			4 => 'action'
+			0 => 'name',
+			1 => 'created_at',
+			2 => 'action'
 		);
 		
-		//get the total number of data in Product table
-		$totalData = Product::count();
+		//get the total number of data in Category table
+		$totalData = Role::count();
 		//total number of data that will show in the datatable default 10
 		$limit = $request->input('length');
 		//start number for pagination ,default 0
@@ -30,32 +31,29 @@ class ProductFetchController extends Controller
 		//order by ,default asc 
 		$dir = $request->input('order.0.dir');
 		
-		//check if user search for a value in the product datatable
+		//check if user search for a value in the Category datatable
 		if(empty($request->input('search.value'))){
-			//get all the product data
-			$posts = Product::offset($start)
+			//get all the category data
+			$posts = Role::offset($start)
 					->limit($limit)
 					->orderBy($order,$dir)
 					->get();
 			
 			//total number of filtered data
-			$totalFiltered = Product::count();
+			$totalFiltered = Role::count();
 		}else{
             $search = $request->input('search.value');
             
-			$posts = Product::where('title', 'like', "%{$search}%")
-                            ->orWhere('content','like',"%{$search}%")
-                            ->orWhere('image','like',"%{$search}%")
+			$posts = Role::where('name', 'like', "%{$search}%")
 							->orWhere('created_at','like',"%{$search}%")
 							->offset($start)
 							->limit($limit)
 							->orderBy($order, $dir)
 							->get();
 
-			//total number of filtered data matching the search value request in the product table	
-            $totalFiltered = Product::where('title', 'like', "%{$search}%")
-                            ->orWhere('content','like',"%{$search}%")
-                            ->orWhere('image','like',"%{$search}%")
+			//total number of filtered data matching the search value request in the Category table	
+			$totalFiltered = Role::where('name', 'like', "%{$search}%")
+							->orWhere('created_at','like',"%{$search}%")
 							->count();
 		}		
 					
@@ -65,10 +63,7 @@ class ProductFetchController extends Controller
 		if($posts){
 			//loop posts collection to transfer in another array $nestedData
 			foreach($posts as $r){
-				$nestedData['id'] = $r->id;
-				$nestedData['title'] = $r->title;
-                $nestedData['content'] = $r->content;
-                $nestedData['image'] = $r->image;
+				$nestedData['name'] = $r->name;
 				$nestedData['created_at'] = date('d-m-Y',strtotime($r->created_at));
                 $nestedData['action'] = '
                     <button name="show" id="show" data-id="'.$r->id.'" class="btn btn-primary btn-xs">Show</button>

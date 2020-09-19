@@ -1,26 +1,28 @@
 <?php
 
-namespace App\Http\Controllers\Category;
+namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Category;
-use Carbon\Carbon;
+use App\User;
 
-class CategoryFetchController extends Controller
+class UserFetchController extends Controller
 {
-    public function fetchCategory(Request $request)
+    public function fetchUser(Request $request)
     {
+		//prevent other user to access to this page
+		$this->authorize("isAdmin");
+
 		//column list in the table Prpducts
         $columns = array(
-			0 => 'title',
-			1 => 'description',
-			2 => 'created_at',
-			3 => 'action'
+			0 => 'name',
+            1 => 'email',
+            2 => 'role_id',
+			3 => 'created_at',
+			4 => 'action'
 		);
 		
-		//get the total number of data in Category table
-		$totalData = Category::count();
+		$totalData = User::count();
 		//total number of data that will show in the datatable default 10
 		$limit = $request->input('length');
 		//start number for pagination ,default 0
@@ -30,30 +32,36 @@ class CategoryFetchController extends Controller
 		//order by ,default asc 
 		$dir = $request->input('order.0.dir');
 		
-		//check if user search for a value in the Category datatable
+		//check if user search for a value in the product datatable
 		if(empty($request->input('search.value'))){
-			//get all the category data
-			$posts = Category::offset($start)
+			//get all the product data
+			$posts = User::offset($start)
 					->limit($limit)
 					->orderBy($order,$dir)
 					->get();
 			
 			//total number of filtered data
-			$totalFiltered = Category::count();
+			$totalFiltered = User::count();
 		}else{
             $search = $request->input('search.value');
             
-			$posts = Category::where('title', 'like', "%{$search}%")
-							->orWhere('description','like',"%{$search}%")
+			$posts = User::whereHas('role', function ($query) use($search) {
+								$query->where('name', 'like', "%{$search}%");
+							})
+							->orwhere('name', 'like', "%{$search}%")
+                            ->orWhere('email','like',"%{$search}%")
 							->orWhere('created_at','like',"%{$search}%")
 							->offset($start)
 							->limit($limit)
 							->orderBy($order, $dir)
 							->get();
 
-			//total number of filtered data matching the search value request in the Category table	
-			$totalFiltered = Category::where('title', 'like', "%{$search}%")
-							->orWhere('description','like',"%{$search}%")
+
+			$totalFiltered = User::whereHas('role', function ($query) use($search) {
+								$query->where('name', 'like', "%{$search}%");
+							})
+							->orwhere('name', 'like', "%{$search}%")
+                            ->orWhere('email','like',"%{$search}%")
 							->count();
 		}		
 					
@@ -63,9 +71,11 @@ class CategoryFetchController extends Controller
 		if($posts){
 			//loop posts collection to transfer in another array $nestedData
 			foreach($posts as $r){
-				$nestedData['title'] = $r->title;
-				$nestedData['description'] = $r->description;
-				$nestedData['created_at'] = date('d-m-Y',strtotime($r->created_at));
+				$nestedData['id'] = $r->id;
+				$nestedData['name'] = $r->name;
+                $nestedData['email'] = $r->email;
+                $nestedData['role'] =  $r->role->name;
+				$nestedData['created_at'] = date('m-d-Y',strtotime($r->created_at));
                 $nestedData['action'] = '
                     <button name="show" id="show" data-id="'.$r->id.'" class="btn btn-primary btn-xs">Show</button>
 					<button name="edit" id="edit" data-id="'.$r->id.'" class="btn btn-warning btn-xs">Edit</button>

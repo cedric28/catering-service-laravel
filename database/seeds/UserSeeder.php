@@ -14,8 +14,7 @@ class UserSeeder extends Seeder
     {
         $users = [
             [ 
-                'first_name' => 'Administrator', 
-                'last_name' => 'Administrator', 
+                'name' => 'Administrator', 
                 'email' => 'admin@admin.com', 
                 'pw' => 'passw0rd',
                 'role_id' => 1
@@ -36,13 +35,10 @@ class UserSeeder extends Seeder
                 // Create Users
                 $userObj = User::create([
 
-                    'first_name' => $user['first_name'],
-                    'last_name' => $user['last_name'],
+                    'name' => $user['name'],
                     'email' => $user['email'],
                     'password' => bcrypt($user['pw']),
-                    'role_id' => $user['role_id'],
-                    'creator_id' => 1,
-                    'updater_id' => 1
+                    'role_id' => $user['role_id']
                 ]);
 
                 echo $user['email'] . ' | ';

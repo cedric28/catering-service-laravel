@@ -8,7 +8,7 @@
 			<div class="page-header page-header-light">
 				<div class="page-header-content header-elements-md-inline">
 					<div class="page-title d-flex">
-						<h4><i class="icon-arrow-left52 mr-2"></i> <span class="font-weight-semibold">Products</span></h4>
+						<h4><i class="icon-arrow-left52 mr-2"></i> <span class="font-weight-semibold">Roles</span></h4>
 						<a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
 					</div>
 				</div>
@@ -17,7 +17,7 @@
 					<div class="d-flex">
 						<div class="breadcrumb">
 							<a href="{{ route('home')}}" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Dashboard</a>
-							<a href="{{ route('product.index')}}" class="breadcrumb-item"> Products</a>
+							<a href="{{ route('roles.index')}}" class="breadcrumb-item"> Roles</a>
 						</div>
 
 						<a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
@@ -34,8 +34,7 @@
 				<div class="card">
 					<div class="card-header bg-transparent header-elements-inline">
 						<div style="width: 100%">
-							
-							<a type="button" href="{{ route('product.create')}}" class="btn btn-outline-success btn-sm float-left"><i class="icon-add mr-2"></i> Add Product</a>
+							<a type="button" href="{{ route('roles.create')}}" class="btn btn-outline-success btn-sm float-left"><i class="icon-add mr-2"></i> Add Role</a>
 							<a href="" class="btn btn-light btn-sm float-right"><i class="icon-printer mr-2"></i> Print</a>
 							
 						</div>
@@ -46,26 +45,23 @@
 							<table class="table table-hover table-striped" id="example">
 								<thead>
 									<tr>
-										<th>Title</th>
-										<th>Content</th>
+										<th>Name</th>
 										<th>Created At</th>
 										<th>Action</th>
 									</tr>
 								</thead>
 								<tbody>
-									@foreach ($products as $product)
+									@foreach ($roles as $role)
 										<tr>
-											<td>{{ $product->title }}</td>
-											<td>{{ $product->content }}</td>
-											<td>{{ $product->created_at }}</td>
+											<td>{{ $role->name }}</td>
+											<td>{{ $role->created_at }}</td>
 											<td></td>
 										</tr>
 									@endforeach
 								</tbody>
 								<tfoot>
 									<tr>
-										<th>Title</th>
-										<th>Content</th>
+										<th>Name</th>
 										<th>Created At</th>
 										<th>Action</th>
 									</tr>
@@ -105,40 +101,39 @@
                 "processing": true,
                 "serverSide": true,
                 "ajax": {
-                    "url":"<?= route('activeProduct') ?>",
+                    "url":"<?= route('activeRole') ?>",
                     "dataType":"json",
                     "type":"POST",
                     "data":{"_token":"<?= csrf_token() ?>"}
                 },
                 "columns":[
-                    {"data":"title"},
-                    {"data":"content"},
+                    {"data":"name"},
                     {"data":"created_at"},
                     {"data":"action","searchable":false,"orderable":false}
                 ]
             });
 
 			$(document).on('click', '#show', function(){
-                var productId = $(this).attr('data-id');
-                window.location.href = 'product/'+productId;
+                var roleId = $(this).attr('data-id');
+                window.location.href = 'roles/'+roleId;
             });
 
             $(document).on('click', '#edit', function(){
                 var id = $(this).attr('data-id');
-                window.location.href = 'product/'+id+'/edit';
+                window.location.href = 'roles/'+id+'/edit';
             });
 
             
    
-            var product_id;
+            var role_id;
             $(document).on('click', '#delete', function(){
-                product_id = $(this).attr('data-id');
+                role_id = $(this).attr('data-id');
                 $('#confirmModal').modal('show');
             });
 
             $('#ok_button').click(function(){
                 $.ajax({
-                    url:"product/destroy/"+product_id,
+                    url:"roles/destroy/"+role_id,
                     beforeSend:function(){
                         $('#ok_button').text('Deleting...');
                     },
@@ -152,7 +147,8 @@
                 })
             });
 		</script>
-           
+
+        <!-- Javascript -->
         <!-- Vendors -->
       
         <script src="{{ asset('vendors/bower_components/popper.js/dist/umd/popper.min.js') }}"></script>

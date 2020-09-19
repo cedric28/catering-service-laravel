@@ -8,7 +8,7 @@
 			<div class="page-header page-header-light">
 				<div class="page-header-content header-elements-md-inline">
 					<div class="page-title d-flex">
-						<h4><i class="icon-arrow-left52 mr-2"></i> <span class="font-weight-semibold">Categories</span></h4>
+						<h4><i class="icon-arrow-left52 mr-2"></i> <span class="font-weight-semibold">Expenses</span></h4>
 						<a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
 					</div>
 				</div>
@@ -17,7 +17,7 @@
 					<div class="d-flex">
 						<div class="breadcrumb">
 							<a href="{{ route('home')}}" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Dashboard</a>
-							<a href="{{ route('category.index')}}" class="breadcrumb-item"> Categories</a>
+							<a href="{{ route('expense.index')}}" class="breadcrumb-item"> Expenses</a>
 						</div>
 
 						<a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
@@ -35,7 +35,7 @@
 					<div class="card-header bg-transparent header-elements-inline">
 						<div style="width: 100%">
 							
-							<a type="button" href="{{ route('category.create')}}" class="btn btn-outline-success btn-sm float-left"><i class="icon-add mr-2"></i> Add Category</a>
+							<a type="button" href="{{ route('expense.create')}}" class="btn btn-outline-success btn-sm float-left"><i class="icon-add mr-2"></i> Add Expense</a>
 							<a href="" class="btn btn-light btn-sm float-right"><i class="icon-printer mr-2"></i> Print</a>
 							
 						</div>
@@ -43,31 +43,32 @@
 					</div>
 					<div class="card-body">
 						<div class="text-center mb-3 py-2">
-							<table class="table table-hover table-striped" id="categoriestable">
+							<table class="table table-hover table-striped" id="example">
 								<thead>
 									<tr>
-										<th>Title</th>
-										<th>Description</th>
+										<th>Expenses Category</th>
+										<th>Amount</th>
+										<th>Entry Date</th>
 										<th>Created At</th>
 										<th>Action</th>
 									</tr>
 								</thead>
 								<tbody>
-									@foreach ($categories as $category)
+									@foreach ($expenses as $expense)
 										<tr>
-											<td>{{ $category->title }}</td>
-											<td>{{ $category->description }}</td>
-											<td>{{ $category->created_at }}</td>
-											<td>
-												
-											</td>
+											<td>{{ $expense->category->title }}</td>
+											<td>{{ $expense->amount }}</td>
+											<td>{{ $expense->entry_date }}</td>
+											<td>{{ $expense->created_at }}</td>
+											<td></td>
 										</tr>
 									@endforeach
 								</tbody>
 								<tfoot>
 									<tr>
-										<th>Title</th>
-										<th>Description</th>
+										<th>Expenses Category</th>
+										<th>Amount</th>
+										<th>Entry Date</th>
 										<th>Created At</th>
 										<th>Action</th>
 									</tr>
@@ -103,44 +104,45 @@
 		<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
 		<script>
 
-            var table = $('#categoriestable').DataTable({
+            var table = $('#example').DataTable({
                 "processing": true,
                 "serverSide": true,
                 "ajax": {
-                    "url":"<?= route('activeCategory') ?>",
+                    "url":"<?= route('activeExpense') ?>",
                     "dataType":"json",
                     "type":"POST",
                     "data":{"_token":"<?= csrf_token() ?>"}
                 },
                 "columns":[
-                    {"data":"title"},
-					{"data":"description"},
+                    {"data":"category"},
+					{"data":"amount"},
+					{"data":"entry_date"},
                     {"data":"created_at"},
                     {"data":"action","searchable":false,"orderable":false}
                 ]
             });
 
 			$(document).on('click', '#show', function(){
-                var categoryId = $(this).attr('data-id');
-                window.location.href = 'category/'+categoryId;
+                var expenseId = $(this).attr('data-id');
+                window.location.href = 'expense/'+expenseId;
             });
 
             $(document).on('click', '#edit', function(){
                 var id = $(this).attr('data-id');
-                window.location.href = 'category/'+id+'/edit';
+                window.location.href = 'expense/'+id+'/edit';
             });
 
             
    
-            var category_id;
+            var expense_id;
             $(document).on('click', '#delete', function(){
-                category_id = $(this).attr('data-id');
+                expense_id = $(this).attr('data-id');
                 $('#confirmModal').modal('show');
             });
 
             $('#ok_button').click(function(){
                 $.ajax({
-                    url:"category/destroy/"+category_id,
+                    url:"expense/destroy/"+expense_id,
                     beforeSend:function(){
                         $('#ok_button').text('Deleting...');
                     },
