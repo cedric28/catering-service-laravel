@@ -1,0 +1,14 @@
+.avatar-xl .avatar-img {
+    height: 3rem;
+}
+
+.avatar .avatar-img {
+    border-radius: 100%;
+    object-fit: cover;
+    height: 2rem;
+    width: auto;
+}
+
+.img-fluid {
+    max-width: 100%;
+}

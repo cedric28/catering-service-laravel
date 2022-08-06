@@ -1,9 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-		<!-- Main content -->
-		<div class="content-wrapper">
-
 			<!-- Page header -->
 			<div class="page-header page-header-light">
 				<div class="page-header-content header-elements-md-inline">
@@ -30,11 +27,8 @@
 
 			<!-- Content area -->
 			<div class="content">
-			
-				<div class="card">
+				<div class="card shadow">
 					<div class="card-header">
-                        @include('partials.message')
-					    @include('partials.errors')
 						<div class="row">
 							<div class="col-md-10 offset-md-1">
 								<div class="header-elements-inline">
@@ -44,10 +38,10 @@
 						</div>
 					</div>
 					<div class="card-body">
-					
 						<div class="row">
 							<div class="col-md-10 offset-md-1">
-								
+								@include('partials.message')
+								@include('partials.errors')
 								<form action="{{ route('users.update', $user->id )}}" method="POST">
                                     @csrf
                                     @method('PATCH')
@@ -86,11 +80,23 @@
 									<div class="form-group row">
 										<label class="col-lg-3 col-form-label">Role:</label>
 										<div class="col-lg-9">
-											<select id="role-id" name="role_id" class="form-control">
+											<select id="role-id" name="role_id" class="form-control @error('role_id') is-invalid @enderror">
 												<option value="">Select Role</option>
                                                 @foreach ($roles as $role)
-                                                    <option value="{{ $role->id }}"{{ ($role->name === old('roles', $user->role->name)) ? ' selected' : '' }}>{{ strtoupper($role->name) }}</option>
+                                                    <option value="{{ $role->id }}"{{ ($role->id === old('role_id', $user->role_id)) ? ' selected' : '' }}>{{ strtoupper($role->name) }}</option>
                                                 @endforeach
+											</select>
+										</div>
+									</div>
+
+									<div class="form-group row">
+										<label class="col-lg-3 col-form-label">Job Type:</label>
+										<div class="col-lg-9">
+											<select id="job-id" name="job_type_id" class="form-control @error('job_type_id') is-invalid @enderror">
+												<option value="">Select Job Type</option>
+												@foreach ($job_types as $job)
+													<option value="{{ $job->id }}"{{ ($job->name === old('jo_types', $user->job_type->name)) ? ' selected' : '' }}>{{ strtoupper($job->name) }}</option>
+												@endforeach
 											</select>
 										</div>
 									</div>
@@ -106,21 +112,10 @@
 				</div>
 			</div>
 			<!-- /content area -->
-		</div>
-		<!-- /main content -->
-	</div>
 	<!-- /page content -->
         @push('scripts')
         <!-- Javascript -->
 		<!-- Vendors -->
-		<script>
 		
-		</script>
-      
-        <script src="{{ asset('vendors/bower_components/popper.js/dist/umd/popper.min.js') }}"></script>
-        <script src="{{ asset('vendors/bower_components/popper.js/dist/umd/popper.min.js') }}"></script>
-        <script src="{{ asset('vendors/bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
-        <script src="{{ asset('vendors/bower_components/jquery.scrollbar/jquery.scrollbar.min.js') }}"></script>
-        <script src="{{ asset('vendors/bower_components/jquery-scrollLock/jquery-scrollLock.min.js') }}"></script>
         @endpush('scripts')
 @endsection

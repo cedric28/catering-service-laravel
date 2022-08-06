@@ -1,171 +1,129 @@
 @extends('layouts.app')
 
 @section('content')
-		<!-- Main content -->
-		<div class="content-wrapper">
-
-			<!-- Page header -->
-			<div class="page-header page-header-light">
-				<div class="page-header-content header-elements-md-inline">
-					<div class="page-title d-flex">
-						<h4><i class="icon-arrow-left52 mr-2"></i> <span class="font-weight-semibold">Users</span></h4>
-						<a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
-					</div>
-				</div>
-
-				<div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
-					<div class="d-flex">
-						<div class="breadcrumb">
-							<a href="{{ route('home')}}" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Dashboard</a>
-							<a href="{{ route('users.index')}}" class="breadcrumb-item"> Users</a>
-						</div>
-
-						<a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
-					</div>
+		<!-- Page Heading -->
+		<div class="page-header page-header-light">
+			<div class="page-header-content header-elements-md-inline">
+				<div class="page-title d-flex">
+					<h4><i class="icon-arrow-left52 mr-2"></i> <span class="font-weight-semibold">Users</span></h4>
+					<a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
 				</div>
 			</div>
-			<!-- /page header -->
 
+			<div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+				<div class="d-flex">
+					<div class="breadcrumb">
+						<a href="{{ route('home')}}" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Dashboard</a>
+						<a href="{{ route('users.index')}}" class="breadcrumb-item"> Users</a>
+					</div>
 
-			<!-- Content area -->
-			<div class="content">
+					<a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+				</div>
+			</div>
+		</div>
 
-				<!-- Search field -->
-				<div class="card">
-					<div class="card-header bg-transparent header-elements-inline">
-						<div style="width: 100%">
-						
-							<a type="button" href="{{ route('users.create')}}" class="btn btn-outline-success btn-sm float-left"><i class="icon-add mr-2"></i> Add User</a>
-							<a href="" class="btn btn-light btn-sm float-right"><i class="icon-printer mr-2"></i> Print</a>
+	<div class="card shadow mb-4">
+		<div class="card-header py-3">
+			<a type="button" href="{{ route('users.create')}}" class="btn btn-outline-success btn-sm float-left"><i class="fas fa-fw fa-plus"></i> Add User</a>
+		</div>
+		<div class="card-body">
+			<div class="table-responsive">
+				<table class="table table-bordered" id="user-lists" width="100%" cellspacing="0">
+					<thead>
+						<tr>
+							<th>FULLNAME</th>
+							<th>EMAIL</th>
+							<th>ROLE</th>
+							<th>JOB TYPE</th>
+							<th>DATE ADDED</th>
+							<th>ACTION</th>
+						</tr>
+					</thead>
+
+					<tbody>
+						<tr>
 							
-						</div>
-								
-					</div>
-					<div class="card-body">
-						<div class="text-center mb-3 py-2">
-							<table class="table table-hover table-striped" id="example">
-								<thead>
-									<tr>
-										<th>Name</th>
-										<th>Email</th>
-										<th>Role</th>
-										<th>Created At</th>
-										<th>Action</th>
-									</tr>
-								</thead>
-								<tbody>
-									@foreach ($users as $user)
-										<tr>
-											<td>{{ $user->name }}</td>
-											<td>{{ $user->email }}</td>
-											<td>{{ $user->role->name }}</td>
-											<td>{{ $user->created_at }}</td>
-											<td></td>
-										</tr>
-									@endforeach
-								</tbody>
-								<tfoot>
-									<tr>
-										<th>Name</th>
-										<th>Email</th>
-										<th>Role</th>
-										<th>Created At</th>
-										<th>Action</th>
-									</tr>
-								</tfoot>
-							</table>
-						</div>
-					</div>
-				</div>
+						</tr>
+					</tbody>
+				</table>
 			</div>
-			<!-- /content area -->
 		</div>
-		<!-- /main content -->
 	</div>
-		<!-- /page content -->
-		<div id="confirmModal" class="modal fade" role="dialog">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal">&times;</button>
-					</div>
-					<div class="modal-body">
-						<h4 align="center" style="margin:0;">Are you sure you want to remove this data?</h4>
-					</div>
-					<div class="modal-footer">
-					 <button type="button" name="ok_button" id="ok_button" class="btn btn-danger">OK</button>
-						<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-					</div>
+	<div id="confirmModal" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+				</div>
+				<div class="modal-body">
+					<h4 align="center" style="margin:0;">Are you sure you want to remove this data?</h4>
+				</div>
+				<div class="modal-footer">
+				 <button type="button" name="ok_button" id="ok_button" class="btn btn-danger">OK</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 				</div>
 			</div>
 		</div>
-			@push('scripts')
-			<!-- Javascript -->
-			<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-			<script>
+	</div>
+	@push('scripts')
+		<!-- Javascript -->
+		<script src="{{ asset('assets/vendor/datatables/jquery.dataTables.min.js') }}"></script>
+		<script src="{{ asset('assets/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
 	
-				var table = $('#example').DataTable({
-					"processing": true,
-					"serverSide": true,
-					"ajax": {
-						"url":"<?= route('activeUser') ?>",
-						"dataType":"json",
-						"type":"POST",
-						"data":{"_token":"<?= csrf_token() ?>"}
+		<!-- Page level custom scripts -->
+		<script src="{{ asset('assets/js/demo/datatables-demo.js') }}"></script>
+		<script>
+
+			var table = $('#user-lists').DataTable({
+				"processing": true,
+				"serverSide": true,
+				"ajax": {
+					"url":"<?= route('activeUser') ?>",
+					"dataType":"json",
+					"type":"POST",
+					"data":{"_token":"<?= csrf_token() ?>"}
+				},
+				"columns":[
+					{"data":"name"},
+					{"data":"email"},
+					{"data":"role"},
+					{"data":"job_type"},
+					{"data":"created_at"},
+					{"data":"action","searchable":false,"orderable":false}
+				]
+			});
+
+			$(document).on('click', '#show', function(){
+				var userId = $(this).attr('data-id');
+				window.location.href = 'users/'+userId;
+			});
+
+			$(document).on('click', '#edit', function(){
+				var id = $(this).attr('data-id');
+				window.location.href = 'users/'+id+'/edit';
+			});
+
+			var user_id;
+			$(document).on('click', '#delete', function(){
+				user_id = $(this).attr('data-id');
+				$('#confirmModal').modal('show');
+			});
+
+			$('#ok_button').click(function(){
+				$.ajax({
+					url:"users/destroy/"+user_id,
+					beforeSend:function(){
+						$('#ok_button').text('Deleting...');
 					},
-					"columns":[
-						{"data":"name"},
-						{"data":"email"},
-						{"data":"role"},
-						{"data":"created_at"},
-						{"data":"action","searchable":false,"orderable":false}
-					]
-				});
-	
-				$(document).on('click', '#show', function(){
-					var userId = $(this).attr('data-id');
-					window.location.href = 'users/'+userId;
-				});
-	
-				$(document).on('click', '#edit', function(){
-					var id = $(this).attr('data-id');
-					window.location.href = 'users/'+id+'/edit';
-				});
-	
-				
-	   
-				var user_id;
-				$(document).on('click', '#delete', function(){
-					user_id = $(this).attr('data-id');
-					$('#confirmModal').modal('show');
-				});
-	
-				$('#ok_button').click(function(){
-					$.ajax({
-						url:"users/destroy/"+user_id,
-						beforeSend:function(){
-							$('#ok_button').text('Deleting...');
-						},
-						success:function(data)
-						{
-							setTimeout(function(){
-								$('#confirmModal').modal('hide');
-								table.ajax.reload();
-							}, 2000);
-						}
-					})
-				});
-			</script>
-			   
-	<!-- /page content -->
-      
-        <!-- Javascript -->
-        <!-- Vendors -->
-      
-        <script src="{{ asset('vendors/bower_components/popper.js/dist/umd/popper.min.js') }}"></script>
-        <script src="{{ asset('vendors/bower_components/popper.js/dist/umd/popper.min.js') }}"></script>
-        <script src="{{ asset('vendors/bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
-        <script src="{{ asset('vendors/bower_components/jquery.scrollbar/jquery.scrollbar.min.js') }}"></script>
-        <script src="{{ asset('vendors/bower_components/jquery-scrollLock/jquery-scrollLock.min.js') }}"></script>
-        @endpush('scripts')
+					success:function(data)
+					{
+						setTimeout(function(){
+							$('#confirmModal').modal('hide');
+							table.ajax.reload();
+						}, 2000);
+					}
+				})
+			});
+		</script>
+	@endpush('scripts')
 @endsection

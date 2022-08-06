@@ -1,9 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-		<!-- Main content -->
-		<div class="content-wrapper">
-
 			<!-- Page header -->
 			<div class="page-header page-header-light">
 				<div class="page-header-content header-elements-md-inline">
@@ -27,10 +24,7 @@
 			</div>
 			<!-- /page header -->
 
-
-			<!-- Content area -->
-			<div class="content">
-				<div class="card">
+				<div class="card shadow mb-4">
 					<div class="card-header ">
 						<div class="row">
 							<div class="col-md-10 offset-md-1">
@@ -59,6 +53,10 @@
 												<th>Role</th>
 												<th>{{ $user->role->name }}</th>
 											</tr>
+											<tr>
+												<th>Job Type</th>
+												<th>{{ $user->job_type->name }}</th>
+											</tr>
 										</thead>
 									</table>
 								</div>
@@ -66,20 +64,8 @@
 						</div>
 					</div>
 				</div>
-			</div>
-			<!-- /content area -->
-		</div>
-		<!-- /main content -->
-	</div>
 	<!-- /page content -->
         @push('scripts')
-        <!-- Javascript -->
-        <!-- Vendors -->
-      
-        <script src="{{ asset('vendors/bower_components/popper.js/dist/umd/popper.min.js') }}"></script>
-        <script src="{{ asset('vendors/bower_components/popper.js/dist/umd/popper.min.js') }}"></script>
-        <script src="{{ asset('vendors/bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
-        <script src="{{ asset('vendors/bower_components/jquery.scrollbar/jquery.scrollbar.min.js') }}"></script>
-        <script src="{{ asset('vendors/bower_components/jquery-scrollLock/jquery-scrollLock.min.js') }}"></script>
+       
         @endpush('scripts')
 @endsection

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\User;
 use App\Role;
+use App\JobType;
 use Validator, Hash, DB, Carbon\Carbon;
 
 class UserController extends Controller
@@ -38,9 +39,11 @@ class UserController extends Controller
         $this->authorize("isAdmin");
 
         $roles = Role::all();
-        
-        return view("user.create",[
-            'roles' => $roles
+        $job_types = JobType::all();
+
+        return view("user.create", [
+            'roles' => $roles,
+            'job_types' => $job_types
         ]);
     }
 
@@ -54,7 +57,7 @@ class UserController extends Controller
     {
         //prevent other user to access to this page
         $this->authorize("isAdmin");
-      /*
+        /*
         | @Begin Transaction
         |---------------------------------------------*/
         \DB::beginTransaction();
@@ -64,19 +67,21 @@ class UserController extends Controller
                 'name' => 'required|max:50',
                 'email' => 'required|email|unique:users,email',
                 'password' => 'required|same:confirm-password',
-                'role_id' => 'required|integer'
+                'role_id' => 'required|integer',
+                'job_type_id' => 'required|integer',
             ]);
-    
+
             if ($validator->fails()) {
                 return back()->withErrors($validator->errors())->withInput();
             }
 
-          
+
             $user = new User();
             $user->name = $request->name;
             $user->email = $request->email;
             $user->password = bcrypt($request->password);
             $user->role_id = $request->role_id;
+            $user->job_type_id = $request->job_type_id;
             $user->save();
             /*
             | @End Transaction
@@ -84,12 +89,11 @@ class UserController extends Controller
             \DB::commit();
 
             return redirect()->route('users.create')
-                        ->with('successMsg','User Data Save Successful');
-         
-        } catch(\Exception $e) {
+                ->with('successMsg', 'User Data Save Successful');
+        } catch (\Exception $e) {
             \DB::rollback();
             return back()->withErrors($e->getMessage());
-        }   
+        }
     }
 
     /**
@@ -123,8 +127,14 @@ class UserController extends Controller
 
         $user = User::withTrashed()->findOrFail($id);
         $roles = Role::all();
-        
-        return view('user.edit',compact('user','roles'));
+        $job_types = JobType::all();
+
+
+        return view('user.edit', [
+            'user' => $user,
+            'roles' => $roles,
+            'job_types' => $job_types
+        ]);
     }
 
     /**
@@ -149,20 +159,19 @@ class UserController extends Controller
 
             $validator = Validator::make($request->all(), [
                 'name' => 'required|max:50',
-                'email' => 'required|email|unique:users,email,'.$user->id,  
+                'email' => 'required|email|unique:users,email,' . $user->id,
                 'password' => 'same:confirm-password',
                 'role_id' => 'required|integer'
             ]);
-    
+
             if ($validator->fails()) {
                 return back()->withErrors($validator->errors())->withInput();
             }
 
-            if ( !$request->password == '')
-            {
+            if (!$request->password == '') {
                 $user->password = bcrypt($request->password);
             }
-            
+
             $user->name = $request->name;
             $user->email = $request->email;
             $user->role_id = $request->role_id;
@@ -174,9 +183,8 @@ class UserController extends Controller
             \DB::commit();
 
             return redirect()->route('users.edit', $user->id)
-                    ->with('successMsg','User Data update Successfully');
-
-        } catch(\Exception $e) {
+                ->with('successMsg', 'User Data update Successfully');
+        } catch (\Exception $e) {
             \DB::rollback();
             return back()->withErrors($e->getMessage());
         }
@@ -192,7 +200,7 @@ class UserController extends Controller
     {
         //prevent other user to access to this page
         $this->authorize("isAdmin");
-        
+
         //delete user
         $user = User::findOrFail($id);
         $user->delete();
@@ -214,10 +222,10 @@ class UserController extends Controller
 
         try {
             $user = \Auth::user();
-            
+
             $validator = Validator::make($request->all(), [
                 'name' => 'required|max:50',
-                'email' => 'required|email|unique:users,email,'.$user->id,  
+                'email' => 'required|email|unique:users,email,' . $user->id,
                 'password' => 'same:confirm-password'
             ]);
 
@@ -225,23 +233,21 @@ class UserController extends Controller
                 return back()->withErrors($validator->errors())->withInput();
             }
 
-            if ( !$request->password == '')
-            {
+            if (!$request->password == '') {
                 $user->password = bcrypt($request->password);
             }
-            
+
             $user->name = $request->name;
             $user->email = $request->email;
             $user->save();
-        
+
             /*
             | @End Transaction
             |---------------------------------------------*/
             \DB::commit();
 
-            return back()->with('successMsg','User Data update Successfully');
-
-        } catch(\Exception $e) {
+            return back()->with('successMsg', 'User Data update Successfully');
+        } catch (\Exception $e) {
             \DB::rollback();
             return back()->withErrors($e->getMessage());
         }

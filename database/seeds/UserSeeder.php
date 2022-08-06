@@ -13,11 +13,26 @@ class UserSeeder extends Seeder
     public function run()
     {
         $users = [
-            [ 
-                'name' => 'Administrator', 
-                'email' => 'admin@admin.com', 
+            [
+                'name' => 'Administrator',
+                'email' => 'admin@admin.com',
                 'pw' => 'passw0rd',
-                'role_id' => 1
+                'role_id' => 1,
+                'job_type_id' => 1
+            ],
+            [
+                'name' => 'HeadStaff',
+                'email' => 'head@head.com',
+                'pw' => 'passw0rd',
+                'role_id' => 2,
+                'job_type_id' => 2
+            ],
+            [
+                'name' => 'Staff',
+                'email' => 'staff@staff.com',
+                'pw' => 'passw0rd',
+                'role_id' => 3,
+                'job_type_id' => 3
             ]
         ];
 
@@ -28,24 +43,24 @@ class UserSeeder extends Seeder
         \DB::beginTransaction();
 
 
-        foreach($users as $key => $user) {
+        foreach ($users as $key => $user) {
 
             try {
-             
+
                 // Create Users
                 $userObj = User::create([
 
                     'name' => $user['name'],
                     'email' => $user['email'],
                     'password' => bcrypt($user['pw']),
-                    'role_id' => $user['role_id']
+                    'role_id' => $user['role_id'],
+                    'job_type_id' => $user['job_type_id']
                 ]);
 
                 echo $user['email'] . ' | ';
-
             } catch (Exception $e) {
                 echo 'Duplicate email address ' . $user['email'] . ' | ';
-            }   
+            }
         }
 
         echo "\n";

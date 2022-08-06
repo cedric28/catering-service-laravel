@@ -13,10 +13,15 @@ class RoleSeeder extends Seeder
     public function run()
     {
         $roles = [
-            [ 
+            [
                 'name' => 'Administrator'
+            ],
+            [
+                'name' => 'HeadStaff'
+            ],
+            [
+                'name' => 'Staff'
             ]
-
         ];
 
 
@@ -26,21 +31,20 @@ class RoleSeeder extends Seeder
         \DB::beginTransaction();
 
 
-        foreach($roles as $key => $role) {
+        foreach ($roles as $key => $role) {
 
             try {
-             
+
                 // Create Role
                 $roleObj = Role::create([
 
                     'name' => $role['name']
                 ]);
 
-                echo $role['email'] . ' | ';
-
+                echo $roleObj->name . ' | ';
             } catch (Exception $e) {
                 echo 'Duplicate role ' . $role['name'] . ' | ';
-            }   
+            }
         }
 
         echo "\n";

@@ -1,102 +1,110 @@
-<!-- Main sidebar -->
-<div class="sidebar sidebar-dark sidebar-main sidebar-expand-md">
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
-    <!-- Sidebar mobile toggler -->
-    <div class="sidebar-mobile-toggler text-center">
-        <a href="#" class="sidebar-mobile-main-toggle">
-            <i class="icon-arrow-left8"></i>
+    <!-- Sidebar - Brand -->
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+        <div class="sidebar-brand-icon rotate-n-15">
+            <i class="fas fa-laugh-wink"></i>
+        </div>
+        <div class="sidebar-brand-text mx-3">CREATIVE MOMENTS</div>
+    </a>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider my-0">
+
+    <!-- Nav Item - Dashboard -->
+    <li class="nav-item {{ (request()->is('home')) ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('home') }}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Dashboard</span>
         </a>
-        Navigation
-        <a href="#" class="sidebar-mobile-expand">
-            <i class="icon-screen-full"></i>
-            <i class="icon-screen-normal"></i>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#planner"
+            aria-expanded="true" aria-controls="planner">
+            <i class="fas fa-fw fa-calendar"></i>
+            <span>Planner</span>
         </a>
-    </div>
-    <!-- /sidebar mobile toggler -->
-    
-    
-    <!-- Sidebar content -->
-    <div class="sidebar-content">
-    
-        <!-- User menu -->
-        <div class="sidebar-user">
-            <div class="card-body">
-                <div class="media">
-                    <div class="mr-3">
-                        <a href="#"><img src="{{ asset('global_assets/images/placeholders/image.png') }}" width="38" height="38" class="rounded-circle" alt=""></a>
-                    </div>
-    
-                    <div class="media-body">
-                        <div class="media-title font-weight-semibold">{{ (Auth::user()->first_name) }}</div>
-                        <div class="font-size-xs opacity-50">
-                            <i class="icon-google-plus2 font-size-sm"></i> &nbsp;{{ Auth::user()->email }}
-                        </div>
-                    </div>
-    
-                    <div class="ml-3 align-self-center">
-                        <a href="{{ route('user-profile')}}" class="text-white">
-                            <i class="icon-cog3"></i>
-                        </a>
-                    </div>
-                </div>
+        <div id="planner" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" href="cards.html">Events</a>
+                <a class="collapse-item" href="buttons.html">Event Types</a>
             </div>
         </div>
-        <!-- /user menu -->
-    
-    
-        <!-- Main navigation -->
-        <div class="card card-sidebar-mobile">
-            <ul class="nav nav-sidebar" data-nav-type="accordion">
-    
-                <!-- Main -->
-                <li class="nav-item-header"><div class="text-uppercase font-size-xs line-height-xs">Main</div> <i class="icon-menu" title="Main"></i></li>
-                  
-                    <li class="nav-item">
-                        <a href="{{ route('home') }}" class="nav-link {{ (request()->is('home')) ? 'nav-link active' : '' }}"><i class="icon-home4"></i><span>Dashboard</span></a>
-                    </li>
-                    @can('isAdmin')
-                        <li class="nav-item nav-item-submenu">
-                            <a href="#" class="nav-link"><i class="icon-cube3"></i><span>User Management</span></a>
-                            <ul class="nav nav-group-sub" data-submenu-title="Starter kit">
-                                <li class="nav-item">
-                                    <a href="{{ route('users.index')}}" class="nav-link {{ (request()->is('users*')) ? 'nav-link active' : '' }}">
-                                        <i class="icon-user"></i>
-                                        <span>System User</span>
-                                    </a>
-                                </li>
-                        
-                                <li class="nav-item">
-                                    <a href="{{ route('roles.index')}}" class="nav-link {{ (request()->is('roles*')) ? 'nav-link active' : '' }}">
-                                        <i class="icon-cube4"></i>
-                                        <span>User Role</span>
-                                    </a>
-                                </li>
-                            
-                            </ul>
-                        </li>
-                    @endcan
-                    <li class="nav-item nav-item-submenu">
-                        <a href="#" class="nav-link"><i class="icon-cube3"></i><span>Expense Management</span></a>
-                        <ul class="nav nav-group-sub" data-submenu-title="Starter kit">
-                            <li class="nav-item">
-                                <a href="{{ route('expense.index')}}" class="nav-link {{ (request()->is('expense*')) ? 'nav-link active' : '' }}"><i class="icon-cube4"></i><span>Expenses</span></a>
-                            </li>
-                            @can('isAdmin')
-                                <li class="nav-item">
-                                    <a href="{{ route('category.index')}}" class="nav-link {{ (request()->is('category*')) ? 'nav-link active' : '' }}"><i class="icon-folder-plus"></i><span>Expense Categories</span></a>
-                                </li>
-                            @endcan
-                        </ul>
-                    </li>
-                    
-                   
-                <!-- /layout -->
-            </ul>
+    </li>
+
+    <li class="nav-item {{ (request()->is('inventories*')) || (request()->is('inventory-category*')) ? 'active' : '' }}">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#inventory"
+            aria-expanded="true" aria-controls="inventory">
+            <i class="fas fa-fw fa-database"></i>
+            <span>Inventory</span>
+        </a>
+        <div id="inventory" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item {{ (request()->is('inventories*')) ? 'active' : '' }}" href="{{ route('inventories.index')}}">Inventory Entry</a>
+                <a class="collapse-item {{ (request()->is('inventory-category*')) ? 'active' : '' }}" href="{{ route('inventory-category.index')}}">Inventory Category</a>
+            </div>
         </div>
-        <!-- /main navigation -->
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#foods"
+            aria-expanded="true" aria-controls="foods">
+            <i class="fas fa-fw fa-utensils"></i>
+            <span>Foods</span>
+        </a>
+        <div id="foods" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" href="cards.html">Food Entry</a>
+                <a class="collapse-item" href="buttons.html">Food Category</a>
+            </div>
+        </div>
+    </li>
+
+    <li class="nav-item {{ (request()->is('home')) ? '' : '' }}">
+        <a class="nav-link" href="{{ route('home') }}">
+            <i class="fas fa-fw fa-box"></i>
+            <span>Package</span>
+        </a>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        REPORTS
     </div>
-    <!-- /sidebar content -->
+    <li class="nav-item">
+    
+    </li>
+     <!-- Divider -->
+     <hr class="sidebar-divider">
+    @can('isAdmin')
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        SETTINGS
     </div>
-    <!-- /main sidebar -->
-    
-    
+  
+    <!-- Nav Item - Charts -->
+    <li class="nav-item {{ (request()->is('users*')) ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('users.index')}}">
+            <i class="fas fa-fw fa-users"></i>
+            <span>System Users</span></a>
+    </li>
+
+    <!-- Nav Item - Tables -->
+    {{-- <li class="nav-item">
+        <a class="nav-link {{ (request()->is('roles*')) ? 'nav-link active' : '' }}" href="{{ route('roles.index')}}">
+            <i class="fas fa-fw fa-cube"></i>
+            <span>User Role</span></a>
+    </li> --}}
+
+    <!-- Divider -->
+    <hr class="sidebar-divider d-none d-md-block">
+    @endcan
+    <!-- Sidebar Toggler (Sidebar) -->
+    {{-- <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+    </div> --}}
+
+</ul>

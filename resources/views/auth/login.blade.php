@@ -1,53 +1,48 @@
-@extends('layouts.app')
+@extends('layouts.login')
 
 @section('content')
-<!-- Main content -->
-<div class="content-wrapper">
-    <!-- Content area -->
-    <div class="content d-flex justify-content-center align-items-center">
-        <!-- Login form -->
-        <form class="login-form" method="POST" action="{{ route('login') }}">
-            @csrf
-            <div class="card mb-0">
-                <div class="card-body">
-                    <div class="text-center mb-3">
-                        <i class="icon-reading icon-2x text-slate-300 border-slate-300 border-3 rounded-round p-3 mb-3 mt-1"></i>
-                        <h5 class="mb-0">Login to your account</h5>
-                        <span class="d-block text-muted">Enter your credentials below</span>
-                    </div>
-
-                    <div class="form-group form-group-feedback form-group-feedback-left">
-                        <input type="text" class="form-control @error('email') is-invalid @enderror" placeholder="E-mail" value="{{ old('email') }}" name="email" required autocomplete="email" autofocus>
-                        <div class="form-control-feedback">
-                            <i class="icon-user text-muted"></i>
+<div class="container">
+    <!-- Outer Row -->
+    <div class="row justify-content-center">
+        <div class="col-xl-10 col-lg-12 col-md-9">
+            <div class="card o-hidden border-0 shadow-lg my-5">
+                <div class="card-body p-0">
+                    <!-- Nested Row within Card Body -->
+                    <div class="row">
+                        <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
+                        <div class="col-lg-6">
+                            <div class="p-5">
+                                <div class="text-center">
+                                    <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
+                                </div>
+                                <form class="user" method="POST" action="{{ route('login') }}">
+                                    @csrf
+                                    <div class="form-group">
+                                        <input type="email" class="form-control form-control-user @error('email') is-invalid @enderror"
+                                            id="exampleInputEmail" aria-describedby="emailHelp"
+                                            value="{{ old('email') }}" name="email" required autocomplete="email" autofocus
+                                            placeholder="Enter Email Address...">
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="password" class="form-control form-control-user @error('password') is-invalid @enderror" 
+                                            name="password" required autocomplete="current-password" 
+                                            id="exampleInputPassword" placeholder="Password">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-user btn-block">
+                                        {{ __('Login') }}
+                                    </button>
+                                    <hr>
+                                </form>
+                                <div class="text-center">
+                                    <p>Welcome!</p>
+                                </div>
+                              
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="form-group form-group-feedback form-group-feedback-left">
-                        <input type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password" placeholder="Password">
-                        <div class="form-control-feedback">
-                            <i class="icon-lock2 text-muted"></i>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <button type="submit" class="btn btn-primary btn-block">{{ __('Login') }} <i class="icon-circle-right2 ml-2"></i></button>
-                    </div>
-
-                    
-
-                    <div class="text-center">
-                        @if (Route::has('password.request'))
-                            <a  href="{{ route('password.request') }}">
-                                {{ __('Forgot Your Password?') }}
-                            </a>
-                        @endif
                     </div>
                 </div>
             </div>
-        </form>
-        <!-- /login form -->
+        </div>
     </div>
-    <!-- /content area -->
 </div>
 @endsection

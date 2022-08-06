@@ -10,91 +10,59 @@
 	<title>{{ config('app.name', 'FarmApp') }}</title>
 
 	<!-- Global stylesheets -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js" charset="utf-8"></script>
-	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
-	<link href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
-	<link href="{{ asset('global_assets/css/icons/icomoon/styles.min.css') }}" rel="stylesheet" type="text/css">
-	<link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
-	<link href="{{ asset('assets/css/bootstrap_limitless.min.css') }}" rel="stylesheet" type="text/css">
-	<link href="{{ asset('assets/css/layout.min.css') }}" rel="stylesheet" type="text/css">
-	<link href="{{ asset('assets/css/components.min.css') }}" rel="stylesheet" type="text/css">
-	<link href="{{ asset('assets/css/colors.min.css') }}" rel="stylesheet" type="text/css">
+	<link href="{{ asset('assets/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
+	<link
+	href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+	rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+	<link href="{{ asset('assets/css/sb-admin-2.css') }}" rel="stylesheet" type="text/css">
+	<link href="{{ asset('assets/css/styles.css') }}" rel="stylesheet" type="text/css">
+	<link href="{{ asset('assets/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
+	<link href="{{ asset('assets/css/main.css') }}" rel="stylesheet" type="text/css">
 	<!-- /global stylesheets -->
 	@stack('styles')
-	<!-- Core JS files -->
-	<script src="{{ asset('global_assets/js/main/jquery.min.js') }}"></script>
-	<script src="{{ asset('global_assets/js/main/bootstrap.bundle.min.js') }}"></script>
-	<script src="{{ asset('global_assets/js/plugins/loaders/blockui.min.js') }}"></script>
-	<!-- /core JS files -->
-	<!-- /theme JS files -->
-	<script src="{{ asset('global_assets/js/plugins/ui/moment/moment.min.js') }}"></script>
-	<script src="{{ asset('global_assets/js/plugins/pickers/daterangepicker.js') }}"></script>
-	<script src="{{ asset('global_assets/js/plugins/pickers/anytime.min.js') }}"></script>
-	<script src="{{ asset('global_assets/js/plugins/pickers/pickadate/picker.js') }}"></script>
-	<script src="{{ asset('global_assets/js/plugins/pickers/pickadate/picker.date.js') }}"></script>
-	<script src="{{ asset('global_assets/js/plugins/pickers/pickadate/picker.time.js') }}"></script>
-	<script src="{{ asset('global_assets/js/plugins/pickers/pickadate/legacy.js') }}"></script>
-	<script src="{{ asset('global_assets/js/plugins/notifications/jgrowl.min.js') }}"></script>
+	
 
-	<script src="{{ asset('global_assets/js/demo_pages/picker_date.js') }}"></script>
-	<script src="{{ asset('js/ckeditor/ckeditor.js') }}"></script>
-	<script src="{{ asset('assets/js/main.js') }}"></script>
 </head>
-<body>
-    <main class="main">
-      <!-- Header -->
-      @includeWhen(Auth::user(), 'partials.header')
-	    <!-- Page content -->
-	    <div class="page-content">
-		
-			<!-- Sidebar -->
-			@includeWhen(Auth::user(), 'partials.sidebar')
-				<!-- Contents -->
-				@yield('content')
-				
+<body id="page-top">
+	<div id="wrapper">
+		<!-- Sidebar -->
+		@includeWhen(Auth::user(), 'partials.sidebar')
+	    <!-- Content Wrapper -->
+		   <div id="content-wrapper" class="d-flex flex-column">
+			<!-- Main Content -->
+			<div id="content">
+				<!-- Header -->
+				@includeWhen(Auth::user(), 'partials.header')
+				<!-- Begin Page Content -->
+                <div class="container-fluid">
+					<!-- Contents -->
+					@yield('content')
+				</div>
+			</div>
 			<!-- Footer -->
 			@includeWhen(Auth::user(), 'partials.footer')
 				
-       
-    </main>
-    <!-- Utils -->
-    @auth
+		   </div>
+	@auth
 		<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
 			@csrf
 		</form>
-    @endauth
-    
-		</div>
-		<!-- /main content -->
-	</div>
-	<!-- /page content -->
-	@auth
-		<script>
-			window.user = @json(auth()->user())
-		</script>
 	@endauth
-	<script src="/js/app.js"></script>
-	<!-- Theme JS files -->
-	<script src="{{ asset('global_assets/js/plugins/visualization/d3/d3.min.js') }}"></script>
-	<script src="{{ asset('global_assets/js/plugins/visualization/d3/d3_tooltip.js') }}"></script>
-	<script src="{{ asset('global_assets/js/plugins/forms/styling/switchery.min.js') }}"></script>
-	<script src="{{ asset('global_assets/js/plugins/ui/moment/moment.min.js') }}"></script>
-	<script src="{{ asset('global_assets/js/plugins/pickers/daterangepicker.js') }}"></script>
+	</div>
+    <!-- Utils -->
+	<a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+	<script src="{{ asset('assets/vendor/jquery/jquery.min.js') }}"></script>
+	<script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+	<script src="{{ asset('assets/vendor/jquery-easing/jquery.easing.min.js') }}"></script>
+	<script src="{{ asset('assets/js/sb-admin-2.min.js') }}"></script>
 
-	<script src="{{ asset('global_assets/js/demo_pages/dashboard.js') }}"></script>
-	<script src="{{ asset('global_assets/js/demo_charts/pages/dashboard/light/streamgraph.js') }}"></script>
-	<script src="{{ asset('global_assets/js/demo_charts/pages/dashboard/light/sparklines.js') }}"></script>
-	<script src="{{ asset('global_assets/js/demo_charts/pages/dashboard/light/lines.js') }}"></script>	
-	<script src="{{ asset('global_assets/js/demo_charts/pages/dashboard/light/areas.js') }}"></script>
-	<script src="{{ asset('global_assets/js/demo_charts/pages/dashboard/light/donuts.js') }}"></script>
-	<script src="{{ asset('global_assets/js/demo_charts/pages/dashboard/light/bars.js') }}"></script>
-	<script src="{{ asset('global_assets/js/demo_charts/pages/dashboard/light/progress.js') }}"></script>
-	<script src="{{ asset('global_assets/js/demo_charts/pages/dashboard/light/heatmaps.js') }}"></script>
-	<script src="{{ asset('global_assets/js/demo_charts/pages/dashboard/light/pies.js') }}"></script>
-	<script src="{{ asset('global_assets/js/demo_charts/pages/dashboard/light/bullets.js') }}"></script>
+	<!-- Theme JS files -->
 	@yield('js')
 	@stack('scripts')
-	
 </body>
 </html>
      

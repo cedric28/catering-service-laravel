@@ -13,41 +13,55 @@ class CategorySeeder extends Seeder
     public function run()
     {
         $categories = [
-            [ 
-                'title' => 'Travel',
-                'description' => 'daily commute',
-            ] ,
             [
-                'title' => 'Entertainment',
-                'description' => 'movies etc',
+                'name' => 'Beef',
+            ],
+            [
+                'name' => 'Pork',
+            ],
+            [
+                'name' => 'Chicken',
+            ],
+            [
+                'name' => 'Fish',
+            ],
+            [
+                'name' => 'Pasta',
+            ],
+            [
+                'name' => 'Dessert',
+            ],
+            [
+                'name' => 'Vegetable',
+            ],
+            [
+                'name' => 'Drinks',
             ]
 
         ];
-        
+
         /*
         | @Begin Transaction
         |---------------------------------------------*/
         \DB::beginTransaction();
 
-            
-        foreach($categories as $key => $category) {
+
+        foreach ($categories as $key => $category) {
 
             try {
-             
+
                 // Create Category
                 $categoryObj = Category::create([
 
-                    'title' => $category['title'],
-                    'description' => $category['description'],
+                    'name' => $category['name'],
                     'creator_id' => 1,
                     'updater_id' => 1
                 ]);
 
-                echo $categoryObj->title . ' | ';
-
+                echo $categoryObj->name . ' | ';
             } catch (Exception $e) {
-                echo 'Duplicate title ' . $category['title'] . ' | ';
-            }   
+                echo 'Duplicate name ' . $category['name'] . ' | ';
+            }
         }
 
         echo "\n";

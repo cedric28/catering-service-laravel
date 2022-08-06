@@ -50,7 +50,7 @@ class RoleController extends Controller
         //prevent other user to access to this page
         $this->authorize("isAdmin");
 
-         /*
+        /*
         | @Begin Transaction
         |---------------------------------------------*/
         \DB::beginTransaction();
@@ -60,12 +60,12 @@ class RoleController extends Controller
             $validator = Validator::make($request->all(), [
                 'name' => 'required|unique:roles,name',
             ]);
-    
+
             if ($validator->fails()) {
                 return back()->withErrors($validator->errors())->withInput();
             }
 
-         
+
             $role = new Role();
             $role->name = $request->name;
             $role->save();
@@ -74,14 +74,14 @@ class RoleController extends Controller
             | @End Transaction
             |---------------------------------------------*/
             \DB::commit();
-            
-        
+
+
             return redirect()->route('roles.create')
-                            ->with('successMsg','Role created successfully');
-        } catch(\Exception $e) {
+                ->with('successMsg', 'Role created successfully');
+        } catch (\Exception $e) {
             \DB::rollback();
             return back()->withErrors($e->getMessage());
-        }   
+        }
     }
 
     /**
@@ -96,7 +96,7 @@ class RoleController extends Controller
         $this->authorize("isAdmin");
 
         $role = Role::find($id);
-    
+
         return view('role.show')->with(['role' => $role]);
     }
 
@@ -112,7 +112,7 @@ class RoleController extends Controller
         $this->authorize("isAdmin");
 
         $role = Role::find($id);
-    
+
         return view('role.edit')->with(['role' => $role]);
     }
 
@@ -138,25 +138,24 @@ class RoleController extends Controller
             $role = Role::findOrFail($id);
 
             $validator = Validator::make($request->all(), [
-                'name' => 'required|unique:roles,name,'.$role->id
+                'name' => 'required|unique:roles,name,' . $role->id
             ]);
-    
+
             if ($validator->fails()) {
                 return back()->withErrors($validator->errors())->withInput();
             }
 
             $role->name = $request->input('name');
             $role->save();
-        
-             /*
+
+            /*
             | @End Transaction
             |---------------------------------------------*/
             \DB::commit();
-        
-            return redirect()->route('roles.edit', $role->id)
-                            ->with('successMsg','Role updated successfully');
 
-        } catch(\Exception $e) {
+            return redirect()->route('roles.edit', $role->id)
+                ->with('successMsg', 'Role updated successfully');
+        } catch (\Exception $e) {
             \DB::rollback();
             return back()->withErrors($e->getMessage());
         }
