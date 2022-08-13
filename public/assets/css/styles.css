@@ -12,3 +12,7 @@
 .img-fluid {
     max-width: 100%;
 }
+
+.border-top-primary {
+    border-top: 0.25rem solid #e899dc !important;
+}

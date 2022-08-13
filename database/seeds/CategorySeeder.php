@@ -15,27 +15,35 @@ class CategorySeeder extends Seeder
         $categories = [
             [
                 'name' => 'Beef',
+                'dish_category_id' => 1
             ],
             [
                 'name' => 'Pork',
+                'dish_category_id' => 1
             ],
             [
                 'name' => 'Chicken',
+                'dish_category_id' => 2
             ],
             [
                 'name' => 'Fish',
+                'dish_category_id' => 2
             ],
             [
                 'name' => 'Pasta',
+                'dish_category_id' => 3
             ],
             [
                 'name' => 'Dessert',
+                'dish_category_id' => 3
             ],
             [
                 'name' => 'Vegetable',
+                'dish_category_id' => 3
             ],
             [
                 'name' => 'Drinks',
+                'dish_category_id' => 3
             ]
 
         ];
@@ -54,6 +62,7 @@ class CategorySeeder extends Seeder
                 $categoryObj = Category::create([
 
                     'name' => $category['name'],
+                    'dish_category_id' => $category['dish_category_id'],
                     'creator_id' => 1,
                     'updater_id' => 1
                 ]);

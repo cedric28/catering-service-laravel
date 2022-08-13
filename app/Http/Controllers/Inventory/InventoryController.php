@@ -110,7 +110,7 @@ class InventoryController extends Controller
         //prevent other user to access to this page
         $this->authorize("isAdmin");
 
-        $inventory = Inventory::find($id);
+        $inventory = Inventory::findOrFail($id);
 
         return view('inventory.show')->with(['inventory' => $inventory]);
     }
@@ -126,7 +126,7 @@ class InventoryController extends Controller
         //prevent other user to access to this page
         $this->authorize("isAdmin");
 
-        $inventory = Inventory::find($id);
+        $inventory = Inventory::findOrFail($id);
         $inventory_categories = InventoryCategory::all();
 
         return view('inventory.edit')->with([

@@ -58,7 +58,7 @@
 								<select id="inventory_category_id" name="inventory_category_id" class="@error('inventory_category_id') is-invalid @enderror form-control select2">
 									<option value="">Select category</option>
 									@foreach ($inventory_categories as $category)
-										<option value="{{ $category->id }}"{{ ($category->id === old('inventory_category_id', $inventory->inventory_category_id)) ? ' selected' : '' }}>{{ ucwords($inventory->inventory_category->name) }}</option>
+										<option value="{{ $category->id }}"{{ ($category->id == old('inventory_category_id', $inventory->inventory_category_id)) ? ' selected' : '' }}>{{ ucwords($category->name) }}</option>
 									@endforeach
 								</select>
 							</div>

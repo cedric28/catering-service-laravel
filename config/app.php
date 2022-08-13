@@ -230,4 +230,6 @@ return [
         'Image' => 'Intervention\Image\Facades\Image',
     ],
 
+    'currency' => 'P'
+
 ];

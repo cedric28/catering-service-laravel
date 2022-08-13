@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Charts\ExpenseChart;
 use App\User;
-use App\Expenses;
 
 class HomeController extends Controller
 {

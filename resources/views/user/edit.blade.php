@@ -83,7 +83,7 @@
 											<select id="role-id" name="role_id" class="form-control @error('role_id') is-invalid @enderror">
 												<option value="">Select Role</option>
                                                 @foreach ($roles as $role)
-                                                    <option value="{{ $role->id }}"{{ ($role->id === old('role_id', $user->role_id)) ? ' selected' : '' }}>{{ strtoupper($role->name) }}</option>
+                                                    <option value="{{ $role->id }}"{{ ($role->id == old('role_id', $user->role_id)) ? ' selected' : '' }}>{{ strtoupper($role->name) }}</option>
                                                 @endforeach
 											</select>
 										</div>

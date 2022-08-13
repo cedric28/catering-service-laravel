@@ -19,8 +19,18 @@
 	<link href="{{ asset('assets/css/sb-admin-2.css') }}" rel="stylesheet" type="text/css">
 	<link href="{{ asset('assets/css/styles.css') }}" rel="stylesheet" type="text/css">
 	<link href="{{ asset('assets/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
+  	<link rel="stylesheet" href="{{ asset('assets/js/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
+  	<link rel="stylesheet" href="{{ asset('assets/js/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
 	<link href="{{ asset('assets/css/main.css') }}" rel="stylesheet" type="text/css">
 	<!-- /global stylesheets -->
+	<style>
+		table td.textRight {
+			text-align : right;
+		}
+		table td.textCenter {
+			text-align : center;
+		}
+	</style>
 	@stack('styles')
 	
 

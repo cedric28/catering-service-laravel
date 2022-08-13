@@ -46,7 +46,7 @@
 						@csrf
 						@method('PATCH')
 						<div class="form-group row">
-							<label class="col-lg-3 col-form-label">Name:</label>
+							<label class="col-lg-3 col-form-label">Category Name:</label>
 							<div class="col-lg-9">
 								<input type="text" name="name" value="{{ old("name" , $inventory_category->name)}}" class="@error('name') is-invalid @enderror form-control" placeholder="Category name">
 							</div>

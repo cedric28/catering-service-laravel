@@ -61,4 +61,40 @@ Route::middleware('auth')->group(function () {
     Route::resource('inventory-category', 'Inventory\InventoryCategoryController');
     Route::post('inventory-category/fetch/q', 'Inventory\InventoryFetchController@fetchInventoryCategory')->name('activeInventoryCategory');
     Route::get('inventory-category/destroy/{id}', 'Inventory\InventoryCategoryController@destroy');
+
+    //foods
+    Route::resource('foods', 'Food\FoodController');
+    Route::post('foods/fetch/q', 'Food\FoodFetchController@fetchFood')->name('activeFood');
+    Route::get('foods/destroy/{id}', 'Food\FoodController@destroy');
+
+    //Food Category
+    Route::resource('food-category', 'Food\FoodCategoryController');
+    Route::post('food-category/fetch/q', 'Food\FoodFetchController@fetchFoodCategory')->name('activeFoodCategory');
+    Route::get('food-category/destroy/{id}', 'Food\FoodCategoryController@destroy');
+
+    //packages
+    Route::resource('packages', 'Package\PackageController');
+    Route::post('packages/fetch/q', 'Package\PackageFetchController@fetchPackage')->name('activePackage');
+    Route::get('packages/destroy/{id}', 'Package\PackageController@destroy');
+
+    //package task
+    Route::post('packages-task/add-task', 'Package\PackageTaskController@addTask')->name('addTask');
+    Route::post('packages-task/fetch/q', 'Package\PackageFetchController@fetchPackageTask')->name('activePackageTask');
+
+    //package food
+    Route::post('packages-food/add-food', 'Package\PackageFoodController@addFood')->name('addFood');
+    Route::post('packages-food/fetch/q', 'Package\PackageFetchController@fetchPackageFood')->name('activePackageFood');
+
+    //package equipments
+    Route::post('packages-equipment/add-equipment', 'Package\PackageEquipmentController@addEquipment')->name('addEquipment');
+    Route::post('packages-equipment/fetch/q', 'Package\PackageFetchController@fetchPackageEquipment')->name('activePackageEquipment');
+
+    //package others
+    Route::post('packages-other/add-other', 'Package\PackageOtherController@addOther')->name('addOther');
+    Route::post('packages-other/fetch/q', 'Package\PackageFetchController@fetchPackageOther')->name('activePackageOther');
+
+    //planner
+    Route::resource('planners', 'Planner\PlannerController');
+    Route::post('planners/fetch/q', 'Planner\PlannerFetchController@fetchPlanner')->name('activePlanner');
+    Route::get('planners/destroy/{id}', 'Planner\PlannerController@destroy');
 });

@@ -99,7 +99,7 @@ class InventoryCategoryController extends Controller
         //prevent other user to access to this page
         $this->authorize("isAdmin");
 
-        $inventory_category = InventoryCategory::find($id);
+        $inventory_category = InventoryCategory::findOrFail($id);
 
         return view('inventory.category.show')->with(['inventory_category' => $inventory_category]);
     }
@@ -115,7 +115,7 @@ class InventoryCategoryController extends Controller
         //prevent other user to access to this page
         $this->authorize("isAdmin");
 
-        $inventory_category = InventoryCategory::find($id);
+        $inventory_category = InventoryCategory::findOrFail($id);
 
         return view('inventory.category.edit')->with([
             'inventory_category' => $inventory_category

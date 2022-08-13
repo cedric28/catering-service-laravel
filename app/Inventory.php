@@ -10,4 +10,9 @@ class Inventory extends Model
     {
         return $this->belongsTo(InventoryCategory::class, 'inventory_category_id');
     }
+
+    public function package_equipmenets()
+    {
+        return $this->hasMany(PackageEquipments::class,'inventory_id','id');
+    }
 }

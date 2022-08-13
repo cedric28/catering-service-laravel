@@ -47,7 +47,7 @@
         </div>
     </li>
 
-    <li class="nav-item">
+    <li class="nav-item {{ (request()->is('foods*')) || (request()->is('food-category*')) ? 'active' : '' }}">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#foods"
             aria-expanded="true" aria-controls="foods">
             <i class="fas fa-fw fa-utensils"></i>
@@ -55,14 +55,14 @@
         </a>
         <div id="foods" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="cards.html">Food Entry</a>
-                <a class="collapse-item" href="buttons.html">Food Category</a>
+                <a class="collapse-item {{ (request()->is('foods*')) ? 'active' : '' }}" href="{{ route('foods.index')}}">Food Entry</a>
+                <a class="collapse-item {{ (request()->is('food-category*')) ? 'active' : '' }}" href="{{ route('food-category.index')}}">Food Category</a>
             </div>
         </div>
     </li>
 
-    <li class="nav-item {{ (request()->is('home')) ? '' : '' }}">
-        <a class="nav-link" href="{{ route('home') }}">
+    <li class="nav-item {{ (request()->is('packages*')) ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('packages.index') }}">
             <i class="fas fa-fw fa-box"></i>
             <span>Package</span>
         </a>
@@ -74,8 +74,15 @@
     <div class="sidebar-heading">
         REPORTS
     </div>
-    <li class="nav-item">
-    
+    <li class="nav-item {{ (request()->is('users*')) ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('users.index')}}">
+            <i class="fas fa-fw fa-users"></i>
+            <span>User's Activities</span></a>
+    </li>
+    <li class="nav-item {{ (request()->is('users*')) ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('users.index')}}">
+            <i class="fas fa-fw fa-calendar"></i>
+            <span>Monthly Revenue</span></a>
     </li>
      <!-- Divider -->
      <hr class="sidebar-divider">

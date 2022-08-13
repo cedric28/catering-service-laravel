@@ -43,10 +43,10 @@ class InventoryFetchController extends Controller
             $search = $request->input('search.value');
 
             $posts = Inventory::where('name', 'like', "%{$search}%")
-                ->whereHas('inventory_category', function ($query) use ($search) {
+                ->orWhere('created_at', 'like', "%{$search}%")
+                ->orWhereHas('inventory_category', function ($query) use ($search) {
                     $query->where('name', 'like', "%{$search}%");
                 })
-                ->orWhere('created_at', 'like', "%{$search}%")
                 ->offset($start)
                 ->limit($limit)
                 ->orderBy($order, $dir)
@@ -54,10 +54,10 @@ class InventoryFetchController extends Controller
 
             //total number of filtered data matching the search value request in the Category table	
             $totalFiltered = Inventory::where('name', 'like', "%{$search}%")
-                ->whereHas('inventory_category', function ($query) use ($search) {
+                ->orWhere('created_at', 'like', "%{$search}%")
+                ->orWhereHas('inventory_category', function ($query) use ($search) {
                     $query->where('name', 'like', "%{$search}%");
                 })
-                ->orWhere('created_at', 'like', "%{$search}%")
                 ->count();
         }
 
