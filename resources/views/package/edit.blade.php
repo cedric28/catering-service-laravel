@@ -49,9 +49,9 @@
 								<input type="text" name="name" value="{{ old("name" , $package->name)}}" class="@error('name') is-invalid @enderror form-control" placeholder="Package name (e.g Bronze Package)">
 							</div>
 						</div>
-
+						
 						<div class="form-group row">
-							<label class="col-lg-3 col-form-label">Packge Pax:</label>
+							<label class="col-lg-3 col-form-label">Package Pax:</label>
 							<div class="col-lg-9">
 								<input type="text" name="package_pax" value="{{ old('package_pax', $package->package_pax) }}" class="@error('package_pax') is-invalid @enderror form-control" placeholder="Package pax">
 							</div>

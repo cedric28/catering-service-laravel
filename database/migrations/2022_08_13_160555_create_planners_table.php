@@ -24,7 +24,7 @@ class CreatePlannersTable extends Migration
             $table->integer('package_id')->unsigned()->index();
             $table->longText("note")->nullable();
             $table->string("status")->default('pending');
-            $table->string("payment_status");
+            $table->integer("payment_status_id")->unsigned()->index();
             $table->string("customer_fullname")->nullable();
             $table->string("contact_number");
             $table->decimal('total_price', 10, 2);

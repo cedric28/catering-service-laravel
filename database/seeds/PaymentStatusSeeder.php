@@ -12,7 +12,7 @@ class PaymentStatusSeeder extends Seeder
      */
     public function run()
     {
-        $payment_types = [
+        $payment_status = [
             [
                 'name' => '50% Payment'
             ],

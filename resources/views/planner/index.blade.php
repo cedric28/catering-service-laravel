@@ -25,28 +25,24 @@
 	<!-- /page header -->
 	<div class="card shadow mb-4">
 		<div class="card-header py-3">
-			<a type="button" href="{{ route('planners.create')}}" class="btn btn-outline-success btn-sm float-left"><i class="icon-add mr-2"></i> Add Food</a>
+			<a type="button" href="{{ route('planners.create')}}" class="btn btn-outline-success btn-sm float-left"><i class="icon-add mr-2"></i> Add Event</a>
 		</div>
 		<div class="card-body">
 			<div class="table-responsive">
-				<table class="table table-bordered" id="foods-lists"  width="100%" cellspacing="0">
+				<table class="table table-bordered" id="planners-lists"  width="100%" cellspacing="0">
 					<thead>
 						<tr>
-							<th>FOOD NAME</th>
-							<th>FOOD CATEGORY</th>
+							<th>EVENT NAME</th>
+							<th>EVENT PLACE</th>
+							<th>EVENT TYPE & PACKAGE</th>
+							<th>CUSTOMER NAME</th>
+							<th>EVENT STATUS</th>
 							<th>DATE ADDED</th>
 							<th>ACTION</th>
 						</tr>
 					</thead>
 					<tbody>
-						@foreach ($foods as $food)
-							<tr>
-								<td>{{ $food->name }}</td>
-								<td>{{ $food->category->name }}</td>
-								<td>{{ $food->created_at }}</td>
-								<td></td>
-							</tr>
-						@endforeach
+						
 					</tbody>
 				</table>
 			</div>
@@ -76,8 +72,7 @@
 		<script src="{{ asset('assets/vendor/datatables/jquery.dataTables.min.js') }}"></script>
 		<script src="{{ asset('assets/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
 	
-		<!-- Page level custom scripts -->
-		<script src="{{ asset('assets/js/demo/datatables-demo.js') }}"></script>
+	
 		<script>
 
 			var table = $('#foods-lists').DataTable({

@@ -19,7 +19,14 @@
         </a>
     </li>
 
-    <li class="nav-item">
+
+    <li class="nav-item {{ (request()->is('planners*')) ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('planners.index') }}">
+            <i class="fas fa-fw fa-calendar"></i>
+            <span>Planner</span>
+        </a>
+    </li>
+    <!-- <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#planner"
             aria-expanded="true" aria-controls="planner">
             <i class="fas fa-fw fa-calendar"></i>
@@ -31,7 +38,7 @@
                 <a class="collapse-item" href="buttons.html">Event Types</a>
             </div>
         </div>
-    </li>
+    </li> -->
 
     <li class="nav-item {{ (request()->is('inventories*')) || (request()->is('inventory-category*')) ? 'active' : '' }}">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#inventory"

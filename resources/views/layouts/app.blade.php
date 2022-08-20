@@ -14,14 +14,23 @@
 	<link
 	href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
 	rel="stylesheet">
-
     <!-- Custom styles for this template-->
 	<link href="{{ asset('assets/css/sb-admin-2.css') }}" rel="stylesheet" type="text/css">
 	<link href="{{ asset('assets/css/styles.css') }}" rel="stylesheet" type="text/css">
-	<link href="{{ asset('assets/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
-  	<link rel="stylesheet" href="{{ asset('assets/js/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
-  	<link rel="stylesheet" href="{{ asset('assets/js/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
 	<link href="{{ asset('assets/css/main.css') }}" rel="stylesheet" type="text/css">
+	<!-- Font Awesome -->
+	<link rel="stylesheet" href="{{ asset('plugins/fontawesome-free/css/all.min.css') }}">
+	<!-- Tempusdominus Bootstrap 4 -->
+	<link rel="stylesheet" href="{{ asset('plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
+	<!-- Select2 -->
+	<link rel="stylesheet" href="{{ asset('plugins/select2/css/select2.min.css') }}">
+  	<link rel="stylesheet" href="{{ asset('plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
+	<!-- Daterange picker -->
+	<link rel="stylesheet" href="{{ asset('plugins/daterangepicker/daterangepicker.css') }}">
+	<!-- DataTables -->
+	<link rel="stylesheet" href="{{ asset('plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
+  	<link rel="stylesheet" href="{{ asset('plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
+  	<link rel="stylesheet" href="{{ asset('plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
 	<!-- /global stylesheets -->
 	<style>
 		table td.textRight {
@@ -65,10 +74,29 @@
 	<a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
-	<script src="{{ asset('assets/vendor/jquery/jquery.min.js') }}"></script>
-	<script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+	<!-- jQuery -->
+	<script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
+	<!-- jQuery UI 1.11.4 -->
+	<script src="{{ asset('plugins/jquery-ui/jquery-ui.min.js') }}"></script>
 	<script src="{{ asset('assets/vendor/jquery-easing/jquery.easing.min.js') }}"></script>
+	<script>
+		$.widget.bridge('uibutton', $.ui.button)
+	</script>
+	<!-- Bootstrap 4 -->
+	<script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+	<!-- Select2 -->
+	<script src="{{ asset('plugins/select2/js/select2.full.min.js') }}"></script>
+	<!-- daterangepicker -->
+	<script src="{{ asset('plugins/moment/moment.min.js') }}"></script>
+	<script src="{{ asset('plugins/daterangepicker/daterangepicker.js') }}"></script>
+	<!-- Tempusdominus Bootstrap 4 -->
+	<script src="{{ asset('plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
 	<script src="{{ asset('assets/js/sb-admin-2.min.js') }}"></script>
+	<!-- 
+	<script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+	 <script src="{{ asset('assets/vendor/jquery-easing/jquery.easing.min.js') }}"></script>
+ -->
+
 
 	<!-- Theme JS files -->
 	@yield('js')
