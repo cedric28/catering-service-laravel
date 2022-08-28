@@ -15,6 +15,9 @@ class CreateTaskNotificationsTable extends Migration
     {
         Schema::create('task_notifications', function (Blueprint $table) {
             $table->id();
+            $table->integer('planner_task_id')->unsigned()->index();
+            $table->integer('user_id')->unsigned()->index();
+            $table->boolean('is_read')->default(0);
             $table->timestamps();
         });
     }

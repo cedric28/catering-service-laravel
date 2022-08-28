@@ -34,6 +34,14 @@
 @push('scripts')
 <script>
    //add food
+   const columnsFood = isShow == 0 ? [ 
+            {"data":"name"},
+            {"data":"created_at"},
+            {"data":"action","searchable":false,"orderable":false}
+        ] : [ 
+            {"data":"name"},
+            {"data":"created_at"}
+        ];
    var tableFood = $('#package-foods-lists').DataTable({
 				"responsive": true, 
 				"lengthChange": false, 
@@ -47,7 +55,8 @@
                     "type":"POST",
                     "data":{
 						"_token":"<?= csrf_token() ?>",
-						"package_id": packageId
+						"package_id": packageId,
+                        "is_show" : isShow
 					}
                 },
 				"dom": 'Bfrtip',
@@ -80,11 +89,7 @@
                         ],
                     }
                 ],
-                "columns":[
-                    {"data":"name"},
-					{"data":"created_at"},
-                    {"data":"action","searchable":false,"orderable":false}
-                ],
+                "columns": columnsFood,
 				"columnDefs": [
 				{
 					"targets": [0,1],   // target column
@@ -93,8 +98,30 @@
 				]
             });
 
+            var package_food_id;
+            $(document).on('click', '#delete-food-package', function(){
+                package_food_id = $(this).attr('data-id');
+                $('#confirmModal').modal('show');
+            });
+
+            $('#ok_button').click(function(){
+                $.ajax({
+                    url:"/packages-food/destroy/"+package_food_id,
+                    beforeSend:function(){
+                        $('#ok_button').text('Deleting...');
+                    },
+                    success:function(data)
+                    {
+                        $('#confirmModal').modal('hide');
+                        $('#ok_button').text('OK');
+                        tableFood.ajax.reload();
+                    }
+                })
+            });
+
 			function closeFoodModal() {
 					$("#foodData").trigger("reset");
+                    $('#ok_button').text('OK');
 					$("#foodData input:hidden").val("");
 					$("#category_id").removeClass("is-invalid");
 					$('#generalFoodError').text("");

@@ -61,7 +61,7 @@
 							<label class="col-lg-3 col-form-label">Event Date & Time:</label>
 							<div class="col-lg-9">
 								<div class="input-group date" id="reservationdate" data-target-input="nearest">
-									<input type="text" name="event_date" placeholder="2022-08-20 8:27 PM" onkeydown="return false;" class="@error('event_date') is-invalid @enderror form-control datetimepicker-input" data-target="#reservationdate"/>
+									<input type="text" name="event_date" value="{{ old('event_date') }}" placeholder="e.g 2022-08-20 8:27 PM" onkeydown="return false;" class="@error('event_date') is-invalid @enderror form-control datetimepicker-input" data-target="#reservationdate"/>
 									<div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
 										<div class="input-group-text"><i class="fa fa-calendar"></i></div>
 									</div>
@@ -72,9 +72,9 @@
 							<label class="col-lg-3 col-form-label">Package:</label>
 							<div class="col-lg-9">
 								<select id="package_id" name="package_id" class="@error('package_id') is-invalid @enderror form-control select2">
-									<option value="">Select Package</option>
+									<option data-guest="0" value="">Select Package</option>
 									@foreach ($packages as $package)
-										<option value="{{ $package->id }}"{{ ($package->id === old('package_id')) ? ' selected' : '' }}>{{ ucwords($package->name) }} - {{ $package->main_package->name }}</option>
+										<option data-guest="{{ $package->package_pax }}" value="{{ $package->id }}"{{ ($package->id == old('package_id')) ? ' selected' : '' }}>{{ ucwords($package->name) }} - {{ $package->main_package->name }}</option>
 									@endforeach
 								</select>
 							</div>
@@ -83,7 +83,7 @@
 						<div class="form-group row">
 							<label class="col-lg-3 col-form-label">No of Guests:</label>
 							<div class="col-lg-9">
-								<input type="number" name="no_of_guests" value="{{ old('no_of_guests') }}" class="@error('no_of_guests') is-invalid @enderror form-control" placeholder="e.g 100">
+								<input id="no_of_guests" type="number" disabled name="no_of_guests" value="{{ old('no_of_guests') }}" class="@error('no_of_guests') is-invalid @enderror form-control" placeholder="e.g 100">
 							</div>
 						</div>
 
@@ -100,7 +100,7 @@
 								<select id="payment_status_id" name="payment_status_id" class="@error('payment_status_id') is-invalid @enderror form-control select2">
 									<option value="">Select Payment Status</option>
 									@foreach ($paymentStatus as $status)
-										<option value="{{ $status->id }}"{{ ($status->id === old('payment_status_id')) ? ' selected' : '' }}>{{ ucwords($status->name) }}</option>
+										<option value="{{ $status->id }}"{{ ($status->id == old('payment_status_id')) ? ' selected' : '' }}>{{ ucwords($status->name) }}</option>
 									@endforeach
 								</select>
 							</div>
@@ -135,11 +135,16 @@
 	</div>
 	<!-- /page content -->
 	@push('scripts')
-	
 	<script>	
-
+	let packagePaxValue = $("#package_id option:selected" ).data('guest');
+	$('#no_of_guests').val(packagePaxValue);
+	$('#package_id').on('change', function() {
+		let packagePaxValues = $(this).find(":selected").data('guest');
+		$('#no_of_guests').val(packagePaxValues);
+	});
+	
 	$(function () {
-	var bindDatePicker = function() {
+		var bindDatePicker = function() {
 			$("#reservationdate").datetimepicker({
 				showClear: true,
 				showClose: true,
@@ -168,7 +173,7 @@
 			});
 		}
 	
-	var isValidDate = function(value, format) {
+		var isValidDate = function(value, format) {
 			format = format || false;
 			// lets parse the date to the best of our knowledge
 			if (format) {
@@ -178,18 +183,18 @@
 			var timestamp = Date.parse(value);
 
 			return isNaN(timestamp) == false;
-	}
-	
-	var parseDate = function(value) {
+		}
+		
+		var parseDate = function(value) {
 			var m = value.match(/^(\d{1,2})(\/|-)?(\d{1,2})(\/|-)?(\d{4})$/);
 			if (m)
 				value = m[5] + '-' + ("00" + m[3]).slice(-2) + '-' + ("00" + m[1]).slice(-2);
 
 			return value;
-	}
+		}
 	
-	bindDatePicker();
- });
+		bindDatePicker();
+ 	});
 	</script>
 	@endpush('scripts')
 @endsection

@@ -15,6 +15,13 @@ class CreatePlannerTasksTable extends Migration
     {
         Schema::create('planner_tasks', function (Blueprint $table) {
             $table->id();
+            $table->integer('planner_id')->unsigned()->index();
+            $table->integer('package_task_id')->unsigned()->index();
+            $table->integer('user_id')->unsigned()->index()->default(0);
+            $table->date('task_date');
+            $table->string('task_time');
+            $table->string("task_type")->default('pre-event');
+            $table->string("status")->default('pending');
             $table->timestamps();
         });
     }

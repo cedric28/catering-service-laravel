@@ -8,7 +8,6 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
 	<title>{{ config('app.name', 'FarmApp') }}</title>
-
 	<!-- Global stylesheets -->
 	<link href="{{ asset('assets/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
 	<link
@@ -27,6 +26,7 @@
   	<link rel="stylesheet" href="{{ asset('plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
 	<!-- Daterange picker -->
 	<link rel="stylesheet" href="{{ asset('plugins/daterangepicker/daterangepicker.css') }}">
+	<link rel="stylesheet" href="{{ asset('plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
 	<!-- DataTables -->
 	<link rel="stylesheet" href="{{ asset('plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
   	<link rel="stylesheet" href="{{ asset('plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
@@ -38,6 +38,9 @@
 		}
 		table td.textCenter {
 			text-align : center;
+		}
+		.fc-event-title{
+			white-space: normal;
 		}
 	</style>
 	@stack('styles')

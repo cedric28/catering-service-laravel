@@ -36,6 +36,16 @@
 @push('scripts')
 <script>
     //add other
+        const columnsOther = isShow == 0 ? [ 
+            {"data":"name"},
+            {"data":"service_price"},
+            {"data":"created_at"},
+            {"data":"action","searchable":false,"orderable":false}
+        ] : [ 
+            {"data":"name"},
+            {"data":"service_price"},
+            {"data":"created_at"},
+        ];
         var tableOther = $('#package-others-lists').DataTable({
             "responsive": true, 
             "lengthChange": false, 
@@ -49,7 +59,8 @@
                 "type":"POST",
                 "data":{
                     "_token":"<?= csrf_token() ?>",
-                    "package_id": packageId
+                    "package_id": packageId,
+                    "is_show" : isShow
                 }
             },
             "dom": 'Bfrtip',
@@ -82,12 +93,7 @@
                     ],
                 }
             ],
-            "columns":[
-                {"data":"name"},
-                {"data":"service_price"},
-                {"data":"created_at"},
-                {"data":"action","searchable":false,"orderable":false}
-            ],
+            "columns": columnsOther,
             "columnDefs": [
                 {
                     "targets": [0],   // target column
@@ -100,7 +106,29 @@
             ]
         });
 
+        var package_other_id;
+        $(document).on('click', '#delete-other-package', function(){
+            package_other_id = $(this).attr('data-id');
+            $('#confirmModal').modal('show');
+        });
+
+        $('#ok_button').click(function(){
+            $.ajax({
+                url:"/packages-other/destroy/"+package_other_id,
+                beforeSend:function(){
+                    $('#ok_button').text('Deleting...');
+                },
+                success:function(data)
+                {
+                    $('#confirmModal').modal('hide');
+                    $('#ok_button').text('OK');
+                    tableOther.ajax.reload();
+                }
+            })
+        });
+
         function closeOtherModal() {
+            $('#ok_button').text('OK');
             $("#otherData").trigger("reset");
             $("#otherData input:hidden").val("");
             $("#other-name").removeClass("is-invalid");

@@ -47,4 +47,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(JobType::class, 'job_type_id');
     }
+
+    public function planner_staffings()
+    {
+        return $this->hasMany(PlannerStaffing::class,'user_id','id');
+    }
 }

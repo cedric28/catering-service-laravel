@@ -84,9 +84,8 @@ class PackageController extends Controller
             |---------------------------------------------*/
             \DB::commit();
 
-
-            return redirect()->route('packages.create')
-                ->with('successMsg', 'Package created successfully');
+            return redirect()->route('packages.edit', $package->id)
+            ->with('successMsg', 'Package created successfully');
         } catch (\Exception $e) {
             \DB::rollback();
             return back()->withErrors($e->getMessage());
@@ -103,9 +102,16 @@ class PackageController extends Controller
     {
         $this->authorize("isAdmin");
         $package = Package::findOrFail($id);
+        $package_categories = MainPackage::all();
+        $food_categories = Category::all();
+        $inventories = Inventory::all();
 
         return view('package.show', [
-            'package' => $package
+            'package' => $package,
+            'package_categories' => $package_categories,
+            'food_categories' => $food_categories,
+            'inventories' => $inventories,
+            'isShow' => 1
         ]);
     }
 
@@ -127,7 +133,8 @@ class PackageController extends Controller
             'package' => $package,
             'package_categories' => $package_categories,
             'food_categories' => $food_categories,
-            'inventories' => $inventories
+            'inventories' => $inventories,
+            'isShow' => 0
         ]);
     }
 

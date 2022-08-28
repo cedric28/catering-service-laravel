@@ -15,6 +15,10 @@ class CreatePlannerStaffingsTable extends Migration
     {
         Schema::create('planner_staffings', function (Blueprint $table) {
             $table->id();
+            $table->integer('planner_id')->unsigned()->index();
+            $table->integer('user_id')->unsigned()->index();
+            $table->string("attendance")->default('-');
+            $table->date('task_date');
             $table->timestamps();
         });
     }

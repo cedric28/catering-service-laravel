@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use App\Planner;
 
 class HomeController extends Controller
 {
@@ -25,7 +26,15 @@ class HomeController extends Controller
     public function index()
     {
 
-
-        return view('home');
+        $users = User::count();
+        $planners = Planner::where('status', '=', 'on-going')
+        ->orWhere('status', '=', 'done')->get();
+        $plannerPendings = Planner::where('status','pending')->count();
+        
+        return view('home',[
+            'totalUsers' => $users,
+            'planners' => $planners,
+            'plannerPendings' => $plannerPendings
+        ]);
     }
 }

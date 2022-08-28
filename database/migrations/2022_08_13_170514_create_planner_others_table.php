@@ -15,6 +15,8 @@ class CreatePlannerOthersTable extends Migration
     {
         Schema::create('planner_others', function (Blueprint $table) {
             $table->id();
+            $table->integer('planner_id')->unsigned()->index();
+            $table->integer('package_other_id')->unsigned()->index();
             $table->timestamps();
         });
     }

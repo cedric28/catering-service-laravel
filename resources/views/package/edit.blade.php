@@ -158,7 +158,7 @@
 											<thead>
 												<tr>
 													<th>NAME</th>
-													<th>SERVICE PRICE</th>
+													<th>SERVICE FEE</th>
 													<th>DATE ADDED</th>
 													<th>ACTION</th>
 												</tr>
@@ -193,6 +193,7 @@
 		<script>
 			let packageId = {!! json_encode($package->id) !!};
     		let packageName = {!! json_encode($package->name) !!};
+			let isShow = {!! json_encode($isShow) !!};
 		</script>
 	@endpush('scripts')
 	@include('package.modals.delete_modal')

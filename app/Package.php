@@ -28,4 +28,9 @@ class Package extends Model
     {
         return $this->hasMany(PackageOther::class,'package_id','id');
     }
+
+    public function planners()
+    {
+        return $this->hasMany(Planner::class, 'package_id', 'id');
+    }
 }

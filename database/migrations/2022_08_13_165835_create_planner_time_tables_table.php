@@ -15,6 +15,9 @@ class CreatePlannerTimeTablesTable extends Migration
     {
         Schema::create('planner_time_tables', function (Blueprint $table) {
             $table->id();
+            $table->integer('planner_id')->unsigned()->index();
+            $table->string("task_name");
+            $table->string('task_time');
             $table->timestamps();
         });
     }

@@ -79,22 +79,36 @@ Route::middleware('auth')->group(function () {
 
     //package task
     Route::post('packages-task/add-task', 'Package\PackageTaskController@addTask')->name('addTask');
+    Route::get('packages-task/destroy/{id}', 'Package\PackageTaskController@destroy');
     Route::post('packages-task/fetch/q', 'Package\PackageFetchController@fetchPackageTask')->name('activePackageTask');
 
     //package food
     Route::post('packages-food/add-food', 'Package\PackageFoodController@addFood')->name('addFood');
+    Route::get('packages-food/destroy/{id}', 'Package\PackageFoodController@destroy');
     Route::post('packages-food/fetch/q', 'Package\PackageFetchController@fetchPackageFood')->name('activePackageFood');
 
     //package equipments
     Route::post('packages-equipment/add-equipment', 'Package\PackageEquipmentController@addEquipment')->name('addEquipment');
+    Route::get('packages-equipment/destroy/{id}', 'Package\PackageEquipmentController@destroy');
     Route::post('packages-equipment/fetch/q', 'Package\PackageFetchController@fetchPackageEquipment')->name('activePackageEquipment');
 
     //package others
     Route::post('packages-other/add-other', 'Package\PackageOtherController@addOther')->name('addOther');
+    Route::get('packages-other/destroy/{id}', 'Package\PackageOtherController@destroy');
     Route::post('packages-other/fetch/q', 'Package\PackageFetchController@fetchPackageOther')->name('activePackageOther');
 
     //planner
     Route::resource('planners', 'Planner\PlannerController');
-    Route::post('planners/fetch/q', 'Planner\PlannerFetchController@fetchPlanner')->name('activePlanner');
+    Route::post('planners/store-food', 'Planner\PlannerController@storeFood')->name('storeFood');
+    Route::post('planners/store-task', 'Planner\PlannerController@storeTask')->name('storeTask');
+    Route::post('planners/store-equipment', 'Planner\PlannerController@storeEquipment')->name('storeEquipment');
+    Route::post('planners/store-other', 'Planner\PlannerController@storeOther')->name('storeOther');
+    Route::post('planners/store-staffing', 'Planner\PlannerController@storeStaffing')->name('storeStaffing');
+    Route::post('planners/store-time-table', 'Planner\PlannerController@storeTimeTable')->name('storeTimeTable');
+    Route::post('pending-planners/fetch/q', 'Planner\PlannerFetchController@fetchPendingPlanner')->name('activePendingPlanner');
+    Route::post('ongoing-planners/fetch/q', 'Planner\PlannerFetchController@fetchOnGoingPlanner')->name('activeOnGoingPlanner');
+    Route::post('done-planners/fetch/q', 'Planner\PlannerFetchController@fetchDonePlanner')->name('activeDonePlanner');
+    Route::post('inactive-planners/fetch/q', 'Planner\PlannerFetchController@fetchInActivePlanner')->name('inActivePlanner');
     Route::get('planners/destroy/{id}', 'Planner\PlannerController@destroy');
+    Route::get('planners/restore/{id}', 'Planner\PlannerController@restore');
 });

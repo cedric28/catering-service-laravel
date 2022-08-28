@@ -22,4 +22,9 @@ class PackageMenu extends Model
     {
         return $this->belongsTo(Package::class, 'package_id');
     }
+
+    public function planners()
+    {
+      return $this->belongsToMany('App\Planner');
+    }
 }

@@ -21,13 +21,7 @@
                             </select>
                         </div>
                     </div>
-                    <h5 align="center" class="w-100"><span class="text-danger" id="generalQuantityError"></span></h5>
-                    <div class="form-group row">
-                        <label class="col-lg-3 col-form-label">Quantity:</label>
-                        <div class="col-lg-9 col-sm-9">	
-                            <input type="number" id="equipment-quantity" name="quantity" class="@error('quantity') is-invalid @enderror form-control" placeholder="e.g 100" >
-                        </div>
-                    </div>				
+                    <h5 align="center" class="w-100"><span class="text-danger" id="generalQuantityError"></span></h5>			
                 </div>
                 <div class="modal-footer">
                 <button type="button" name="add_equipment_button" id="add_equipment_button" class="btn btn-danger">Save</button>
@@ -42,7 +36,16 @@
 <script>
         //add equipment
       
-        
+        const columnsEquipment = isShow == 0 ? [ 
+                {"data":"name"},
+                {"data":"quantity"},
+                {"data":"created_at"},
+                {"data":"action","searchable":false,"orderable":false}
+        ] :  [ 
+                {"data":"name"},
+                {"data":"quantity"},
+                {"data":"created_at"}
+        ];
         var tableEquipments = $('#package-equipments-lists').DataTable({
             "responsive": true, 
             "lengthChange": false, 
@@ -56,7 +59,8 @@
                 "type":"POST",
                 "data":{
                     "_token":"<?= csrf_token() ?>",
-                    "package_id": packageId
+                    "package_id": packageId,
+                    "is_show" : isShow
                 }
             },
             "dom": 'Bfrtip',
@@ -89,12 +93,7 @@
                     ],
                 }
             ],
-            "columns":[
-                {"data":"name"},
-                {"data":"quantity"},
-                {"data":"created_at"},
-                {"data":"action","searchable":false,"orderable":false}
-            ],
+            "columns": columnsEquipment,
             "columnDefs": [
                 {
                     "targets": [0],   // target column
@@ -107,8 +106,29 @@
             ]
         });
 
+        var package_equipment_id;
+        $(document).on('click', '#delete-equipment-package', function(){
+            package_equipment_id = $(this).attr('data-id');
+            $('#confirmModal').modal('show');
+        });
+
+        $('#ok_button').click(function(){
+            $.ajax({
+                url:"/packages-equipment/destroy/"+package_equipment_id,
+                beforeSend:function(){
+                    $('#ok_button').text('Deleting...');
+                },
+                success:function(data)
+                {
+                    $('#confirmModal').modal('hide');
+                    $('#ok_button').text('OK');
+                    tableEquipments.ajax.reload();
+                }
+            })
+        });
+
         function closeEquipmentModal() {
-           
+                $('#ok_button').text('OK');
                 $("#equipmentData").trigger("reset");
                 $("#equipmentData input:hidden").val("");
                 $("#equipment_id").removeClass("is-invalid");
@@ -158,7 +178,7 @@
                     "_token":"<?= csrf_token() ?>",
                     "inventory_id": inventory_id,
                     "package_id": packageId,
-                    "equipment_id": equipment_id,
+                    // "equipment_id": equipment_id,
                     "quantity" : quantity
                 },
                 beforeSend:function(){

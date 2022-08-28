@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Package;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use App\PackageEquipments;
+use App\Package;
 use Validator;
 
 class PackageEquipmentController extends Controller
@@ -27,29 +29,22 @@ class PackageEquipmentController extends Controller
                 'package_id.required' => 'The Package ID is required.',
             ];
 
-            $user = \Auth::user()->id;
-            if($request->equipment_id){
-                $validator = Validator::make($request->all(), [
-                    'quantity' => 'required|numeric',
-                    
-                ], $messages);
-    
-                if ($validator->fails()) {
-                    return response()->json([
-                        'data' => $validator->errors()
-                    ], 422);
-                }
+          
 
-                $equipmentPackage = PackageEquipments::find($request->equipment_id);
-                $equipmentPackage->quantity =  $request->quantity;
-                $equipmentPackage->package_id = $request->package_id;
-                $equipmentPackage->updater_id = $user;
-                $equipmentPackage->save();
-            } else {
+            $user = \Auth::user()->id;
+            // if($request->equipment_id){
                 $validator = Validator::make($request->all(), [
-                    'inventory_id' => 'required|integer',
+                    // 'inventory_id' => 'required|integer|unique:package_equipments,inventory_id,' . $request->inventory_id . 'package_id,' . $request->package_id,
                     'package_id' => 'required|integer',
-                    'quantity' => 'required|numeric|gt:0',
+                    'inventory_id' => [
+                        'required',
+                        Rule::unique('package_equipments')->where(function ($query) use($request) {
+                            return $query->where('inventory_id', $request->inventory_id)
+                            ->where('package_id', $request->package_id);
+                        }),
+                    ],
+                    // 'quantity' => 'required|numeric',
+        
                     
                 ], $messages);
     
@@ -58,27 +53,48 @@ class PackageEquipmentController extends Controller
                         'data' => $validator->errors()
                     ], 422);
                 }
-    
-                $equipmentPackage = PackageEquipments::where([
-                    'inventory_id' => $request->inventory_id,
-                    'package_id' => $request->package_id
-                ])->first();
-     
-                if ($equipmentPackage === null) {
-                    $equipmentPackage = new PackageEquipments([
-                        'inventory_id' => $request->inventory_id,
-                        'package_id' => $request->package_id,
-                        'quantity' =>  $request->quantity,
-                        'creator_id' => $user,
-                        'updater_id' => $user
-                    ]);
-                } else {
-                    $equipmentPackage->quantity = ($equipmentPackage->quantity + $request->quantity);
-                }
-            
+                $package = Package::find($request->package_id);
+                $equipmentPackage = new PackageEquipments();
+                $equipmentPackage->inventory_id = $request->inventory_id;
+                $equipmentPackage->quantity =  $package->package_pax;
+                $equipmentPackage->package_id = $request->package_id;
+                $equipmentPackage->creator_id = $user;
                 $equipmentPackage->updater_id = $user;
                 $equipmentPackage->save();
-            }
+            // } else {
+            //     $validator = Validator::make($request->all(), [
+            //         'inventory_id' => 'required|integer',
+            //         'package_id' => 'required|integer',
+            //         // 'quantity' => 'required|numeric|gt:0',
+                    
+            //     ], $messages);
+    
+            //     if ($validator->fails()) {
+            //         return response()->json([
+            //             'data' => $validator->errors()
+            //         ], 422);
+            //     }
+            //     $package = Package::find($request->package_id);
+            //     $equipmentPackage = PackageEquipments::where([
+            //         'inventory_id' => $request->inventory_id,
+            //         'package_id' => $request->package_id
+            //     ])->first();
+     
+            //     if ($equipmentPackage === null) {
+            //         $equipmentPackage = new PackageEquipments([
+            //             'inventory_id' => $request->inventory_id,
+            //             'package_id' => $request->package_id,
+            //             'quantity' =>  $package->package_pax,
+            //             'creator_id' => $user,
+            //             'updater_id' => $user
+            //         ]);
+            //     } else {
+            //         $equipmentPackage->quantity = ($equipmentPackage->quantity + $request->quantity);
+            //     }
+            
+            //     $equipmentPackage->updater_id = $user;
+            //     $equipmentPackage->save();
+            // }
 
 
              /*

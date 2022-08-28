@@ -20,9 +20,6 @@ class JobTypeSeeder extends Seeder
                 'name' => 'HeadStaff'
             ],
             [
-                'name' => 'Staff Attendant'
-            ],
-            [
                 'name' => 'Busboy'
             ],
             [

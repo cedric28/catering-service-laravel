@@ -28,6 +28,14 @@
 
 @push('scripts')
 <script>
+     const columnsTask = isShow == 0 ? [ 
+            {"data":"name"},
+            {"data":"created_at"},
+            {"data":"action","searchable":false,"orderable":false}
+        ] : [ 
+            {"data":"name"},
+            {"data":"created_at"}
+        ];
     var table = $('#package-tasks-lists').DataTable({
         "responsive": true, 
         "lengthChange": false, 
@@ -41,7 +49,8 @@
             "type":"POST",
             "data":{
                 "_token":"<?= csrf_token() ?>",
-                "package_id": packageId
+                "package_id": packageId,
+                "is_show" : isShow
             }
         },
         "dom": 'Bfrtip',
@@ -74,11 +83,7 @@
                 ],
             }
         ],
-        "columns":[
-            {"data":"name"},
-            {"data":"created_at"},
-            {"data":"action","searchable":false,"orderable":false}
-        ],
+        "columns":columnsTask,
         "columnDefs": [
         {
             "targets": [0,1],   // target column
@@ -87,12 +92,33 @@
         ]
     });
 
+        var package_task_id;
+        $(document).on('click', '#delete-task-package', function(){
+            package_task_id = $(this).attr('data-id');
+            $('#confirmModal').modal('show');
+        });
+
+        $('#ok_button').click(function(){
+            $.ajax({
+                url:"/packages-task/destroy/"+package_task_id,
+                beforeSend:function(){
+                    $('#ok_button').text('Deleting...');
+                },
+                success:function(data)
+                {
+                    $('#confirmModal').modal('hide');
+                    $('#ok_button').text('OK');
+                    table.ajax.reload();
+                }
+            })
+        });
+
     function closeModal() {
-      
-            $("#taskData").trigger("reset");
-            $("#taskData input:hidden").val(' ');
-            $("#task-name").removeClass("is-invalid");
-            $('#generalError').text("");
+        $('#ok_button').text('OK');
+        $("#taskData").trigger("reset");
+        $("#taskData input:hidden").val(' ');
+        $("#task-name").removeClass("is-invalid");
+        $('#generalError').text("");
     
     }
 

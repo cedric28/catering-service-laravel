@@ -61,7 +61,7 @@
 							</thead>
 						</table>
 					</div>
-					<div class="card shadow card-primary card-outline card-outline-tabs border-top-primary mt-3">
+					<div class="card shadow card-primary card-outline card-outline-tabs border-top-primary">
 						<div class="card-header p-0 border-bottom-0">
 							<ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
 								<li class="nav-item">
@@ -81,81 +81,20 @@
 						<div class="card-body">
 							<div class="tab-content" id="custom-tabs-four-tabContent">
 								<div class="tab-pane fade active show" id="custom-tabs-four-home" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
-									@if($isShow == 0)
-									<button type="button" id="add-task" class="btn btn-outline-success btn-sm float-left mb-2"><i class="mr-2"></i> Add Task</button>
-									@endif
-									<div class="table-responsive">
-										<table class="table table-bordered" id="package-tasks-lists"  width="100%" cellspacing="0">
-											<thead>
-												<tr>
-													<th>TASK NAME</th>
-													<th>DATE ADDED</th>
-												</tr>
-											</thead>
-											<tbody>
-												
-											</tbody>
-										</table>
-									</div>
+								Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin malesuada lacus ullamcorper dui molestie, sit amet congue quam finibus. Etiam ultricies nunc non magna feugiat commodo. Etiam odio magna, mollis auctor felis vitae, ullamcorper ornare ligula. Proin pellentesque tincidunt nisi, vitae ullamcorper felis aliquam id. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin id orci eu lectus blandit suscipit. Phasellus porta, ante et varius ornare, sem enim sollicitudin eros, at commodo leo est vitae lacus. Etiam ut porta sem. Proin porttitor porta nisl, id tempor risus rhoncus quis. In in quam a nibh cursus pulvinar non consequat neque. Mauris lacus elit, condimentum ac condimentum at, semper vitae lectus. Cras lacinia erat eget sapien porta consectetur.
 								</div>
 								<div class="tab-pane fade" id="custom-tabs-four-profile" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
-									@if($isShow == 0)
-									<button type="button" id="add-equipment" class="btn btn-outline-success btn-sm float-left mb-2"><i class="mr-2"></i> Add Equipment</button>
-									@endif
-									<div class="table-responsive">
-										<table class="table table-bordered" id="package-equipments-lists"  width="100%" cellspacing="0">
-											<thead>
-												<tr>
-													<th>EQUIPMENT NAME</th>
-													<th>QUANTITY</th>
-													<th>DATE ADDED</th>
-												</tr>
-											</thead>
-											<tbody>
-												
-											</tbody>
-										</table>
-									</div>
+								Mauris tincidunt mi at erat gravida, eget tristique urna bibendum. Mauris pharetra purus ut ligula tempor, et vulputate metus facilisis. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Maecenas sollicitudin, nisi a luctus interdum, nisl ligula placerat mi, quis posuere purus ligula eu lectus. Donec nunc tellus, elementum sit amet ultricies at, posuere nec nunc. Nunc euismod pellentesque diam.
 								</div>
 								<div class="tab-pane fade" id="custom-tabs-four-messages" role="tabpanel" aria-labelledby="custom-tabs-four-messages-tab">
-									@if($isShow == 0)
-									<button type="button" id="add-food" class="btn btn-outline-success btn-sm float-left mb-2"><i class="mr-2"></i> Add Food</button>
-									@endif
-									<div class="table-responsive">
-										<table class="table table-bordered" id="package-foods-lists"  width="100%" cellspacing="0">
-											<thead>
-												<tr>
-													<th>FOOD CATEGORY</th>
-													<th>DATE ADDED</th>
-												</tr>
-											</thead>
-											<tbody>
-												
-											</tbody>
-										</table>
-									</div>
+								Morbi turpis dolor, vulputate vitae felis non, tincidunt congue mauris. Phasellus volutpat augue id mi placerat mollis. Vivamus faucibus eu massa eget condimentum. Fusce nec hendrerit sem, ac tristique nulla. Integer vestibulum orci odio. Cras nec augue ipsum. Suspendisse ut velit condimentum, mattis urna a, malesuada nunc. Curabitur eleifend facilisis velit finibus tristique. Nam vulputate, eros non luctus efficitur, ipsum odio volutpat massa, sit amet sollicitudin est libero sed ipsum. Nulla lacinia, ex vitae gravida fermentum, lectus ipsum gravida arcu, id fermentum metus arcu vel metus. Curabitur eget sem eu risus tincidunt eleifend ac ornare magna.
 								</div>
 								<div class="tab-pane fade" id="custom-tabs-four-settings" role="tabpanel" aria-labelledby="custom-tabs-four-settings-tab">
-									@if($isShow == 0)
-									<button type="button" id="add-other" class="btn btn-outline-success btn-sm float-left mb-2"><i class="mr-2"></i> Add Additional Service</button>
-									@endif
-									<div class="table-responsive">
-										<table class="table table-bordered" id="package-others-lists"  width="100%" cellspacing="0">
-											<thead>
-												<tr>
-													<th>NAME</th>
-													<th>SERVICE FEE</th>
-													<th>DATE ADDED</th>
-												</tr>
-											</thead>
-											<tbody>
-												
-											</tbody>
-										</table>
-									</div>
+								Pellentesque vestibulum commodo nibh nec blandit. Maecenas neque magna, iaculis tempus turpis ac, ornare sodales tellus. Mauris eget blandit dolor. Quisque tincidunt venenatis vulputate. Morbi euismod molestie tristique. Vestibulum consectetur dolor a vestibulum pharetra. Donec interdum placerat urna nec pharetra. Etiam eget dapibus orci, eget aliquet urna. Nunc at consequat diam. Nunc et felis ut nisl commodo dignissim. In hac habitasse platea dictumst. Praesent imperdiet accumsan ex sit amet facilisis.
 								</div>
 							</div>
 						</div>
+
 					</div>
 				</div>
 			</div>
@@ -163,28 +102,7 @@
 	</div>
 
 	<!-- /page content -->
-	@push('scripts')
-		<script src="{{ asset('assets/vendor/datatables/jquery.dataTables.min.js') }}"></script>
-		<script src="{{ asset('assets/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
-		<script src="{{ asset('assets/js/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
-		<script src="{{ asset('assets/js/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
-		<script src="{{ asset('assets/js/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
-		<script src="{{ asset('assets/js/datatables-buttons/js/buttons.bootstrap4.min.js') }}"></script>
-		<script src="{{ asset('assets/js/jszip/jszip.min.js') }}"></script>
-		<script src="{{ asset('assets/js/pdfmake/pdfmake.min.js') }}"></script>
-		<script src="{{ asset('assets/js/pdfmake/vfs_fonts.js') }}"></script>
-		<script src="{{ asset('assets/js/datatables-buttons/js/buttons.html5.min.js') }}"></script>
-		<script src="{{ asset('assets/js/datatables-buttons/js/buttons.print.min.js') }}"></script>
-		<script src="{{ asset('assets/js/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
-		<script>
-			let packageId = {!! json_encode($package->id) !!};
-    		let packageName = {!! json_encode($package->name) !!};
-			let isShow = {!! json_encode($isShow) !!};
-		</script>
-	@endpush('scripts')
-	@include('package.modals.delete_modal')
-	@include('package.modals.task_modal')
-	@include('package.modals.food_modal')
-	@include('package.modals.equipment_modal')
-	@include('package.modals.other_modal')
+        @push('scripts')
+        
+        @endpush('scripts')
 @endsection
