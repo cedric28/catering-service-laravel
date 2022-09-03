@@ -16,4 +16,9 @@ class PackageOther extends Model
     {
         return $this->belongsTo(Package::class, 'package_id');
     }
+
+    public function planner_others()
+    {
+        return $this->hasMany(PlannerOther::class,'package_other_id','id');
+    }
 }

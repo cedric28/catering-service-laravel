@@ -11,7 +11,7 @@ class Inventory extends Model
         return $this->belongsTo(InventoryCategory::class, 'inventory_category_id');
     }
 
-    public function package_equipmenets()
+    public function package_equipments()
     {
         return $this->hasMany(PackageEquipments::class,'inventory_id','id');
     }

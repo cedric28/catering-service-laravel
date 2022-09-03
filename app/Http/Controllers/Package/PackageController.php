@@ -19,6 +19,9 @@ class PackageController extends Controller
      */
     public function index()
     {
+        //prevent other user to access to this page
+        $this->authorize("isAdmin");
+
         return view('package.index');
     }
 

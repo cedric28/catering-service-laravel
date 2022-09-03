@@ -17,4 +17,9 @@ class PackageTask extends Model
     {
         return $this->belongsTo(Package::class, 'package_id');
     }
+
+    public function planner_tasks()
+    {
+        return $this->hasMany(PlannerTask::class,'package_task_id','id');
+    }
 }

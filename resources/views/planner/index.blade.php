@@ -147,7 +147,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <button type="button" class="close" onclick="closePlannerModal()" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
                     <h4 align="center" style="margin:0;">Are you sure you want to remove this data?</h4>
@@ -178,9 +178,18 @@
     </div>
         @push('scripts')
 		<!-- Javascript -->
-	
 		<script src="{{ asset('assets/vendor/datatables/jquery.dataTables.min.js') }}"></script>
 		<script src="{{ asset('assets/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
+		<script src="{{ asset('assets/js/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
+		<script src="{{ asset('assets/js/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
+		<script src="{{ asset('assets/js/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
+		<script src="{{ asset('assets/js/datatables-buttons/js/buttons.bootstrap4.min.js') }}"></script>
+		<script src="{{ asset('assets/js/jszip/jszip.min.js') }}"></script>
+		<script src="{{ asset('assets/js/pdfmake/pdfmake.min.js') }}"></script>
+		<script src="{{ asset('assets/js/pdfmake/vfs_fonts.js') }}"></script>
+		<script src="{{ asset('assets/js/datatables-buttons/js/buttons.html5.min.js') }}"></script>
+		<script src="{{ asset('assets/js/datatables-buttons/js/buttons.print.min.js') }}"></script>
+		<script src="{{ asset('assets/js/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
 		<script>
 			$(function() {
 				function closePlannerModal() {
@@ -188,14 +197,48 @@
 				}
 				//done 
 				var planner_table_done = $("#planners-done-lists").DataTable({
-					processing: true,
-					serverSide: true,
+					"responsive": true, 
+					"lengthChange": false, 
+					"autoWidth": false,
+					"buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+					"processing": true,
+					"serverSide": true,
 					ajax: {
 						url: "<?= route('activeDonePlanner') ?>",
 						dataType: "json",
 						type: "POST",
 						data: { _token: "<?= csrf_token() ?>" },
 					},
+					"dom": 'Bfrtip',
+					"buttons": [
+						{
+							"extend": 'collection',
+							"text": 'Export',
+							"buttons": [
+								{
+									"extend": 'csv',
+									'title' :`DONE-EVENT-LISTS`,
+									"exportOptions": {
+										"columns": [0,1,2,3,4,5,6,7]
+									}
+								},
+								{
+									"extend": 'pdf',
+									'title' :`DONE-EVENT-LISTS`,
+									"exportOptions": {
+										"columns": [0,1,2,3,4,5,6,7]
+									}
+								},
+								{
+									"extend": 'print',
+									'title' :`DONE-EVENT-LISTS`,
+									"exportOptions": {
+										"columns": [0,1,2,3,4,5,6,7]
+									}
+								}
+							],
+						}
+					],
 					columns: [
 						{ data: "event_name" },
 						{ data: "event_venue" },
@@ -207,6 +250,16 @@
 						{ data: "created_at" },
 						{ data: "action", searchable: false, orderable: false },
 					],
+					"columnDefs": [
+						{
+							"targets": [0,1,2,3,5,6,7],   // target column
+							"className": "textCenter",
+						},
+						{
+							"targets": [4],   // target column
+							"className": "textRight",
+						}
+					]
 				});
 
 				$(document).on("click", "#show-done-planner", function () {
@@ -221,14 +274,48 @@
 				//end done
 				//pending
 				var planner_table_pending = $("#planners-pending-lists").DataTable({
-					processing: true,
-					serverSide: true,
+					"responsive": true, 
+					"lengthChange": false, 
+					"autoWidth": false,
+					"buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+					"processing": true,
+					"serverSide": true,
 					ajax: {
 						url: "<?= route('activePendingPlanner') ?>",
 						dataType: "json",
 						type: "POST",
 						data: { _token: "<?= csrf_token() ?>" },
 					},
+					"dom": 'Bfrtip',
+					"buttons": [
+						{
+							"extend": 'collection',
+							"text": 'Export',
+							"buttons": [
+								{
+									"extend": 'csv',
+									'title' :`PENDING-EVENT-LISTS`,
+									"exportOptions": {
+										"columns": [0,1,2,3,4,5,6,7]
+									}
+								},
+								{
+									"extend": 'pdf',
+									'title' :`PENDING-EVENT-LISTS`,
+									"exportOptions": {
+										"columns": [0,1,2,3,4,5,6,7]
+									}
+								},
+								{
+									"extend": 'print',
+									'title' :`PENDING-EVENT-LISTS`,
+									"exportOptions": {
+										"columns": [0,1,2,3,4,5,6,7]
+									}
+								}
+							],
+						}
+					],
 					columns: [
 						{ data: "event_name" },
 						{ data: "event_venue" },
@@ -240,6 +327,16 @@
 						{ data: "created_at" },
 						{ data: "action", searchable: false, orderable: false },
 					],
+					"columnDefs": [
+						{
+							"targets": [0,1,2,3,5,6,7],   // target column
+							"className": "textCenter",
+						},
+						{
+							"targets": [4],   // target column
+							"className": "textRight",
+						}
+					]
 				});
 
 				$(document).on("click", "#show-pending-planner", function () {
@@ -278,14 +375,48 @@
 		
 				//on going
 				var planner_table_ongoing = $("#planners-ongoing-lists").DataTable({
-					processing: true,
-					serverSide: true,
+					"responsive": true, 
+					"lengthChange": false, 
+					"autoWidth": false,
+					"buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+					"processing": true,
+					"serverSide": true,
 					ajax: {
 						url: "<?= route('activeOnGoingPlanner') ?>",
 						dataType: "json",
 						type: "POST",
 						data: { _token: "<?= csrf_token() ?>" },
 					},
+					"dom": 'Bfrtip',
+					"buttons": [
+						{
+							"extend": 'collection',
+							"text": 'Export',
+							"buttons": [
+								{
+									"extend": 'csv',
+									'title' :`ON-GOING-EVENT-LISTS`,
+									"exportOptions": {
+										"columns": [0,1,2,3,4,5,6,7]
+									}
+								},
+								{
+									"extend": 'pdf',
+									'title' :`ON-GOING-EVENT-LISTS`,
+									"exportOptions": {
+										"columns": [0,1,2,3,4,5,6,7]
+									}
+								},
+								{
+									"extend": 'print',
+									'title' :`ON-GOING-EVENT-LISTS`,
+									"exportOptions": {
+										"columns": [0,1,2,3,4,5,6,7]
+									}
+								}
+							],
+						}
+					],
 					columns: [
 						{ data: "event_name" },
 						{ data: "event_venue" },
@@ -297,6 +428,16 @@
 						{ data: "created_at" },
 						{ data: "action", searchable: false, orderable: false },
 					],
+					"columnDefs": [
+						{
+							"targets": [0,1,2,3,5,6,7],   // target column
+							"className": "textCenter",
+						},
+						{
+							"targets": [4],   // target column
+							"className": "textRight",
+						}
+					]
 				});
 
 				$(document).on("click", "#show-on-going-planner", function () {
@@ -334,14 +475,48 @@
 				//end on going
 				//inactive
 				var planner_table_inactive = $("#planners-inactive-lists").DataTable({
-					processing: true,
-					serverSide: true,
+					"responsive": true, 
+					"lengthChange": false, 
+					"autoWidth": false,
+					"buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+					"processing": true,
+					"serverSide": true,
 					ajax: {
 						url: "<?= route('inActivePlanner') ?>",
 						dataType: "json",
 						type: "POST",
 						data: { _token: "<?= csrf_token() ?>" },
 					},
+					"dom": 'Bfrtip',
+					"buttons": [
+						{
+							"extend": 'collection',
+							"text": 'Export',
+							"buttons": [
+								{
+									"extend": 'csv',
+									'title' :`IN-ACTIVE-EVENT-LISTS`,
+									"exportOptions": {
+										"columns": [0,1,2,3,4,5,6,7]
+									}
+								},
+								{
+									"extend": 'pdf',
+									'title' :`IN-ACTIVE-EVENT-LISTS`,
+									"exportOptions": {
+										"columns": [0,1,2,3,4,5,6,7]
+									}
+								},
+								{
+									"extend": 'print',
+									'title' :`IN-ACTIVE-EVENT-LISTS`,
+									"exportOptions": {
+										"columns": [0,1,2,3,4,5,6,7]
+									}
+								}
+							],
+						}
+					],
 					columns: [
 						{ data: "event_name" },
 						{ data: "event_venue" },
@@ -353,6 +528,16 @@
 						{ data: "created_at" },
 						{ data: "action", searchable: false, orderable: false },
 					],
+					"columnDefs": [
+						{
+							"targets": [0,1,2,3,5,6,7],   // target column
+							"className": "textCenter",
+						},
+						{
+							"targets": [4],   // target column
+							"className": "textRight",
+						}
+					]
 				});
 
 				//restore

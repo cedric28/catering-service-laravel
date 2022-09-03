@@ -14,8 +14,12 @@ class InventoryFetchController extends Controller
         //column list in the table Prpducts
         $columns = array(
             0 => 'name',
-            1 => 'created_at',
-            2 => 'action'
+            1 => 'description',
+            2 => 'quantity',
+            3 => 'quantity_in_use',
+            4 => 'quantity_available',
+            5 => 'created_at',
+            6 => 'action'
         );
 
         //get the total number of data in Category table
@@ -32,17 +36,43 @@ class InventoryFetchController extends Controller
         //check if user search for a value in the Category datatable
         if (empty($request->input('search.value'))) {
             //get all the category data
-            $posts = Inventory::offset($start)
+
+            $productName = $request->input('columns.0.search.value');
+            $productCategory = $request->input('columns.1.search.value');
+            $productQuantity = $request->input('columns.2.search.value');
+            $productQuantityAvailable = $request->input('columns.3.search.value');
+            $productQuantityInUse = $request->input('columns.4.search.value');
+            $productCreatedAt = $request->input('columns.5.search.value');
+
+            $posts = Inventory::where('name', 'like', "%{$productName}%")
+                ->where('quantity', 'like', "%{$productQuantity}%")
+                ->where('quantity_in_use', 'like', "%{$productQuantityInUse}%")
+                ->where('quantity_available', 'like', "%{$productQuantityAvailable}%")
+                ->where('created_at', 'like', "%{$productCreatedAt}%")
+                ->whereHas('inventory_category', function ($query) use ($productCategory) {
+                    $query->where('name', 'like', "%{$productCategory}%");
+                })
+                ->offset($start)
                 ->limit($limit)
                 ->orderBy($order, $dir)
                 ->get();
 
             //total number of filtered data
-            $totalFiltered = Inventory::count();
+            $totalFiltered = Inventory::where('name', 'like', "%{$productName}%")
+            ->where('quantity', 'like', "%{$productQuantity}%")
+            ->where('quantity_in_use', 'like', "%{$productQuantityInUse}%")
+            ->where('quantity_available', 'like', "%{$productQuantityAvailable}%")
+            ->where('created_at', 'like', "%{$productCreatedAt}%")
+            ->whereHas('inventory_category', function ($query) use ($productCategory) {
+                $query->where('name', 'like', "%{$productCategory}%");
+            })->count();
         } else {
             $search = $request->input('search.value');
 
             $posts = Inventory::where('name', 'like', "%{$search}%")
+                ->orWhere('quantity', 'like', "%{$search}%")
+                ->orWhere('quantity_in_use', 'like', "%{$search}%")
+                ->orWhere('quantity_available', 'like', "%{$search}%")
                 ->orWhere('created_at', 'like', "%{$search}%")
                 ->orWhereHas('inventory_category', function ($query) use ($search) {
                     $query->where('name', 'like', "%{$search}%");
@@ -54,6 +84,9 @@ class InventoryFetchController extends Controller
 
             //total number of filtered data matching the search value request in the Category table	
             $totalFiltered = Inventory::where('name', 'like', "%{$search}%")
+                ->orWhere('quantity', 'like', "%{$search}%")
+                ->orWhere('quantity_in_use', 'like', "%{$search}%")
+                ->orWhere('quantity_available', 'like', "%{$search}%")
                 ->orWhere('created_at', 'like', "%{$search}%")
                 ->orWhereHas('inventory_category', function ($query) use ($search) {
                     $query->where('name', 'like', "%{$search}%");
@@ -69,6 +102,9 @@ class InventoryFetchController extends Controller
             foreach ($posts as $r) {
                 $nestedData['name'] = $r->name;
                 $nestedData['category'] = $r->inventory_category->name;
+                $nestedData['quantity'] = $r->quantity;
+                $nestedData['quantity_in_use'] = $r->quantity_in_use;
+                $nestedData['quantity_available'] = $r->quantity_available;
                 $nestedData['created_at'] = date('d-m-Y', strtotime($r->created_at));
                 $nestedData['action'] = '
                     <button name="show" id="show" data-id="' . $r->id . '" class="btn btn-primary btn-xs">Show</button>

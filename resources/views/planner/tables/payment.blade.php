@@ -1,37 +1,37 @@
-@if($planner->status != 'done')
-<form action="{{ route('storeTimeTable')}}" method="POST" class="mb-2">
+<form action="{{ route('storePayment')}}" method="POST" class="mb-2">
     @csrf
     <input type="hidden" name="planner_id" value="{{ $planner->id }}"/>
+
     <div class="form-group row">
-        <label class="col-lg-3 col-form-label">Tasks:</label>
+        <label class="col-lg-3 col-form-label">Payment Type:</label>
         <div class="col-lg-9">
-            <input type="text" name="task_name" value="{{ old('task') }}" class="@error('task') is-invalid @enderror form-control" placeholder="e.g Dinner">
+            <select id="payment_type" name="payment_type" class="@error('payment_type') is-invalid @enderror form-control select2">
+                <option value="">Select Payment Method</option>
+                @foreach ($paymentTypes as $type)
+                    <option value="{{ $type->name }}" {{ ($type->name == old("payment_type")) ? " selected" : "" }}>{{ ucwords($type->name) }}</option>
+                @endforeach
+            </select>
         </div>
     </div>
 
     <div class="form-group row">
-        <label class="col-lg-3 col-form-label">Task Time:</label>
+        <label class="col-lg-3 col-form-label">Payment Price:</label>
         <div class="col-lg-9">
-        <div class="input-group date" id="timetable" data-target-input="nearest">
-            <input type="text" name="task_time" value="{{ old('time') }}" placeholder="e.g 8:27 PM" onkeydown="return false;" class="@error('task_date') is-invalid @enderror form-control datetimepicker-input" data-target="#timetable"/>
-            <div class="input-group-append" data-target="#timetable" data-toggle="datetimepicker">
-                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-            </div>
-        </div>
+            <input type="text" name="payment_price" value="{{ old('payment_price') }}" class="@error('payment_price') is-invalid @enderror form-control" placeholder="e.g 1000">
         </div>
     </div>
 
     <div class="text-right">
         <button type="submit" class="btn btn-primary">Save <i class="icon-paperplane ml-2"></i></button>
     </div>
-</form>
-@endif
-<div class="table-responsive">
-    <table class="table table-bordered" id="planner-time-table-lists"  width="100%" cellspacing="0">
+    </form>
+    <div class="table-responsive">
+    <table class="table table-bordered" id="planner-payment-lists"  width="100%" cellspacing="0">
         <thead>
             <tr>
-                <th>TIME</th>
-                <th>TASK</th>
+                <th>PAYMENT METHOD</th>
+                <th>FEE</th>
+                <th>DATE ADDED</th>
                 <th>ACTION</th>
             </tr>
         </thead>
@@ -43,7 +43,7 @@
 
 @push('scripts')
 <script>
-    var tablePlannerTimeTable = $('#planner-time-table-lists').DataTable({
+    var tablePlannerPayment = $('#planner-payment-lists').DataTable({
             "responsive": true, 
             "lengthChange": false, 
             "autoWidth": false,
@@ -51,7 +51,7 @@
             "processing": true,
             "serverSide": true,
             "ajax": {
-                "url":"<?= route('activePlannerTimeTable') ?>",
+                "url":"<?= route('activePlannerPayments') ?>",
                 "dataType":"json",
                 "type":"POST",
                 "data":{
@@ -67,55 +67,60 @@
                     "buttons": [
                         {
                             "extend": 'csv',
-                            'title' :`EVENT-${event_name}-TIME-TABLE-LISTS`,
+                            'title' :`EVENT-${event_name}-PAYMENT-LISTS`,
                             "exportOptions": {
-                                "columns": [0,1]
+                                "columns": [0,1,2]
                             }
                         },
                         {
                             "extend": 'pdf',
-                            'title' :`EVENT-${event_name}-TIME-TABLE-LISTS`,
+                            'title' :`EVENT-${event_name}-PAYMENT-LISTS`,
                             "exportOptions": {
-                                "columns": [0,1]
+                                "columns": [0,1,2]
                             }
                         },
                         {
                             "extend": 'print',
-                            'title' :`EVENT-${event_name}-TIME-TABLE-LISTS`,
+                            'title' :`EVENT-${event_name}-PAYMENT-LISTS`,
                             "exportOptions": {
-                                "columns": [0,1]
+                                "columns": [0,1,2]
                             }
                         }
                     ],
                 }
             ],
             columns: [
-                { data: "task_time" },
-                { data: "task_name" },
+                { data: "payment_type" },
+                { data: "payment_price" },
+                { data: "created_at" },
                 { data: "action", searchable: false, orderable: false },
             ],
             "columnDefs": [
                 {
-                    "targets": [0,1,2],   // target column
+                    "targets": [0,2],   // target column
                     "className": "textCenter",
+                },
+                {
+                    "targets": [1],   // target column
+                    "className": "textRight",
                 }
             ]
         });
 
 
         $(document).on('click', '#delete-planner-time-table', function(){
-            let planner_time_table_id = $(this).attr('data-id');
+            let planner_payment_id = $(this).attr('data-id');
             $.ajax({
-                url:"<?= route('destroyTimeTable') ?>",
+                url:"<?= route('destroyPayment') ?>",
                 dataType:"json",
                 type:"POST",
                 data:{
                     "_token":"<?= csrf_token() ?>",
-                    "id": planner_time_table_id,
+                    "id": planner_payment_id,
                 },
                 success:function(data)
                 {
-                    tablePlannerTimeTable.ajax.reload();
+                    tablePlannerPayment.ajax.reload();
                 }
             })
             

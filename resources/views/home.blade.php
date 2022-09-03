@@ -10,13 +10,13 @@
 		<div class="row">
 			<!-- Earnings (Monthly) Card Example -->
 			<div class="col-xl-3 col-md-6 mb-4">
-				<div class="card border-left-success shadow h-100 py-2">
+				<div class="card border-left-danger shadow h-100 py-2">
 					<div class="card-body">
 						<div class="row no-gutters align-items-center">
 							<div class="col mr-2">
-								<div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-									Earnings (Annual)</div>
-								<div class="h5 mb-0 font-weight-bold text-gray-800">$215,000</div>
+								<div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+									Earnings (Month of {{ Carbon\Carbon::now()->format('F') }})</div>
+								<div class="h5 mb-0 font-weight-bold text-gray-800">{{ $monthlySales }}</div>
 							</div>
 							<div class="col-auto">
 								<i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
@@ -28,22 +28,15 @@
 
 			<!-- Earnings (Monthly) Card Example -->
 			<div class="col-xl-3 col-md-6 mb-4">
-				<div class="card border-left-info shadow h-100 py-2">
+				<div class="card border-left-success shadow h-100 py-2">
 					<div class="card-body">
 						<div class="row no-gutters align-items-center">
 							<div class="col mr-2">
-								<div class="text-xs font-weight-bold text-info text-uppercase mb-1">Tasks
+								<div class="text-xs font-weight-bold text-success text-uppercase mb-1">DONE EVENTS
 								</div>
 								<div class="row no-gutters align-items-center">
 									<div class="col-auto">
-										<div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
-									</div>
-									<div class="col">
-										<div class="progress progress-sm mr-2">
-											<div class="progress-bar bg-info" role="progressbar"
-												style="width: 50%" aria-valuenow="50" aria-valuemin="0"
-												aria-valuemax="100"></div>
-										</div>
+										<div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ $plannerDone }}</div>
 									</div>
 								</div>
 							</div>
@@ -57,13 +50,13 @@
 
 			<!-- Pending Requests Card Example -->
 			<div class="col-xl-3 col-md-6 mb-4">
-				<div class="card border-left-warning shadow h-100 py-2">
+				<div class="card border-left-info shadow h-100 py-2">
 					<div class="card-body">
 						<div class="row no-gutters align-items-center">
 							<div class="col mr-2">
-								<div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+								<div class="text-xs font-weight-bold text-info text-uppercase mb-1">
 									Pending Events</div>
-								<div class="h5 mb-0 font-weight-bold text-gray-800">{{ $plannerPendings }}</div>
+								<div class="h5 mb-0 font-weight-bold text-gray-800">{{ $plannerOnGoing }}</div>
 							</div>
 							<div class="col-auto">
 								<i class="fas fa-tasks fa-2x text-gray-300"></i>
@@ -132,7 +125,7 @@
 					</div>
 					<!-- Card Body -->
 					<div class="card-body">
-						<div class="row no-gutters align-items-center">
+						<div class="row no-gutters align-items-center mb-3">
 							<div class="col mr-2">
 								<div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
 									December 20,2022
@@ -141,6 +134,22 @@
 							</div>
 							<div class="col-auto">
 								<i class="fas fa-calendar fa-2x text-gray-300"></i>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-12">
+								<p class="text-muted"><strong><i class="fas fa-gift mr-1"></i> Package: </strong> <span id="event_package">Bronze Package</span></p>
+								<p class="text-muted"><strong><i class="fas fa-map-marker-alt mr-1"></i> Event Place: </strong> <span id="event_place">Malibu, California</span></p>
+								<p class="text-muted"><strong><i class="fas fa-clock mr-1"></i> Event Time: </strong> <span id="event_time">12:30 PM</span></p>
+								<p class="text-muted"><strong><i class="fas fa-users mr-1"></i> No of Guests: </strong> <span id="no_of_guests">100 </span>persons</p>
+								<p class="text-muted"><strong><i class="far fa-file-alt mr-1"></i> Notes: </strong> <span id="event_note">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam fermentum enim neque.</span></p>
+
+								<p class="text-muted"><strong><i class="far fa-user mr-1"></i> Client Name: </strong> <span id="customer">Joselito Santiago</span></p>
+								<p class="text-muted"><strong><i class="fas fa-phone mr-1"></i> Contact No: </strong> +63<span id="contact_no">91762700499</span></p>
+
+								<p class="text-muted"><strong><i class="fas fa-credit-card mr-1"></i> Payment Method: </strong> <span id="payment_method">Bank</span></p>
+								<p class="text-muted"><strong><i class="fas fa-money-bill-wave-alt mr-1"></i> Payment Status: </strong> <span id="payment_status">100%</span></p>
+								<hr>
 							</div>
 						</div>
 					</div>

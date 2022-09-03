@@ -14,13 +14,13 @@ class MainPackageSeeder extends Seeder
     {
         $packages = [
             [
-                'name' => 'Wedding Package'
+                'name' => 'Wedding'
             ],
             [
-                'name' => 'Debut Package'
+                'name' => 'Debut'
             ],
             [
-                'name' => 'Birthday Package'
+                'name' => 'Birthday'
             ]
         ];
 

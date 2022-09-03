@@ -38,6 +38,21 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function scopeBusboy($query)
+    {
+        return $query->where('job_type_id', '=', 3);
+    }
+
+    public function scopeDishwasher($query)
+    {
+        return $query->where('job_type_id', '=', 4);
+    }
+
+    public function scopeServer($query)
+    {
+        return $query->where('job_type_id', '=', 5);
+    }
+    
     public function role()
     {
         return $this->belongsTo(Role::class, 'role_id');
@@ -51,5 +66,10 @@ class User extends Authenticatable
     public function planner_staffings()
     {
         return $this->hasMany(PlannerStaffing::class,'user_id','id');
+    }
+
+    public function planner_task_staffs()
+    {
+        return $this->hasMany(PlannerTaskStaff::class,'user_id','id');
     }
 }

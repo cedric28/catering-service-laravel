@@ -1,3 +1,4 @@
+@if($planner->status != 'done')
 <form action="{{ route('storeTask')}}" method="POST" class="mb-2">
     @csrf
     <input type="hidden" name="planner_id" value="{{ $planner->id }}"/>
@@ -7,7 +8,7 @@
             <select id="package_task_id" name="package_task_id" class="@error('package_task_id') is-invalid @enderror form-control select2">
                 <option value="">Select Task</option>
                 @foreach ($package_tasks as $task)
-                    <option value="{{ $task->id }}"{{ ($package->id == old('package_task_id')) ? ' selected' : '' }}>{{ ucwords($task->name) }}</option>
+                    <option value="{{ $task->id }}"{{ ($task->id == old('package_task_id')) ? ' selected' : '' }}>{{ ucwords($task->name) }}</option>
                 @endforeach
             </select>
         </div>
@@ -24,19 +25,7 @@
         </div>
         </div>
     </div>
-
-    <div class="form-group row">
-        <label class="col-lg-3 col-form-label">Staff:</label>
-        <div class="col-lg-9">
-            <select id="user_id" name="user_id" class="@error('user_id') is-invalid @enderror form-control select2">
-                <option value="">Select Staff</option>
-                @foreach ($usersHeadStaff as $user)
-                    <option value="{{ $user->id }}"{{ ($user->id == old('user_id')) ? ' selected' : '' }}>{{ ucwords($user->name) }}</option>
-                @endforeach
-            </select>
-        </div>
-    </div>
-
+    
     <div class="form-group row">
         <label class="col-lg-3 col-form-label">Task Type:</label>
         <div class="col-lg-9">
@@ -53,13 +42,13 @@
         <button type="submit" class="btn btn-primary">Save <i class="icon-paperplane ml-2"></i></button>
     </div>
 </form>
+@endif
 <div class="table-responsive">
     <table class="table table-bordered" id="planner-package-tasks-lists"  width="100%" cellspacing="0">
         <thead>
             <tr>
                 <th>TASK</th>
                 <th>DATE & TIME</th>
-                <th>STAFF/S</th>
                 <th>TYPE</th>
                 <th>STATUS</th>
                 <th>ACTION</th>
@@ -73,6 +62,89 @@
 
 @push('scripts')
 <script>
+    var tablePlannerTask = $('#planner-package-tasks-lists').DataTable({
+            "responsive": true, 
+            "lengthChange": false, 
+            "autoWidth": false,
+            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url":"<?= route('activePlannerTask') ?>",
+                "dataType":"json",
+                "type":"POST",
+                "data":{
+                    "_token":"<?= csrf_token() ?>",
+                    "planner_id": planner_id,
+                }
+            },
+            "dom": 'Bfrtip',
+            "buttons": [
+                {
+                    "extend": 'collection',
+                    "text": 'Export',
+                    "buttons": [
+                        {
+                            "extend": 'csv',
+                            'title' :`EVENT-${event_name}-TASKS-LISTS`,
+                            "messageTop": 'Task: ',
+                            "exportOptions": {
+                                "columns": [0,1,2,3]
+                            }
+                        },
+                        {
+                            "extend": 'pdf',
+                            'title' :`EVENT-${event_name}-TASKS-LISTS`,
+                            "messageTop": 'Task: ',
+                            "exportOptions": {
+                                "columns": [0,1,2,3]
+                            }
+                        },
+                        {
+                            "extend": 'print',
+                            'title' :`EVENT-${event_name}-TASKS-LISTS`,
+                            "messageTop": 'Task: ',
+                            "exportOptions": {
+                                "columns": [0,1,2,3]
+                            }
+                        }
+                    ],
+                }
+            ],
+            columns: [
+                { data: "task_name" },
+                { data: "task_date_and_time" },
+                // { data: "staffs" },
+                { data: "task_type" },
+                { data: "task_status" },
+                { data: "action", searchable: false, orderable: false },
+            ],
+            "columnDefs": [
+                {
+                    "targets": [0,1,2,3],   // target column
+                    "className": "textCenter",
+                }
+            ]
+        });
 
+
+        $(document).on('click', '#delete-planner-task', function(){
+            let planner_task_id = $(this).attr('data-id');
+            $.ajax({
+                url:"<?= route('destroyTask') ?>",
+                dataType:"json",
+                type:"POST",
+                data:{
+                    "_token":"<?= csrf_token() ?>",
+                    "id": planner_task_id,
+                },
+                success:function(data)
+                {
+                    tablePlannerTask.ajax.reload();
+                }
+            })
+        });
 </script>
+@include('planner.modals.configurestaff')
+@include('planner.modals.task_modal')
 @endpush('scripts')

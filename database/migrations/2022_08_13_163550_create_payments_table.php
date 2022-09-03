@@ -20,7 +20,6 @@ class CreatePaymentsTable extends Migration
             $table->integer('planner_id')->unsigned()->index();
             $table->integer('creator_id')->unsigned()->index();
             $table->integer('updater_id')->unsigned()->index();
-            $table->softDeletes();
             $table->timestamps();
         });
     }

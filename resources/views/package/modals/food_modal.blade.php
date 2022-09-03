@@ -8,9 +8,9 @@
                     <button type="button" class="close float-right" onclick="closeFoodModal()" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <h5 align="center" class="w-100"><span class="text-danger" id="generalFoodError"></span></h5>
                     <input type="hidden" id="food_id" name="food_id" value="">
                     <div class="form-group row">
+                    <h5 align="center" class="w-100"><span class="text-danger" id="generalFoodError"></span></h5>
                         <label class="col-lg-3 col-form-label">Food Category:</label>
                         <div class="col-lg-9">
                             <select id="category_id" name="category_id" class="@error('category_id') is-invalid @enderror form-control select2">

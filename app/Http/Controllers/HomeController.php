@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\User;
 use App\Planner;
+use App\Payment;
+use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class HomeController extends Controller
 {
@@ -25,16 +28,37 @@ class HomeController extends Controller
      */
     public function index()
     {
+        $now = Carbon::now();
+        $yearNow =  $now->year;
+        $monthNow = $now->month;
+        $sales = new Payment();
+        $sales = $sales->whereYear('created_at', '>=', $yearNow)->whereYear('created_at', '<=', $yearNow);
+        $salesPerMonth = $sales->selectRaw('month(created_at) as month, SUM(payment_price) as total_sales')
+        ->groupBy('month')
+        ->orderBy('month', 'asc')
+        ->get();
+        
+        $filtered_collection = $salesPerMonth->filter(function ($item) use ($monthNow) {
+            return $item->month == $monthNow;
+        })->values();
 
+        $monthlySales = count($filtered_collection) > 0 ? Str::currency($filtered_collection[0]->total_sales) : Str::currency(0) ;
         $users = User::count();
         $planners = Planner::where('status', '=', 'on-going')
         ->orWhere('status', '=', 'done')->get();
-        $plannerPendings = Planner::where('status','pending')->count();
+        $plannerOnGoing = Planner::where('status','on-going')->count();
+        $plannerDone = Planner::where('status','done')->count();
         
         return view('home',[
             'totalUsers' => $users,
             'planners' => $planners,
-            'plannerPendings' => $plannerPendings
+            'plannerOnGoing' => $plannerOnGoing,
+            'monthlySales' => $monthlySales,
+            'plannerDone' => $plannerDone
         ]);
+    }
+    public function showPlannerDetails(Request $request)
+    {
+
     }
 }

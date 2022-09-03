@@ -17,6 +17,9 @@ class CreatePlannerEquipmentTable extends Migration
             $table->id();
             $table->integer('planner_id')->unsigned()->index();
             $table->integer('package_equipment_id')->unsigned()->index();
+            $table->integer("return_qty")->default(0);
+            $table->integer("missing_qty")->default(0);
+            $table->string("status")->default('idle');
             $table->timestamps();
         });
     }

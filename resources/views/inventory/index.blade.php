@@ -34,6 +34,9 @@
 						<tr>
 							<th>NAME</th>
 							<th>CATEGORY</th>
+							<th>TOTAL QUANTITY</th>
+							<th>QUANTITY AVAILABLE</th>
+							<th>QUANTITY IN USE</th>
 							<th>DATE ADDED</th>
 							<th>ACTION</th>
 						</tr>
@@ -43,11 +46,25 @@
 							<tr>
 								<td>{{ $inventory->name }}</td>
 								<td>{{ $inventory->inventory_category->name }}</td>
+								<td>{{ $inventory->quantity }}</td>
+								<td>{{ $inventory->quantity_available }}</td>
+								<td>{{ $inventory->quantity_in_use }}</td>
 								<td>{{ $inventory->created_at }}</td>
 								<td></td>
 							</tr>
 						@endforeach
 					</tbody>
+					<tfoot>
+						<tr>
+							<th>NAME</th>
+							<th>CATEGORY</th>
+							<th>TOTAL QUANTITY</th>
+							<th>QUANTITY AVAILABLE</th>
+							<th>QUANTITY IN USE</th>
+							<th>DATE ADDED</th>
+							<th>ACTION</th>
+						</tr>
+					</tfoot>
 				</table>
 			</div>
 		</div>
@@ -75,12 +92,23 @@
 		<!-- Javascript -->
 		<script src="{{ asset('assets/vendor/datatables/jquery.dataTables.min.js') }}"></script>
 		<script src="{{ asset('assets/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
-	
-		<!-- Page level custom scripts -->
-		<script src="{{ asset('assets/js/demo/datatables-demo.js') }}"></script>
+		<script src="{{ asset('assets/js/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
+		<script src="{{ asset('assets/js/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
+		<script src="{{ asset('assets/js/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
+		<script src="{{ asset('assets/js/datatables-buttons/js/buttons.bootstrap4.min.js') }}"></script>
+		<script src="{{ asset('assets/js/jszip/jszip.min.js') }}"></script>
+		<script src="{{ asset('assets/js/pdfmake/pdfmake.min.js') }}"></script>
+		<script src="{{ asset('assets/js/pdfmake/vfs_fonts.js') }}"></script>
+		<script src="{{ asset('assets/js/datatables-buttons/js/buttons.html5.min.js') }}"></script>
+		<script src="{{ asset('assets/js/datatables-buttons/js/buttons.print.min.js') }}"></script>
+		<script src="{{ asset('assets/js/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
 		<script>
 
 			var table = $('#inventory-lists').DataTable({
+				"responsive": true, 
+				"lengthChange": false, 
+				"autoWidth": false,
+				"buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
 				"processing": true,
 				"serverSide": true,
 				"ajax": {
@@ -89,13 +117,74 @@
 					"type":"POST",
 					"data":{"_token":"<?= csrf_token() ?>"}
 				},
+				"dom": 'Bfrtip',
+				"buttons": [
+					{
+						"extend": 'collection',
+						"text": 'Export',
+						"buttons": [
+							{
+								"extend": 'csv',
+								'title' :`INVENTORY-LISTS`,
+								"exportOptions": {
+									"columns": [0,1,2,3,4,5]
+								}
+							},
+							{
+								"extend": 'pdf',
+								'title' :`INVENTORY-LISTS`,
+								"exportOptions": {
+									"columns": [0,1,2,3,4,5]
+								}
+							},
+							{
+								"extend": 'print',
+								'title' :`INVENTORY-LISTS`,
+								"exportOptions": {
+									"columns": [0,1,2,3,4,5]
+								}
+							}
+						],
+					}
+				],
+				initComplete: function () {
+					this.api().columns().every( function () {
+						var column = this;
+						var select = $('<select><option value=""></option></select>')
+							.appendTo( $(column.footer()).empty() )
+							.on( 'change', function () {
+								var val = $.fn.dataTable.util.escapeRegex(
+									$(this).val()
+								);
+		
+								column
+									.search( val ? val : '', true, false )
+									.draw();
+							} );
+		
+						column.data().unique().sort().each( function ( d, j ) {
+							select.append( '<option value="'+d+'">'+d+'</option>' )
+						} );
+					} );
+				},
 				"columns":[
 					{"data":"name"},
 					{"data":"category"},
-					// {"data":"role"},
-					// {"data":"job_type"},
+					{"data":"quantity"},
+					{"data":"quantity_available"},
+					{"data":"quantity_in_use"},
 					{"data":"created_at"},
 					{"data":"action","searchable":false,"orderable":false}
+				],
+				"columnDefs": [
+					{
+						"targets": [0,1,5],   // target column
+						"className": "textCenter",
+					},
+					{
+						"targets": [2,3,4],   // target column
+						"className": "textRight",
+					}
 				]
 			});
 

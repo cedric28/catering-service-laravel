@@ -35,6 +35,7 @@
 							<th>EMAIL</th>
 							<th>ROLE</th>
 							<th>JOB TYPE</th>
+							<th>STATUS</th>
 							<th>DATE ADDED</th>
 							<th>ACTION</th>
 						</tr>
@@ -69,12 +70,23 @@
 		<!-- Javascript -->
 		<script src="{{ asset('assets/vendor/datatables/jquery.dataTables.min.js') }}"></script>
 		<script src="{{ asset('assets/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
-	
-		<!-- Page level custom scripts -->
-		<script src="{{ asset('assets/js/demo/datatables-demo.js') }}"></script>
+		<script src="{{ asset('assets/js/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
+		<script src="{{ asset('assets/js/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
+		<script src="{{ asset('assets/js/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
+		<script src="{{ asset('assets/js/datatables-buttons/js/buttons.bootstrap4.min.js') }}"></script>
+		<script src="{{ asset('assets/js/jszip/jszip.min.js') }}"></script>
+		<script src="{{ asset('assets/js/pdfmake/pdfmake.min.js') }}"></script>
+		<script src="{{ asset('assets/js/pdfmake/vfs_fonts.js') }}"></script>
+		<script src="{{ asset('assets/js/datatables-buttons/js/buttons.html5.min.js') }}"></script>
+		<script src="{{ asset('assets/js/datatables-buttons/js/buttons.print.min.js') }}"></script>
+		<script src="{{ asset('assets/js/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
 		<script>
 
 			var table = $('#user-lists').DataTable({
+				"responsive": true, 
+				"lengthChange": false, 
+				"autoWidth": false,
+				"buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
 				"processing": true,
 				"serverSide": true,
 				"ajax": {
@@ -83,13 +95,50 @@
 					"type":"POST",
 					"data":{"_token":"<?= csrf_token() ?>"}
 				},
+				"dom": 'Bfrtip',
+				"buttons": [
+					{
+						"extend": 'collection',
+						"text": 'Export',
+						"buttons": [
+							{
+								"extend": 'csv',
+								'title' :`USER-LISTS`,
+								"exportOptions": {
+									"columns": [0,1,2,3,4,5]
+								}
+							},
+							{
+								"extend": 'pdf',
+								'title' :`USER-LISTS`,
+								"exportOptions": {
+									"columns": [0,1,2,3,4,5]
+								}
+							},
+							{
+								"extend": 'print',
+								'title' :`USER-LISTS`,
+								"exportOptions": {
+									"columns": [0,1,2,3,4,5]
+								}
+							}
+						],
+					}
+				],
 				"columns":[
 					{"data":"name"},
 					{"data":"email"},
 					{"data":"role"},
 					{"data":"job_type"},
+					{"data":"status"},
 					{"data":"created_at"},
 					{"data":"action","searchable":false,"orderable":false}
+				],
+				"columnDefs": [
+					{
+						"targets": [0,1,2,3,4,5],   // target column
+						"className": "textCenter",
+					}
 				]
 			});
 

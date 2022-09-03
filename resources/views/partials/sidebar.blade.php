@@ -7,10 +7,10 @@
         </div>
         <div class="sidebar-brand-text mx-3">CREATIVE MOMENTS</div>
     </a>
-
+    <!-- isHeadStaff isStaff -->
     <!-- Divider -->
     <hr class="sidebar-divider my-0">
-
+   
     <!-- Nav Item - Dashboard -->
     <li class="nav-item {{ (request()->is('home')) ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('home') }}">
@@ -18,28 +18,24 @@
             <span>Dashboard</span>
         </a>
     </li>
-
-
+   
+    @canany(['isHeadStaff','isAdmin'])
     <li class="nav-item {{ (request()->is('planners*')) ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('planners.index') }}">
             <i class="fas fa-fw fa-calendar"></i>
             <span>Planner</span>
         </a>
     </li>
-    <!-- <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#planner"
-            aria-expanded="true" aria-controls="planner">
-            <i class="fas fa-fw fa-calendar"></i>
-            <span>Planner</span>
+    @endcan
+    @canany(['isHeadStaff', 'isStaff'])
+    <li class="nav-item {{ (request()->is('planners*')) ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('planners.index') }}">
+            <i class="far fa-file-alt mr-1"></i>
+            <span>My Tasks</span>
         </a>
-        <div id="planner" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="cards.html">Events</a>
-                <a class="collapse-item" href="buttons.html">Event Types</a>
-            </div>
-        </div>
-    </li> -->
-
+    </li>
+    @endcan
+    @can('isAdmin')
     <li class="nav-item {{ (request()->is('inventories*')) || (request()->is('inventory-category*')) ? 'active' : '' }}">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#inventory"
             aria-expanded="true" aria-controls="inventory">
@@ -86,14 +82,14 @@
             <i class="fas fa-fw fa-users"></i>
             <span>User's Activities</span></a>
     </li>
-    <li class="nav-item {{ (request()->is('users*')) ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('users.index')}}">
+    <li class="nav-item {{ (request()->is('revenueMonthly')) ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('revenueMonthly')}}">
             <i class="fas fa-fw fa-calendar"></i>
             <span>Monthly Revenue</span></a>
     </li>
      <!-- Divider -->
      <hr class="sidebar-divider">
-    @can('isAdmin')
+  
     <!-- Heading -->
     <div class="sidebar-heading">
         SETTINGS
@@ -107,18 +103,17 @@
     </li>
 
     <!-- Nav Item - Tables -->
-    {{-- <li class="nav-item">
+    <!--  <li class="nav-item">
         <a class="nav-link {{ (request()->is('roles*')) ? 'nav-link active' : '' }}" href="{{ route('roles.index')}}">
             <i class="fas fa-fw fa-cube"></i>
             <span>User Role</span></a>
-    </li> --}}
-
+    </li> -->
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
     @endcan
     <!-- Sidebar Toggler (Sidebar) -->
-    {{-- <div class="text-center d-none d-md-inline">
+    <!-- <div class="text-center d-none d-md-inline">
         <button class="rounded-circle border-0" id="sidebarToggle"></button>
-    </div> --}}
+    </div> -->
 
 </ul>

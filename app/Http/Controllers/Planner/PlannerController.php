@@ -15,12 +15,17 @@ use App\PackageOther;
 use App\PackageMenu;
 use App\PlannerTask;
 use App\JobType;
+use App\Inventory;
 use App\PlannerEquipment;
 use App\PlannerOther;
 use App\PlannerTimeTable;
 use App\PlannerStaffing;
+use App\PlannerTaskStaff;
+use App\Payment;
+use App\PaymentType;
 use App\User;
 use Validator;
+use Illuminate\Support\Str;
 
 class PlannerController extends Controller
 {
@@ -68,10 +73,10 @@ class PlannerController extends Controller
         \DB::beginTransaction();
 
         try {
-
             $messages = [
                 'event_date.unique' => 'The Event Date has already been taken. Please choose another Date',
-                'payment_status_id.required' => 'Please select Payment Status'
+                'payment_status_id.required' => 'Please select Payment Status',
+                'event_date.gte' => 'The :attribute event date must be greater than or equal to date today.',
             ];
              //validate request value
              $validator = Validator::make($request->all(), [
@@ -160,7 +165,20 @@ class PlannerController extends Controller
         $package_equipments = PackageEquipments::where('package_id',$planner->package_id)->get();
         $package_others = PackageOther::where('package_id',$planner->package_id)->get();
         $package_menus = PackageMenu::where('package_id',$planner->package_id)->get();
+        $plannerStaffingsServer = PlannerStaffing::where('planner_id',$planner->id)
+                            ->whereHas('user', function($query){
+                                $query->where('job_type_id',5);
+                            })->get();
+        $plannerStaffingsBusboy = PlannerStaffing::where('planner_id',$planner->id)
+                            ->whereHas('user', function($query){
+                                $query->where('job_type_id',3);
+                            })->get();
+        $plannerStaffingsDishwasher = PlannerStaffing::where('planner_id',$planner->id)
+                            ->whereHas('user', function($query){
+                                $query->where('job_type_id',4);
+                            })->get();
         $usersHeadStaff = User::where('job_type_id',2)->get();
+        $paymentTypes = PaymentType::all();
         $usersStaffJobTypes = User::whereIn('job_type_id',[3,4,5])->whereDoesntHave('planner_staffings',function (Builder $query) use ($plannerDate) {
             $query->where('task_date','=', $plannerDate);
         })->get();
@@ -173,6 +191,23 @@ class PlannerController extends Controller
             ['type' => 'Post-Event']
         ];
 
+        $taskStatus = [
+            ['status' => 'pending'],
+            ['status' => 'finished']
+        ];
+
+        $plannerStatus = [
+            ['status' => 'pending'],
+            ['status' => 'on-going'],
+            ['status' => 'done']
+        ];
+
+        $equipmentStatus = [
+            ['status' => 'idle'],
+            ['status' => 'in-use'],
+            ['status' => 'returned']
+        ];
+
         return view('planner.edit', [
             'planner' => $planner,
             'packages' => $packages,
@@ -183,7 +218,14 @@ class PlannerController extends Controller
             'package_equipments' =>  $package_equipments,
             'package_others' => $package_others,
             'package_menus' => $package_menus,
-            'usersStaffJobTypes' => $usersStaffJobTypes
+            'usersStaffJobTypes' => $usersStaffJobTypes,
+            'paymentTypes' => $paymentTypes,
+            'plannerStaffingsServer' => $plannerStaffingsServer,
+            'plannerStaffingsBusboy' => $plannerStaffingsBusboy,
+            'plannerStaffingsDishwasher' => $plannerStaffingsDishwasher,
+            'taskStatus' => $taskStatus,
+            'equipmentStatus' => $equipmentStatus,
+            'plannerStatus' => $plannerStatus
         ]);
     }
 
@@ -208,19 +250,22 @@ class PlannerController extends Controller
 
             $messages = [
                 'event_date.unique' => 'The Event Date has already been taken. Please choose another Date',
-                'payment_status_id.required' => 'Please select Payment Status'
+                'payment_status_id.required' => 'Please select Payment Status',
+                'event_date.after_or_equal' => 'The :attribute event date must be greater than or equal to date today.',
             ];
              //validate request value
              $validator = Validator::make($request->all(), [
                 'event_name' => 'required|unique:planners,event_name,' . $planner->id,
                 'event_venue' => 'required|string|max:200',
-                'event_date' => 'required|string|unique:planners,event_date,' . $planner->id,
+                'date_today' => '',
+                'event_date' => 'string|unique:planners,event_date,' . $planner->id,
                 'package_id' => 'required|integer',
                 'no_of_guests' => 'numeric|gt:0',
                 'note' => 'max:200',
                 'payment_status_id' => 'required|integer',
                 'customer_fullname' => 'required|string|max:50',
-                'contact_number' => 'required|digits:10'
+                'contact_number' => 'required|digits:10',
+                'planner_status' => 'required|string'
             ],$messages);
     
             if ($validator->fails()) {
@@ -237,12 +282,25 @@ class PlannerController extends Controller
             $eventTime = $eventDateTime[1];
             // $eventTime = substr($eventDateTime[1],0,5);
             //save category
+            $plannerEventDate = "";
+            $plannerEventTime = "";
+            if($planner->event_date === $eventDate){
+                $plannerEventDate =  $eventDate;
+                $plannerEventTime =  $eventTime;
+            } else {
+                if($eventDate < date('Y-m-d')){
+                    return back()->withErrors(['event_date' => 'The event date must be greater than or equal to date today.'])->withInput();
+                } else {
+                    $plannerEventDate = $eventDate;
+                    $plannerEventTime = $eventTime;
+                }
+            }
          
             $planner->or_no = $this->generateUniqueCode();
             $planner->event_name = $request->event_name;
             $planner->event_venue = $request->event_venue;
             $planner->no_of_guests = $package->package_pax;
-            $planner->event_date = $eventDate;
+            $planner->event_date = $plannerEventDate;
             $planner->event_time = $eventTime;
             $planner->package_id = $package->id;
             $planner->note = $request->note;
@@ -250,6 +308,7 @@ class PlannerController extends Controller
             $planner->customer_fullname = $request->customer_fullname;
             $planner->contact_number = $request->contact_number;
             $planner->total_price = $package->package_price;
+            $planner->status = $request->planner_status;
             $planner->updater_id = $user;
             $planner->save();
 
@@ -323,16 +382,15 @@ class PlannerController extends Controller
     {
         \DB::beginTransaction();
         try {
+
+            $planner = Planner::find($request->planner_id);
             $messages = [
-                'user_id.required' => 'Staff field is required',
                 'task_type.required' => 'Task Type field is required',
-                'package_task_id.unique' => 'The Task in Tasks Menu has already been taken',
-                'task_date.unique' => 'The Task Date/Time in Tasks Menu has already been taken',
-                'user_id.unique' => 'The User in Tasks Menu has already been taken in another Event',
+                'package_task_id.unique' => 'The Task Selected in Tasks Menu has already been taken',
+                'task_date.unique' => 'The Task Date/Time Selected in Tasks Menu has already been taken',
+                'task_date.after_or_equal' => 'The :attribute must be greater than or equal to date today.',
+                // 'user_id.unique' => 'The User Selected in Tasks Menu has already been taken in another Event',
             ];
-
-         
-
             //validate request value
             $validator = Validator::make($request->all(), [
             'package_task_id' => [
@@ -342,9 +400,9 @@ class PlannerController extends Controller
                     ->where('package_task_id', $request->package_task_id);
                 }),
             ],
-            'task_date'=> 'required|string',
             'task_date' => [
                 'required',
+                'string',
                 Rule::unique('planner_tasks')->where(function ($query) use($request) {
                     $taskDateTime = explode(" | ", $request->task_date);
                     $taskDate = $taskDateTime[0];
@@ -355,18 +413,6 @@ class PlannerController extends Controller
                 }),
             ],
             'task_type'=> 'required|string',
-            'user_id'=> [
-                'required',
-                'integer',
-                Rule::unique('planner_tasks')->where(function ($query) use($request) {
-                    $taskDateTime = explode(" | ", $request->task_date);
-                    $taskDate = $taskDateTime[0];
-                    $taskTime = $taskDateTime[1];
-                    return $query->where('user_id', $request->user_id)
-                    ->where('task_time', $taskTime)
-                    ->where('task_date', $taskDate);
-                })
-            ],
             'planner_id'=> 'required|integer'
             ],$messages);
     
@@ -378,13 +424,23 @@ class PlannerController extends Controller
             $taskDate = $taskDateTime[0];
             $taskTime = $taskDateTime[1];
 
+            $plannerEventDate = "";
+            $plannerEventTime = "";
+            if($taskDate >= date('Y-m-d')){
+                $plannerEventDate = $taskDate;
+                $plannerEventTime = $taskTime;
+            } else {
+                return back()->withErrors([
+                    'task_date' => 'The Task Date/Time must be greater than or equal to date today or less than or equal to actual event date.'])->withInput();
+            }
+
             $planner_task = new PlannerTask();
 
             $planner_task->planner_id = $request->planner_id;
             $planner_task->package_task_id = $request->package_task_id;
-            $planner_task->user_id = $request->user_id;
-            $planner_task->task_date = $taskDate;
-            $planner_task->task_time = $taskTime;
+            // $planner_task->user_id = $request->user_id;
+            $planner_task->task_date = $plannerEventDate;
+            $planner_task->task_time = $plannerEventTime;
             $planner_task->task_type = $request->task_type;
             $planner_task->save();
 
@@ -396,6 +452,186 @@ class PlannerController extends Controller
             \DB::rollback();
             return back()->withErrors($e->getMessage());
         }
+    }
+
+    public function updateTask(Request $request)
+    {
+        \DB::beginTransaction();
+        try {
+
+            $messages = [
+                'task_type.required' => 'Task Type field is required',
+                'package_task_id.unique' => 'The Task Selected in Tasks Menu has already been taken',
+                'task_date.unique' => 'The Task Date/Time Selected in Tasks Menu has already been taken',
+                'task_date.after_or_equal' => 'The :attribute must be greater than or equal to date today.',
+                // 'user_id.unique' => 'The User Selected in Tasks Menu has already been taken in another Event',
+            ];
+
+            //validate request value
+            $validator = Validator::make($request->all(), [
+            'package_task_id' => [
+                'required',
+                Rule::unique('planner_tasks')->where(function ($query) use($request) {
+                    return $query->where('planner_id', $request->planner_id)
+                    ->where('package_task_id', $request->package_task_id);
+                })->ignore($request->planner_task_ids),
+            ],
+            'task_date' => [
+                'required',
+                'string',
+                Rule::unique('planner_tasks')->where(function ($query) use($request) {
+                    $taskDateTime = explode(" | ", $request->task_date);
+                    $taskDate = $taskDateTime[0];
+                    $taskTime = $taskDateTime[1];
+                    return $query->where('planner_id', $request->planner_id)
+                    ->where('task_time', $taskTime)
+                    ->where('task_date', $taskDate);
+                })->ignore($request->planner_task_ids),
+            ],
+            'task_type'=> 'required|string',
+            'task_status'=> 'required|string',
+            'planner_id'=> 'required|integer'
+            ],$messages);
+    
+            if ($validator->fails()) {
+                return response()->json([
+                    'data' => $validator->errors()
+                ], 422);
+            }
+            $planner = Planner::find($request->planner_id);
+            $planner_task = PlannerTask::find($request->planner_task_ids);
+            $taskDateTime = explode(" | ", $request->task_date);
+            $taskDate = $taskDateTime[0];
+            $taskTime = $taskDateTime[1];
+
+            $plannerEventDate = "";
+            $plannerEventTime = "";
+            if($planner_task->task_date === $taskDate){
+                $plannerEventDate = $taskDate;
+                $plannerEventTime = $taskTime;
+            } else {
+                if($taskDate < date('Y-m-d')){
+                    return response()->json([
+                        'data' => ['task_date' => 'The event date must be greater than or equal to date today or less than or equal to actual event date.']
+                    ], 422);
+                } else {
+                    $plannerEventDate = $taskDate;
+                    $plannerEventTime = $taskTime;
+                }
+            }
+
+           
+            $planner_task->package_task_id = $request->package_task_id;
+            $planner_task->task_date = $plannerEventDate;
+            $planner_task->task_time = $plannerEventTime;
+            $planner_task->task_type = $request->task_type;
+            $planner_task->status = $request->task_status;
+            $planner_task->save();
+
+            \DB::commit();
+
+            return response()->json([
+                'data' => $planner_task,
+                'status' => 'success'
+            ], 200);
+
+        } catch (\Exception $e) {
+            \DB::rollback();
+            return response()->json([
+                'data' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function destroyTask(Request $request)
+    {
+        ////prevent other user to access to this page
+        $this->authorize("isAdmin");
+
+        //delete category
+        $plannerTask = PlannerTask::findOrFail($request->id);
+        $plannerTask->planner_task_staffs()->delete();
+
+        if($plannerTask->delete()){
+            return response()->json([
+                'data' => 'success',
+                'status' => 'success'
+            ], 200);
+        }
+    }
+
+    public function storeTaskStaff(Request $request)
+    {
+        \DB::beginTransaction();
+        try {
+            $messages = [
+                'user_id.required' => 'Staff field is required',
+                'user_id.unique' => 'The User Selected has already been taken in a task',
+            ];
+
+           
+            //validate request value
+            $validator = Validator::make($request->all(), [
+            'user_id'=> [
+                'required',
+                'integer',
+                Rule::unique('planner_task_staff')->where(function ($query) use($request) {
+                    $plannerTask = PlannerTask::find($request->planner_task_id);
+                    return $query->where('user_id', $request->user_id)
+                                ->orWhere('planner_task_id', $request->planner_task_id)
+                                ->orWhere('task_date', $plannerTask->task_date);
+                }),
+                // Rule::unique('planner_tasks')->where(function ($query) use($request) {
+                //     $planner_task = PlannerTask::find($request->planner_task_id);
+                //     return $query->where('task_date', $planner_task->task_date);
+                // }),
+            ],
+            'planner_task_id'=> 'required|integer'
+            ],$messages);
+    
+            if ($validator->fails()) {
+                return response()->json([
+                    'data' => $validator->errors()
+                ], 422);
+            }
+           
+            $plannerTask = PlannerTask::find($request->planner_task_id);
+            $planner_task_staff = new PlannerTaskStaff();
+            $planner_task_staff->planner_task_id = $request->planner_task_id;
+            $planner_task_staff->user_id = $request->user_id;
+            $planner_task_staff->task_date = $plannerTask->task_date;
+            $planner_task_staff->save();
+
+            \DB::commit();
+
+            return response()->json([
+                'data' => $planner_task_staff,
+                'status' => 'success'
+            ], 200);
+
+        } catch (\Exception $e) {
+            \DB::rollback();
+            return response()->json([
+                'data' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function destroyTaskStaff(Request $request)
+    {
+          ////prevent other user to access to this page
+          $this->authorize("isAdmin");
+
+          //delete category
+          $plannerTaskStaff = PlannerTaskStaff::findOrFail($request->id);
+
+          if($plannerTaskStaff->delete()){
+            return response()->json([
+                'data' => 'success',
+                'status' => 'success'
+            ], 200);
+          }
+
     }
 
     public function storeEquipment(Request $request)
@@ -423,7 +659,7 @@ class PlannerController extends Controller
             if ($validator->fails()) {
                 return back()->withErrors($validator->errors())->withInput();
             }
-
+            
             $plannerEquipment = new PlannerEquipment();
             $plannerEquipment->planner_id = $request->planner_id;
             $plannerEquipment->package_equipment_id = $request->package_equipment_id;
@@ -436,6 +672,108 @@ class PlannerController extends Controller
         } catch (\Exception $e) {
             \DB::rollback();
             return back()->withErrors($e->getMessage());
+        }
+    }
+
+    public function updateEquipment(Request $request)
+    {
+        \DB::beginTransaction();
+        try {
+
+            $messages = [
+                'status.required' => 'Status field is required',
+                'return_qty.required' => 'Return Quantity field is required'
+            ];
+
+             //validate request value
+             $validator = Validator::make($request->all(), [
+                'status' => 'required|string',
+                'return_qty' => 'sometimes|required|integer',
+                'planner_equipments_id'=> 'required|integer'
+            ],$messages);
+    
+            if ($validator->fails()) {
+                return response()->json([
+                    'data' => $validator->errors()
+                ], 422);
+            }
+            
+            $plannerEquipment = PlannerEquipment::find($request->planner_equipments_id);
+            $plannerEquipment->status = $request->status;
+            // $plannerEquipment->return_qty =  $request->status == 'returned' ? $request->return_qty : 0;
+            if($plannerEquipment->save()){
+               $inventoryId = $plannerEquipment->package_equipment->inventory->id;
+               $requiredQuantity = $plannerEquipment->package_equipment->quantity;
+               $inventory = Inventory::find($inventoryId);
+               if($plannerEquipment->status == 'returned'){
+                    if($plannerEquipment->missing_qty == 0){
+                        return response()->json([
+                            'data' =>  ['status' => ['Set status to In-Use first before returning the item']]
+                        ], 422);
+                    }
+                    $totalMissing = $plannerEquipment->missing_qty;
+                    if($request->return_qty <= $totalMissing){
+                        $inventory->quantity_available = $inventory->quantity_available + $request->return_qty;
+                        $inventory->quantity_in_use =  $inventory->quantity_in_use - $request->return_qty;
+                        $plannerEquipment->missing_qty = $plannerEquipment->missing_qty - $request->return_qty;
+                        $plannerEquipment->return_qty =  $plannerEquipment->return_qty + $request->return_qty;
+                        $plannerEquipment->save();
+                    } else {
+                        return response()->json([
+                            'data' =>  ['return_qty' => ['Return Quantity must be less than or equal to Missing Quantity']]
+                        ], 422);
+                    }
+               } else if($plannerEquipment->status == 'idle'){
+                    if($plannerEquipment->missing_qty > 0){
+                        $inventory->quantity_available = $inventory->quantity_available + $plannerEquipment->missing_qty;
+                        $inventory->quantity_in_use =  $inventory->quantity_in_use - $plannerEquipment->missing_qty;
+                        $plannerEquipment->return_qty = 0;
+                        $plannerEquipment->missing_qty = 0;
+                        $plannerEquipment->save();
+                    }
+               } else {
+                if($plannerEquipment->missing_qty <= 0 && $plannerEquipment->return_qty <= 0){
+                    $inventory->quantity_available = $inventory->quantity_available - $requiredQuantity;
+                    $inventory->quantity_in_use =  $inventory->quantity_in_use + $requiredQuantity;
+                    $plannerEquipment->missing_qty =  $requiredQuantity;
+                    $plannerEquipment->save();
+                } else {
+                    return response()->json([
+                        'data' =>  ['status' => ['The Item is currently in use']]
+                    ], 422);
+                }
+               }
+               $inventory->save();
+            }
+
+            \DB::commit();
+
+            return response()->json([
+                'data' => $inventory,
+                'status' => 'success'
+            ], 200);
+
+        } catch (\Exception $e) {
+            \DB::rollback();
+            return response()->json([
+                'data' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function destroyEquipment(Request $request)
+    {
+        ////prevent other user to access to this page
+        $this->authorize("isAdmin");
+
+        //delete category
+        $plannerEquipment = PlannerEquipment::findOrFail($request->id);
+
+        if($plannerEquipment->delete()){
+            return response()->json([
+                'data' => 'success',
+                'status' => 'success'
+            ], 200);
         }
     }
 
@@ -512,6 +850,22 @@ class PlannerController extends Controller
         }
     }
 
+    public function destroyOther(Request $request)
+    {
+        ////prevent other user to access to this page
+        $this->authorize("isAdmin");
+
+        //delete category
+        $plannerOther = PlannerOther::findOrFail($request->id);
+
+        if($plannerOther->delete()){
+            return response()->json([
+                'data' => 'success',
+                'status' => 'success'
+            ], 200);
+        }
+    }
+
     public function storeStaffing(Request $request)
     {
         \DB::beginTransaction();
@@ -526,7 +880,7 @@ class PlannerController extends Controller
             'user_id'=> [
                 'required',
                 'integer',
-                Rule::unique('planner_tasks')->where(function ($query) use($request) {
+                Rule::unique('planner_staffings')->where(function ($query) use($request) {
                     $planner = Planner::find($request->planner_id);
                     return $query->where('user_id', $request->user_id)
                     ->where('task_date', $planner->event_date);
@@ -554,6 +908,39 @@ class PlannerController extends Controller
         } catch (\Exception $e) {
             \DB::rollback();
             return back()->withErrors($e->getMessage());
+        }
+    }
+
+    public function destroyStaffing(Request $request)
+    {
+        ////prevent other user to access to this page
+        $this->authorize("isAdmin");
+
+        //delete category
+        $plannerStaffing = PlannerStaffing::findOrFail($request->id);
+
+        if($plannerStaffing->delete()){
+            return response()->json([
+                'data' => 'success',
+                'status' => 'success'
+            ], 200);
+        }
+    }
+
+    public function changeAttendanaceStaffing(Request $request)
+    {
+        ////prevent other user to access to this page
+        $this->authorize("isAdmin");
+
+        //delete category
+        $plannerStaffing = PlannerStaffing::findOrFail($request->id)->first();
+        $plannerStaffing->attendance = $request->attendance;
+
+        if($plannerStaffing->save()){
+            return response()->json([
+                'data' => 'success',
+                'status' => 'success'
+            ], 200);
         }
     }
 
@@ -605,6 +992,103 @@ class PlannerController extends Controller
         } catch (\Exception $e) {
             \DB::rollback();
             return back()->withErrors($e->getMessage());
+        }
+    }
+
+    public function destroyTimeTable(Request $request)
+    {
+        ////prevent other user to access to this page
+        $this->authorize("isAdmin");
+
+        //delete category
+        $plannerTimeTable = PlannerTimeTable::findOrFail($request->id);
+
+        if($plannerTimeTable->delete()){
+            return response()->json([
+                'data' => 'success',
+                'status' => 'success'
+            ], 200);
+        }
+    }
+
+    public function storePayment(Request $request)
+    {
+        \DB::beginTransaction();
+        try {
+
+             //validate request value
+             $validator = Validator::make($request->all(), [
+                'payment_price' => 'required|numeric',
+                'payment_type' => 'required|string',
+                'planner_id'=> 'required|integer'
+            ]);
+    
+            if ($validator->fails()) {
+                return back()->withErrors($validator->errors())->withInput();
+            }
+
+            //check current user
+            $user = \Auth::user()->id;
+
+            $planner = Planner::find($request->planner_id);
+            $plannerOther = PlannerOther::where('planner_id',$planner->id)->get();
+           
+            $servicePriceTotal = 0;
+            if(count($plannerOther) > 0 ){
+                foreach($plannerOther as $other){
+                    $packageOtherServicePrice = PackageOther::select(\DB::raw("SUM(service_price) as price"))->where('id',$other->package_other_id)->get();
+                    $servicePriceTotal +=$packageOtherServicePrice[0]->price;
+                }
+            }
+         
+            $totalBalance = $planner->total_price + $servicePriceTotal;
+           
+            $overallPayment  = 0;
+            $payments = Payment::select(\DB::raw("SUM(payment_price) as price"))->where('planner_id',$planner->id)->get();
+            if(count($payments) > 0){
+                foreach($payments as $payment){
+                    $overallPayment += $payment->price;
+                }
+            }
+
+           
+            $totalPayment = $overallPayment + $request->payment_price;
+           
+            if($totalPayment > $totalBalance){
+                return back()->withErrors(['payment_price' => 'Payment Price must be less than or equal to Total Balance: ' .Str::currency($totalBalance)])->withInput();
+            }
+
+            $plannerPayment = new Payment();
+            $plannerPayment->planner_id = $request->planner_id;
+            $plannerPayment->payment_price = $request->payment_price;
+            $plannerPayment->payment_type = $request->payment_type;
+            $plannerPayment->creator_id = $user;
+            $plannerPayment->updater_id = $user;
+            $plannerPayment->save();
+
+            \DB::commit();
+
+            return back()->with("successMsg", "Successfully Add Payment in Payment Section");
+
+        } catch (\Exception $e) {
+            \DB::rollback();
+            return back()->withErrors($e->getMessage());
+        }
+    }
+
+    public function destroyPayment(Request $request)
+    {
+        ////prevent other user to access to this page
+        $this->authorize("isAdmin");
+
+        //delete category
+        $plannerPayment = Payment::findOrFail($request->id);
+
+        if($plannerPayment->delete()){
+            return response()->json([
+                'data' => 'success',
+                'status' => 'success'
+            ], 200);
         }
     }
 

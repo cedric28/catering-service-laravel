@@ -173,6 +173,7 @@ class InventoryController extends Controller
             $inventory->name = $request->name;
             $inventory->description = $request->description;
             $inventory->quantity = $request->quantity;
+            $inventory->quantity_available = $request->quantity;
             $inventory->inventory_category_id = $request->inventory_category_id;
             $inventory->updater_id = $user;
             $inventory->save();

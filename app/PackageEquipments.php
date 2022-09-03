@@ -22,4 +22,14 @@ class PackageEquipments extends Model
     {
         return $this->belongsTo(Package::class, 'package_id');
     }
+
+    public function inventory()
+    {
+        return $this->belongsTo(Inventory::class, 'inventory_id');
+    }
+
+    public function planner_equipments()
+    {
+        return $this->hasMany(PlannerEquipment::class,'package_equipment_id','id');
+    }
 }

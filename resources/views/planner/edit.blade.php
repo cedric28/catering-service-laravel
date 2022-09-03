@@ -1,7 +1,24 @@
 @extends('layouts.app')
 
 @section('content')
-
+@push('scripts')
+	<script src="{{ asset('assets/vendor/datatables/jquery.dataTables.min.js') }}"></script>
+	<script src="{{ asset('assets/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
+	<script src="{{ asset('assets/js/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
+	<script src="{{ asset('assets/js/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
+	<script src="{{ asset('assets/js/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
+	<script src="{{ asset('assets/js/datatables-buttons/js/buttons.bootstrap4.min.js') }}"></script>
+	<script src="{{ asset('assets/js/jszip/jszip.min.js') }}"></script>
+	<script src="{{ asset('assets/js/pdfmake/pdfmake.min.js') }}"></script>
+	<script src="{{ asset('assets/js/pdfmake/vfs_fonts.js') }}"></script>
+	<script src="{{ asset('assets/js/datatables-buttons/js/buttons.html5.min.js') }}"></script>
+	<script src="{{ asset('assets/js/datatables-buttons/js/buttons.print.min.js') }}"></script>
+	<script src="{{ asset('assets/js/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
+	<script>
+		let planner_id = {!! json_encode($planner->id) !!};
+		let event_name = {!! json_encode($planner->event_name) !!};
+	</script>
+@endpush
 	<!-- Page header -->
 	<div class="page-header page-header-light">
 		<div class="page-header-content header-elements-md-inline">
@@ -46,17 +63,18 @@
 							<form action="{{ route('planners.update', $planner->id )}}" method="POST">
 								@csrf
 								@method('PATCH')
+								<input type="hidden" name="date_today" value="{{ date('Y-m-d') }}" />
 								<div class="form-group row">
 									<label class="col-lg-3 col-form-label">Event Name:</label>
 									<div class="col-lg-9">
-										<input type="text" name="event_name" value="{{ old('event_name', $planner->event_name) }}" class="@error('event_name') is-invalid @enderror form-control" placeholder="e.g Yash & Ivan Wedding">
+										<input type="text" @if($planner->status == "done") disabled='disabled' @endif name="event_name" value="{{ old('event_name', $planner->event_name) }}" class="@error('event_name') is-invalid @enderror form-control" placeholder="e.g Yash & Ivan Wedding">
 									</div>
 								</div>
 
 								<div class="form-group row">
 									<label class="col-lg-3 col-form-label">Event Venue:</label>
 									<div class="col-lg-9">
-										<input type="text" name="event_venue" value="{{ old('event_venue', $planner->event_venue) }}" class="@error('event_venue') is-invalid @enderror form-control" placeholder="e.g Manila Hotel">
+										<input type="text" @if($planner->status == "done") disabled='disabled' @endif name="event_venue" value="{{ old('event_venue', $planner->event_venue) }}" class="@error('event_venue') is-invalid @enderror form-control" placeholder="e.g Manila Hotel">
 									</div>
 								</div>
 
@@ -67,7 +85,7 @@
 											$eventDate = $planner->event_date.' | '.$planner->event_time;
 										@endphp
 										<div class="input-group date" id="reservationdate" data-target-input="nearest">
-											<input type="text" name="event_date" value="{{ old('event_date', $eventDate) }}" placeholder="e.g 2022-08-20 8:27 PM" onkeydown="return false;" class="@error('event_date') is-invalid @enderror form-control datetimepicker-input" data-target="#reservationdate"/>
+											<input type="text" @if($planner->status == "done") disabled='disabled' @endif id="event_date_time" name="event_date" value="{{ old('event_date', $eventDate) }}" placeholder="e.g 2022-08-20 8:27 PM" onkeydown="return false;" class="@error('event_date') is-invalid @enderror form-control datetimepicker-input" data-target="#reservationdate"/>
 											<div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
 												<div class="input-group-text"><i class="fa fa-calendar"></i></div>
 											</div>
@@ -77,7 +95,7 @@
 								<div class="form-group row">
 									<label class="col-lg-3 col-form-label">Package:</label>
 									<div class="col-lg-9">
-										<select id="package_id" name="package_id" class="@error('package_id') is-invalid @enderror form-control select2">
+										<select id="package_id" @if($planner->status == "done") disabled='disabled' @endif name="package_id" class="@error('package_id') is-invalid @enderror form-control select2">
 											<option value="">Select Package</option>
 											@foreach ($packages as $package)
 												<option data-guest="{{ $package->package_pax }}" value="{{ $package->id }}" {{ ($package->id == old('package_id',$planner->package_id)) ? ' selected' : '' }}>{{ ucwords($package->name) }} - {{ $package->main_package->name }}</option>
@@ -96,14 +114,27 @@
 								<div class="form-group row">
 									<label class="col-form-label col-lg-3">Notes:</label>
 									<div class="col-lg-9">
-										<textarea rows="3" cols="3" name="note" class="@error('note') is-invalid @enderror form-control" placeholder="e.g special request">{{ $planner->note }}</textarea>
+										<textarea rows="3" cols="3" @if($planner->status == "done") disabled='disabled' @endif name="note" class="@error('note') is-invalid @enderror form-control" placeholder="e.g special request">{{ $planner->note }}</textarea>
+									</div>
+								</div>
+
+								  
+								<div class="form-group row">
+									<label class="col-lg-3 col-form-label">Status:</label>
+									<div class="col-lg-9">
+										<select id="planner_status" @if($planner->status == "done") disabled='disabled' @endif name="planner_status" class="@error('planner_status') is-invalid @enderror form-control select2">
+											<option value="">Select Status</option>
+											@foreach ($plannerStatus as $status)
+												<option value="{{ $status['status'] }}" {{ ($status["status"] == old("planner_status", $planner->status)) ? " selected" : "" }}>{{ ucwords($status['status']) }}</option>
+											@endforeach
+										</select>
 									</div>
 								</div>
 
 								<div class="form-group row">
 									<label class="col-lg-3 col-form-label">Payment Status:</label>
 									<div class="col-lg-9">
-										<select id="payment_status_id" name="payment_status_id" class="@error('payment_status_id') is-invalid @enderror form-control select2">
+										<select id="payment_status_id" @if($planner->status == "done") disabled='disabled' @endif  name="payment_status_id" class="@error('payment_status_id') is-invalid @enderror form-control select2">
 											<option value="">Select Payment Status</option>
 											@foreach ($paymentStatus as $status)
 												<option value="{{ $status->id }}"{{ ($status->id == old('payment_status_id', $planner->payment_status_id)) ? ' selected' : '' }}>{{ ucwords($status->name) }}</option>
@@ -115,7 +146,7 @@
 								<div class="form-group row">
 									<label class="col-lg-3 col-form-label">Customer Fullname:</label>
 									<div class="col-lg-9">
-										<input type="text" name="customer_fullname" value="{{ old('customer_fullname', $planner->customer_fullname) }}" class="@error('customer_fullname') is-invalid @enderror form-control" placeholder="e.g Yash Lozano">
+										<input type="text" name="customer_fullname" @if($planner->status == "done") disabled='disabled' @endif value="{{ old('customer_fullname', $planner->customer_fullname) }}" class="@error('customer_fullname') is-invalid @enderror form-control" placeholder="e.g Yash Lozano">
 									</div>
 								</div>	
 
@@ -126,13 +157,13 @@
 											<div class="input-group-prepend">
 												<span class="input-group-text">+63</span>
 											</div>
-											<input type="text" name="contact_number" value="{{ old('contact_number',  $planner->contact_number) }}" class="@error('contact_number') is-invalid @enderror form-control" placeholder="e.g 9176270449" >
+											<input type="text" @if($planner->status == "done") disabled='disabled' @endif name="contact_number" value="{{ old('contact_number',  $planner->contact_number) }}" class="@error('contact_number') is-invalid @enderror form-control" placeholder="e.g 9176270449" >
 										</div>
 									</div>
 								</div>
 
 								<div class="text-right">
-									<button type="submit" class="btn btn-primary">Save <i class="icon-paperplane ml-2"></i></button>
+									<button type="submit" @if($planner->status == "done") disabled='disabled' @endif class="btn btn-primary">Save <i class="icon-paperplane ml-2"></i></button>
 								</div>
 							</form>
 						</div>
@@ -180,6 +211,9 @@
 										<li class="nav-item">
 											<a class="nav-link" id="custom-tabs-beo-tab" data-toggle="pill" href="#custom-tabs-beo" role="tab" aria-controls="custom-tabs-beo" aria-selected="false">BEO</a>
 										</li>
+										<li class="nav-item">
+											<a class="nav-link" id="custom-tabs-payment-tab" data-toggle="pill" href="#custom-tabs-payment" role="tab" aria-controls="custom-tabs-payment" aria-selected="false">Payments</a>
+										</li>
 									</ul>
 								</div>
 								<div class="card-body">
@@ -205,6 +239,9 @@
 										<div class="tab-pane fade" id="custom-tabs-beo" role="tabpanel" aria-labelledby="custom-tabs-beo-tab">
 											@include('planner.tables.beo')
 										</div>
+										<div class="tab-pane fade" id="custom-tabs-payment" role="tabpanel" aria-labelledby="custom-tabs-payment-tab">
+											@include('planner.tables.payment')
+										</div>
 									</div>
 								</div>
 							</div>
@@ -216,9 +253,7 @@
 	</div>
 	<!-- /page content -->
 	@push('scripts')
-	
 	<script>	
-	
 	let packagePaxValue = $("#package_id option:selected" ).data('guest');
 	$('#no_of_guests').val(packagePaxValue);
 	$('#package_id').on('change', function() {
@@ -226,8 +261,12 @@
 		$('#no_of_guests').val(packagePaxValues);
 	});
 
-
 	let eventDate = {!! json_encode($planner->event_date) !!};
+	let newEventDate = new Date(eventDate);
+	let eventTime = {!! json_encode($planner->event_time) !!};
+	let eventMonth = ('0' + (newEventDate.getMonth() + 1)).slice(-2);
+	let eventDay = ('0' + newEventDate.getDate()).slice(-2);
+	let eventYear = newEventDate.getFullYear();
 	let d = new Date();
 	let month = ('0' + (d.getMonth() + 1)).slice(-2);
 	let day = ('0' + d.getDate()).slice(-2);
@@ -236,15 +275,13 @@
 	let formattedMonth = ('0' + (formattedEventDate.getMonth() + 1)).slice(-2);
 	let formattedDay = ('0' + formattedEventDate.getDate()).slice(-2);
 	let formattedYear = formattedEventDate.getFullYear();
+
 	$(document).ready(function() {
 		var bindDatePicker = function() {
 			$("#reservationdate").datetimepicker({
-				showClear: true,
-				showClose: true,
 				allowInputToggle: true,
 				useCurrent: false,
-				ignoreReadonly: true,
-				minDate: `${year}-${month}-${day}`,
+				// minDate: `${year}-${month}-${day}`,
 				maxDate: `${year}-12-31`,
 				format:'YYYY-MM-DD | hh:mm A',
 				icons: {
@@ -290,7 +327,7 @@
 		
  	});
 
-	 $(document).ready(function() {
+	$(document).ready(function() {
 		let bindTaskDatePicker = function() {
 			$("#taskdate").datetimepicker({
 					showClear: true,
@@ -298,7 +335,7 @@
 					allowInputToggle: true,
 					useCurrent: false,
 					ignoreReadonly: true,
-					minDate: `${year}-${month}-${day}`,
+					// minDate: `${year}-${month}-${day}`,
 					maxDate: `${formattedYear}-${formattedMonth}-${formattedDay}`,
 					format:'YYYY-MM-DD | hh:mm A',
 					icons: {
@@ -343,6 +380,58 @@
 		
  	});
 
+	$(document).ready(function() {
+		let bindPlannerTaskDatePicker = function() {
+			$("#plannertaskdate").datetimepicker({
+					showClear: true,
+					showClose: true,
+					allowInputToggle: true,
+					useCurrent: false,
+					ignoreReadonly: true,
+					// minDate: `${year}-${month}-${day}`,
+					maxDate: `${formattedYear}-${formattedMonth}-${formattedDay}`,
+					format:'YYYY-MM-DD | hh:mm A',
+					icons: {
+						time: "fas fa-clock",
+						date: "fas fa-calendar",
+						up: "fas fa-chevron-up",
+						down: "fas fa-chevron-down"
+					}
+				}).find('input:first').on("blur",function () {
+					// check if the date is correct. We can accept dd-mm-yyyy and yyyy-mm-dd.
+					// update the format if it's yyyy-mm-dd
+					var date = parseDate($(this).val());
+
+					if (! isValidDate(date)) {
+						//create date based on momentjs (we have that)
+						date = moment().format('YYYY-MM-DD | hh:mm A');
+					}
+
+					$(this).val(date);
+				});
+		}
+		var isValidDate = function(value, format) {
+			format = format || false;
+			// lets parse the date to the best of our knowledge
+			if (format) {
+				value = parseDate(value);
+			}
+
+			var timestamp = Date.parse(value);
+
+			return isNaN(timestamp) == false;
+		}
+		
+		var parseDate = function(value) {
+			var m = value.match(/^(\d{1,2})(\/|-)?(\d{1,2})(\/|-)?(\d{4})$/);
+			if (m)
+				value = m[5] + '-' + ("00" + m[3]).slice(-2) + '-' + ("00" + m[1]).slice(-2);
+
+			return value;
+		}
+		bindPlannerTaskDatePicker();
+		
+ 	});
 
 	 $(document).ready(function() {
 		let bindTimeTablePicker = function() {

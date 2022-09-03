@@ -6412,6 +6412,7 @@ a.close.disabled {
 
 .bg-primary {
   background-color: #4e73df !important;
+  color: #fff !important;
 }
 
 a.bg-primary:hover, a.bg-primary:focus,
@@ -6462,6 +6463,7 @@ button.bg-warning:focus {
 
 .bg-danger {
   background-color: #e74a3b !important;
+  color: #fff!important;
 }
 
 a.bg-danger:hover, a.bg-danger:focus,

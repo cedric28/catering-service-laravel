@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePlannerStaffingsTable extends Migration
+class CreatePlannerTaskStaffTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,10 @@ class CreatePlannerStaffingsTable extends Migration
      */
     public function up()
     {
-        Schema::create('planner_staffings', function (Blueprint $table) {
+        Schema::create('planner_task_staff', function (Blueprint $table) {
             $table->id();
-            $table->integer('planner_id')->unsigned()->index();
+            $table->integer('planner_task_id')->unsigned()->index();
             $table->integer('user_id')->unsigned()->index();
-            $table->string("attendance")->default('active');
             $table->date('task_date');
             $table->timestamps();
         });
@@ -30,6 +29,6 @@ class CreatePlannerStaffingsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('planner_staffings');
+        Schema::dropIfExists('planner_task_staff');
     }
 }

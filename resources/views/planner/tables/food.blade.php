@@ -16,7 +16,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-12">
-                            @foreach($package_menus as $menu)
+                            @forelse($package_menus as $menu)
                                 @if($menu->package_food_category->dish_category->id == 1)
                                 <div class="form-group">
                                     <div class="icheck-primary d-inline">
@@ -31,7 +31,9 @@
                                     </div> -->
                                 </div>
                                 @endif
-                            @endforeach
+                            @empty
+                                <p class="text-center">No Main Dish</p>
+                            @endforelse
                         </div>
                     </div>
                 </div>
@@ -51,7 +53,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-12">
-                            @foreach($package_menus as $menu)
+                            @forelse($package_menus as $menu)
                                 @if($menu->package_food_category->dish_category->id == 2)
                                 <div class="form-group">
                                     <div class="icheck-primary d-inline">
@@ -62,7 +64,9 @@
                                     </div>
                                 </div>
                                 @endif
-                            @endforeach
+                            @empty
+                                <p class="text-center">No Secondary Dish</p>
+                            @endforelse
                         </div>
                     </div>
                 </div>
@@ -82,7 +86,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-12">
-                            @foreach($package_menus as $menu)
+                            @forelse($package_menus as $menu)
                                 @if($menu->package_food_category->dish_category->id == 3)
                                 <div class="form-group">
                                     <div class="icheck-primary d-inline">
@@ -97,7 +101,9 @@
                                     </div> -->
                                 </div>
                                 @endif
-                            @endforeach
+                            @empty
+                                <p class="text-center">No Other Dish</p>
+                            @endforelse
                         </div>
                     </div>
                 </div>
