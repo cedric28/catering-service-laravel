@@ -28,7 +28,7 @@
 	<link href="{{ secure_asset('/assets/css/styles.css') }}" rel="stylesheet" type="text/css">
 	<link href="{{ secure_asset('/assets/css/main.css') }}" rel="stylesheet" type="text/css">
 	<!-- Font Awesome -->
-	<link rel="stylesheet" href="{{ secure_asset('/plugins/fontawesome-free/css/all.min.css') }}" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 	<!-- Tempusdominus Bootstrap 4 -->
 	<link rel="stylesheet" href="{{ secure_asset('/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
 	<!-- Select2 -->
