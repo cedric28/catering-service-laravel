@@ -22,13 +22,13 @@
 	<link rel="shortcut icon" type="image/x-icon" href="{{ secure_asset('/assets/img/logo-pin.ico') }}">
 	<link
 	href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-	rel="stylesheet">
+	rel="stylesheet" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
     <!-- Custom styles for this template-->
 	<link href="{{ secure_asset('/assets/css/sb-admin-2.css') }}" rel="stylesheet" type="text/css">
 	<link href="{{ secure_asset('/assets/css/styles.css') }}" rel="stylesheet" type="text/css">
 	<link href="{{ secure_asset('/assets/css/main.css') }}" rel="stylesheet" type="text/css">
 	<!-- Font Awesome -->
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+	<link rel="stylesheet" href="{{ secure_asset('/plugins/fontawesome-free/css/all.min.css') }}" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
 	<!-- Tempusdominus Bootstrap 4 -->
 	<link rel="stylesheet" href="{{ secure_asset('/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
 	<!-- Select2 -->
