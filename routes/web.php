@@ -52,6 +52,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/users/fetch/q', 'User\UserFetchController@fetchUser')->name('activeUser');
     Route::get('users/destroy/{id}', 'User\UserController@destroy');
 
+    Route::resource('my-tasks', 'User\MyTaskController');
+    
+
     //TASK USERS
     Route::post('/users-task-staff/fetch/q', 'User\UserFetchController@fetchUserTaskStaff')->name('activeUserTaskStaff');
     Route::post('/users-staffing/fetch/q', 'User\UserFetchController@fetchUserStaffing')->name('activeUserStaffing');
@@ -121,6 +124,7 @@ Route::middleware('auth')->group(function () {
     Route::post('planners/destroy-time-table', 'Planner\PlannerController@destroyTimeTable')->name('destroyTimeTable');
     Route::post('planners/store-payment', 'Planner\PlannerController@storePayment')->name('storePayment');
     Route::post('planners/destroy-payment', 'Planner\PlannerController@destroyPayment')->name('destroyPayment');
+    Route::get('/planners-show/{id}', 'Planner\PlannerController@showPlanner')->name('showPlanner');
     //fetch
     Route::post('planners-task-lists/fetch/q', 'Planner\PlannerDetailsFetchController@fetchPlannerTask')->name('activePlannerTask');
     Route::post('planners-task-staff-lists/fetch/q', 'Planner\PlannerDetailsFetchController@fetchPlannerTaskStaff')->name('activePlannerTaskStaff');
@@ -140,4 +144,16 @@ Route::middleware('auth')->group(function () {
 
     //Reports
     Route::get('revenue-report-monthly', 'Report\RevenueController@revenueMonthly')->name('revenueMonthly');
+    Route::get('user-activities-report-monthly', 'Report\UserActivityController@usersActiveTracker')->name('usersActiveTracker');
+
+
+    //PDF
+    Route::get('invoice/{id}', 'PDF\PDFController@generateInvoice')->name('generateInvoice');
+    Route::get('contract/{id}', 'PDF\PDFController@generateContract')->name('generateContract');
+    Route::get('generate-pdf-monthy-sales', 'PDF\PDFController@generateMonthlyRevenue')->name('generateMonthlyRevenue');
+    Route::get('print-monthly-sales', 'PDF\PDFController@printMonthlyRevenue')->name('printMonthlyRevenue');
+    Route::get('print-beo/{id}', 'PDF\PDFController@printBEO')->name('printBEO');
+
+    Route::get('generate-pdf-employee-activities', 'PDF\PDFController@generateEmployeeActivity')->name('generateEmployeeActivity');
+    Route::get('print-employee-activities', 'PDF\PDFController@printEmployeeActivity')->name('printEmployeeActivity');
 });

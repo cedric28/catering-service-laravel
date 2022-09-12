@@ -67,14 +67,14 @@
                         <thead>
                             <tr style="text-align:center;">
                                 <th>INVOICE NO</th>
-                                <th>(₱) PAYMENT PRICE</th>
+                                <th>(₱) PAYMENT</th>
                                 <th>DATE ADDED</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($sales as $sale)
                             <tr>
-                                <td>{{$sale->planner->or_no}}</td>
+                                <td class="textCenter">{{$sale->planner->or_no}}</td>
                                 <td class="textRight">{{ Str::currency($sale->payment_price) }}</td>
                                 <td class="textCenter">{{ date('Y-m-d', strtotime($sale->created_at)) }}</td>
                             </tr>
@@ -89,7 +89,7 @@
     @push('scripts')
 	<!-- Javascript -->
 	<!-- Vendors -->
-    <script src="{{ asset('dist/js/jquery.printPage.js') }}"></script>
+    <script src="{{ asset('assets/js/jquery.printPage.js') }}"></script>
     <script type="text/javascript">
         $(document).ready(function(){
             $('#printMonthlySales').printPage();

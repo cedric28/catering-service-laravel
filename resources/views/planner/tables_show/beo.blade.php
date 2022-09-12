@@ -1,5 +1,5 @@
 <div class="text-center mb-2">
-<a href="{{ route('printBEO', $planner->id)}}" class="btn btn-info ml-auto" id="printBEO">PRINT BEO</a>
+<a href="#" class="btn btn-info ml-auto" id="printBEO">PRINT BEO</a>
 </div>
 <div class="card shadow">
     <div class="card-header">       
@@ -8,7 +8,7 @@
     <div class="card-body">
         <div class="row">
             <div class="table-responsive">
-                <table class="table">
+                <table class="table ">
                     <thead>
                         <tr> 
                             <th>Event Name:</th>

@@ -48,4 +48,14 @@ class Planner extends Model
     {
         return $this->hasMany(Payment::class,'planner_id','id');
     }
+
+    public function payment_status()
+    {
+        return $this->belongsTo(PaymentStatus::class, 'payment_status_id');
+    }
+
+    public function planner_staffing()
+    {
+        return $this->hasMany(PlannerStaffing::class,'planner_id','id');
+    }
 }

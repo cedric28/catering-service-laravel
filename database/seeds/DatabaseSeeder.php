@@ -27,5 +27,10 @@ class DatabaseSeeder extends Seeder
         $this->call(PaymentTypeSeeder::class);
         $this->call(PackageSeeder::class);
         $this->call(InventorySeeder::class);
+        $this->call(PackageEquipmentsSeeder::class);
+        $this->call(PackageTaskSeeder::class);
+        $this->call(PackageOtherSeeder::class);
+        $this->call(PackageMenuSeeder::class);
+        $this->call(FoodsSeeder::class);
     }
 }

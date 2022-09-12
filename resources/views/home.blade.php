@@ -8,6 +8,7 @@
 		</div>
 		<!-- Content Row -->
 		<div class="row">
+			@if(Auth::user()->job_type_id == 1 || Auth::user()->job_type_id == 2)
 			<!-- Earnings (Monthly) Card Example -->
 			<div class="col-xl-3 col-md-6 mb-4">
 				<div class="card border-left-danger shadow h-100 py-2">
@@ -55,7 +56,7 @@
 						<div class="row no-gutters align-items-center">
 							<div class="col mr-2">
 								<div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-									Pending Events</div>
+									On-Going Events</div>
 								<div class="h5 mb-0 font-weight-bold text-gray-800">{{ $plannerOnGoing }}</div>
 							</div>
 							<div class="col-auto">
@@ -82,6 +83,7 @@
 					</div>
 				</div>
 			</div>
+			@endif
 		</div>
 
 		<!-- Content Row -->
@@ -121,16 +123,16 @@
 					<!-- Card Header - Dropdown -->
 					<div
 						class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-						<h6 class="m-0 font-weight-bold text-primary">Upcoming Events</h6>
+						<h6 class="m-0 font-weight-bold text-primary">Event Details</h6>
 					</div>
 					<!-- Card Body -->
 					<div class="card-body">
 						<div class="row no-gutters align-items-center mb-3">
 							<div class="col mr-2">
 								<div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-									December 20,2022
+									<span id="event_date"></span>
 								</div>
-								<div class="h5 mb-0 font-weight-bold text-gray-800">Ember Event</div>
+								<div class="h5 mb-0 font-weight-bold text-gray-800"><span id="event_name">No Event</span></div>
 							</div>
 							<div class="col-auto">
 								<i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -138,17 +140,17 @@
 						</div>
 						<div class="row">
 							<div class="col-12">
-								<p class="text-muted"><strong><i class="fas fa-gift mr-1"></i> Package: </strong> <span id="event_package">Bronze Package</span></p>
-								<p class="text-muted"><strong><i class="fas fa-map-marker-alt mr-1"></i> Event Place: </strong> <span id="event_place">Malibu, California</span></p>
-								<p class="text-muted"><strong><i class="fas fa-clock mr-1"></i> Event Time: </strong> <span id="event_time">12:30 PM</span></p>
-								<p class="text-muted"><strong><i class="fas fa-users mr-1"></i> No of Guests: </strong> <span id="no_of_guests">100 </span>persons</p>
-								<p class="text-muted"><strong><i class="far fa-file-alt mr-1"></i> Notes: </strong> <span id="event_note">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam fermentum enim neque.</span></p>
+								<p class="text-muted"><strong><i class="fas fa-gift mr-1"></i> Package: </strong> <span id="event_package"></span></p>
+								<p class="text-muted"><strong><i class="fas fa-map-marker-alt mr-1"></i> Event Place: </strong> <span id="event_place"></span></p>
+								<p class="text-muted"><strong><i class="fas fa-clock mr-1"></i> Event Time: </strong> <span id="event_time"></span></p>
+								<p class="text-muted"><strong><i class="fas fa-users mr-1"></i> No of Guests: </strong> <span id="no_of_guests">0 </span>persons</p>
+								<p class="text-muted"><strong><i class="far fa-file-alt mr-1"></i> Notes: </strong> <span id="event_note"></span></p>
 
-								<p class="text-muted"><strong><i class="far fa-user mr-1"></i> Client Name: </strong> <span id="customer">Joselito Santiago</span></p>
-								<p class="text-muted"><strong><i class="fas fa-phone mr-1"></i> Contact No: </strong> +63<span id="contact_no">91762700499</span></p>
+								<p class="text-muted"><strong><i class="far fa-user mr-1"></i> Client Name: </strong> <span id="customer"></span></p>
+								<p class="text-muted"><strong><i class="fas fa-phone mr-1"></i> Contact No: </strong> +63<span id="contact_no"></span></p>
 
-								<p class="text-muted"><strong><i class="fas fa-credit-card mr-1"></i> Payment Method: </strong> <span id="payment_method">Bank</span></p>
-								<p class="text-muted"><strong><i class="fas fa-money-bill-wave-alt mr-1"></i> Payment Status: </strong> <span id="payment_status">100%</span></p>
+								<p class="text-muted"><strong><i class="fas fa-credit-card mr-1"></i> Payment Method: </strong> <span id="payment_method"></span></p>
+								<p class="text-muted"><strong><i class="fas fa-money-bill-wave-alt mr-1"></i> Payment Status: </strong> <span id="payment_status"></span></p>
 								<hr>
 							</div>
 						</div>
@@ -210,8 +212,42 @@
 				}
 			},
 			eventClick: function(info) {
-				console.log(info);
-				alert('Event: ' + info.event.id);
+				let planner_id =  info.event.id;
+				$.ajax({
+					url: "planners-show/"+planner_id,
+					success:function(data)
+					{
+						console.log(data.data);
+						const { event_name, event_date, event_venue, event_time, no_of_guests, note, customer_fullname, contact_number } = data.data;
+						const payments = data.payments;
+						const payment_method = payments.length > 0 ? payments[0].payment_type : 'No Payment Made';
+						$("#event_date").html(data.formattedDate);
+						$("#event_name").html(event_name)
+						$("#event_package").html(data.package_name);
+						$("#event_place").html(event_venue);
+						$("#event_time").html(event_time);
+						$("#no_of_guests").html(no_of_guests);
+						$("#event_note").html(note);
+						$("#customer").html(customer_fullname);
+						$("#contact_no").html(contact_number);
+						$("#payment_method").html(payment_method);
+						$("#payment_status").html(data.payment_status);
+					},
+					error: function(response)
+					{
+						$("#event_date").html("");
+						$("#event_name").html("")
+						$("#event_package").html("");
+						$("#event_place").html("");
+						$("#event_time").html("");
+						$("#no_of_guests").html("");
+						$("#event_note").html("");
+						$("#customer").html("");
+						$("#contact_no").html("");
+						$("#payment_method").html("");
+						$("#payment_status").html("");
+					}
+				})
 				// alert('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
 				// alert('View: ' + info.view.type);
 

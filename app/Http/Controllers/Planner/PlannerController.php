@@ -24,7 +24,10 @@ use App\PlannerTaskStaff;
 use App\Payment;
 use App\PaymentType;
 use App\User;
+use App\TaskStaffNotification;
+use App\TaskNotification;
 use Validator;
+use Carbon\Carbon;
 use Illuminate\Support\Str;
 
 class PlannerController extends Controller
@@ -145,7 +148,38 @@ class PlannerController extends Controller
      */
     public function show($id)
     {
-        //
+        //prevent other user to access to this page
+        $this->authorize("isHeadStaffOrAdmin");
+
+        $planner = Planner::findOrFail($id);
+        $plannerDate = $planner->event_date;
+        $package_tasks = PackageTask::where('package_id',$planner->package_id)->get();
+        $package_equipments = PackageEquipments::where('package_id',$planner->package_id)->get();
+        $package_others = PackageOther::where('package_id',$planner->package_id)->get();
+        $package_menus = PackageMenu::where('package_id',$planner->package_id)->get();
+        $plannerStaffingsServer = PlannerStaffing::where('planner_id',$planner->id)
+                            ->whereHas('user', function($query){
+                                $query->where('job_type_id',5);
+                            })->get();
+        $plannerStaffingsBusboy = PlannerStaffing::where('planner_id',$planner->id)
+                            ->whereHas('user', function($query){
+                                $query->where('job_type_id',3);
+                            })->get();
+        $plannerStaffingsDishwasher = PlannerStaffing::where('planner_id',$planner->id)
+                            ->whereHas('user', function($query){
+                                $query->where('job_type_id',4);
+                            })->get();
+
+        return view('planner.show', [
+            'planner' => $planner,
+            'package_tasks' => $package_tasks,
+            'package_equipments' =>  $package_equipments,
+            'package_others' => $package_others,
+            'package_menus' => $package_menus,
+            'plannerStaffingsServer' => $plannerStaffingsServer,
+            'plannerStaffingsBusboy' => $plannerStaffingsBusboy,
+            'plannerStaffingsDishwasher' => $plannerStaffingsDishwasher,
+        ]);
     }
 
     /**
@@ -157,8 +191,8 @@ class PlannerController extends Controller
     public function edit($id)
     {
         //prevent other user to access to this page
-        $this->authorize("isAdmin");
-
+        // $this->authorize("isAdmin");
+        // dd(\Auth::user()->id);
         $planner = Planner::findOrFail($id);
         $plannerDate = $planner->event_date;
         $package_tasks = PackageTask::where('package_id',$planner->package_id)->get();
@@ -295,7 +329,7 @@ class PlannerController extends Controller
                     $plannerEventTime = $eventTime;
                 }
             }
-         
+
             $planner->or_no = $this->generateUniqueCode();
             $planner->event_name = $request->event_name;
             $planner->event_venue = $request->event_venue;
@@ -310,8 +344,20 @@ class PlannerController extends Controller
             $planner->total_price = $package->package_price;
             $planner->status = $request->planner_status;
             $planner->updater_id = $user;
-            $planner->save();
+            
 
+            if($request->planner_status == 'done'){
+                $payments = Payment::where('planner_id',$planner->id)->get();
+                if(count($payments) <= 0){
+                    return back()->withErrors(['planner_status' => 'Please make a payment first and set other details before changing the status to DONE'])->withInput();
+                } else {
+                    $planner->save();
+                }
+            } else {
+                $planner->save();
+            }
+
+            $plannerStaffing = PlannerStaffing::where('planner_id', $planner->id)->update(['task_date' => $planner->event_date]);
              /*
             | @End Transaction
             |---------------------------------------------*/
@@ -365,6 +411,31 @@ class PlannerController extends Controller
         } catch (\Exception $e) {
             \DB::rollback();
             return back()->withErrors($e->getMessage());
+        }
+    }
+
+    public function showPlanner($id)
+    {
+        try {
+        $planner = Planner::find($id);
+        $formattedDate = Carbon::parse($planner->event_date)->format('F d Y');
+        $packageName = $planner->package->name;
+        $paymentStatus = $planner->payment_status->name;
+        $payments = $planner->payments;
+
+        return response()->json([
+            'data' => $planner,
+            'formattedDate' => $formattedDate,
+            'package_name' => $packageName,
+            'payment_status' => $paymentStatus,
+            'payments' => $payments,
+            'status' => 'success'
+        ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'data' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -500,6 +571,7 @@ class PlannerController extends Controller
             }
             $planner = Planner::find($request->planner_id);
             $planner_task = PlannerTask::find($request->planner_task_ids);
+            
             $taskDateTime = explode(" | ", $request->task_date);
             $taskDate = $taskDateTime[0];
             $taskTime = $taskDateTime[1];
@@ -528,6 +600,7 @@ class PlannerController extends Controller
             $planner_task->status = $request->task_status;
             $planner_task->save();
 
+            $planner_task_staff = PlannerTaskStaff::where('planner_task_id',$planner_task->id)->update(['task_date' => $planner_task->task_date]);
             \DB::commit();
 
             return response()->json([
@@ -545,18 +618,34 @@ class PlannerController extends Controller
 
     public function destroyTask(Request $request)
     {
-        ////prevent other user to access to this page
-        $this->authorize("isAdmin");
+        \DB::beginTransaction();
+        try {
+            ////prevent other user to access to this page
+            $this->authorize("isAdmin");
 
-        //delete category
-        $plannerTask = PlannerTask::findOrFail($request->id);
-        $plannerTask->planner_task_staffs()->delete();
+            //delete category
+            $plannerTask = PlannerTask::findOrFail($request->id);
 
-        if($plannerTask->delete()){
+            foreach ($plannerTask->planner_task_staffs as $key => $value) {
+                TaskStaffNotification::where('planner_task_staff_id',$value['id'])->delete();
+            }
+
+            $plannerTask->planner_task_staffs()->delete();
+
+            $plannerTask->delete();
+
+            \DB::commit();
+            
             return response()->json([
                 'data' => 'success',
                 'status' => 'success'
             ], 200);
+           
+        } catch (\Exception $e) {
+            \DB::rollback();
+            return response()->json([
+                'data' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -602,6 +691,11 @@ class PlannerController extends Controller
             $planner_task_staff->task_date = $plannerTask->task_date;
             $planner_task_staff->save();
 
+            $taskstaffNotification = new TaskStaffNotification();
+            $taskstaffNotification->planner_task_staff_id = $planner_task_staff->id;
+            $taskstaffNotification->user_id  = $planner_task_staff->user_id;
+            $taskstaffNotification->save();
+
             \DB::commit();
 
             return response()->json([
@@ -619,19 +713,25 @@ class PlannerController extends Controller
 
     public function destroyTaskStaff(Request $request)
     {
-          ////prevent other user to access to this page
-          $this->authorize("isAdmin");
+        ////prevent other user to access to this page
+        $this->authorize("isAdmin");
 
-          //delete category
-          $plannerTaskStaff = PlannerTaskStaff::findOrFail($request->id);
+        //delete category
+        $plannerTaskStaff = PlannerTaskStaff::findOrFail($request->id);
 
-          if($plannerTaskStaff->delete()){
+        $taskstaffNotification = TaskStaffNotification::where([
+            ['planner_task_staff_id','=',$plannerTaskStaff->id ],
+            ['user_id','=',$plannerTaskStaff->user_id ]
+        ])->first();
+        
+        $taskstaffNotification->delete();
+
+        if($plannerTaskStaff->delete()){
             return response()->json([
                 'data' => 'success',
                 'status' => 'success'
             ], 200);
-          }
-
+        }
     }
 
     public function storeEquipment(Request $request)
@@ -901,6 +1001,11 @@ class PlannerController extends Controller
             $planner_staffing->task_date = $planner->event_date;
             $planner_staffing->save();
 
+            $taskNotification = new TaskNotification();
+            $taskNotification->planner_staffing_id = $planner_staffing->id;
+            $taskNotification->user_id = $planner_staffing->user_id;
+            $taskNotification->save();
+
             \DB::commit();
 
             return back()->with("successMsg", "Successfully Add Staff in Employee Staffing Menu");
@@ -913,17 +1018,32 @@ class PlannerController extends Controller
 
     public function destroyStaffing(Request $request)
     {
-        ////prevent other user to access to this page
-        $this->authorize("isAdmin");
+        \DB::beginTransaction();
+        try {
+            ////prevent other user to access to this page
+            $this->authorize("isAdmin");
 
-        //delete category
-        $plannerStaffing = PlannerStaffing::findOrFail($request->id);
+            //delete category
+            $plannerStaffing = PlannerStaffing::findOrFail($request->id);
+            TaskNotification::where([
+                ['user_id', $plannerStaffing->user_id],
+                ['planner_staffing_id', $plannerStaffing->id],
+            ])->delete();
+        
+            $plannerStaffing->delete();
 
-        if($plannerStaffing->delete()){
+            \DB::commit();
+
             return response()->json([
                 'data' => 'success',
                 'status' => 'success'
             ], 200);
+            
+        } catch (\Exception $e) {
+            \DB::rollback();
+             return response()->json([
+                'data' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -933,7 +1053,7 @@ class PlannerController extends Controller
         $this->authorize("isAdmin");
 
         //delete category
-        $plannerStaffing = PlannerStaffing::findOrFail($request->id)->first();
+        $plannerStaffing = PlannerStaffing::findOrFail($request->id);
         $plannerStaffing->attendance = $request->attendance;
 
         if($plannerStaffing->save()){

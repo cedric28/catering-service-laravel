@@ -34,6 +34,11 @@ class AuthServiceProvider extends ServiceProvider
             return $user->role_id == 2;
         });
 
+        Gate::define('isHeadStaffOrAdmin', function ($user) {
+            return $user->role_id == 1 || $user->role_id == 2;
+        });
+
+
         Gate::define('isStaff', function ($user) {
             return $user->role_id == 3;
         });

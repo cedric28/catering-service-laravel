@@ -25,7 +25,9 @@
 	<!-- /page header -->
 	<div class="card shadow mb-4">
 		<div class="card-header py-3">
+			@if(Auth::user()->job_type_id == 1)
 			<a type="button" href="{{ route('planners.create')}}" class="btn btn-outline-success btn-sm float-left"><i class="icon-add mr-2"></i> Add Event</a>
+			@endif
 		</div>
 		<div class="card-body">
 			<div class="card shadow card-primary card-outline card-outline-tabs border-top-primary">

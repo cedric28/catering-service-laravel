@@ -40,35 +40,78 @@ class PlannerDetailsFetchController extends Controller
 		//check if user search for a value in the Category datatable
 		if(empty($request->input('search.value'))){
 			//get all the category data
-            $posts = PlannerTask::where('planner_id',$request->planner_id)
-                        ->offset($start)
-                        ->limit($limit)
-                        ->orderBy($order, $dir)
-                        ->get();
-			
-			//total number of filtered data
-			$totalFiltered = PlannerTask::where('planner_id',$request->planner_id)->count();
+            if(\Auth::user()->job_type_id != 1){
+                 //if not admin
+                $search = \Auth::user()->id;
+                $posts = PlannerTask::where('planner_id',$request->planner_id)
+                            ->where(function ($query) use ($search) {
+                                $query->orWhereHas('planner_task_staffs', function ($query) use ($search) {
+                                    $query->where('user_id', '=', "{$search}");
+                                });
+                            })
+                            ->offset($start)
+                            ->limit($limit)
+                            ->orderBy($order, $dir)
+                            ->get();
+                
+                //total number of filtered data
+                $totalFiltered = PlannerTask::where('planner_id',$request->planner_id)->count();
+            } else {
+                 //if admin
+                $posts = PlannerTask::where('planner_id',$request->planner_id)
+                            ->offset($start)
+                            ->limit($limit)
+                            ->orderBy($order, $dir)
+                            ->get();
+    
+                //total number of filtered data
+                $totalFiltered = PlannerTask::where('planner_id',$request->planner_id)->count();
+            }
+            
 		}else{
             $search = $request->input('search.value');
             
-		    $posts = PlannerTask::where('planner_id',$request->planner_id)
-                        ->where(function ($query) use ($search) {
-                            $query->orWhereHas('package_task', function ($query) use ($search) {
-                                $query->where('name', 'like', "%{$search}%");
+            if(\Auth::user()->job_type_id != 1){
+                 //if not admin
+                $user_id = \Auth::user()->id;
+                $posts = PlannerTask::where('planner_id',$request->planner_id)
+                            ->where(function ($query) use ($search) {
+                                $query->orWhereHas('package_task', function ($query) use ($search) {
+                                    $query->where('name', 'like', "%{$search}%");
+                                })
+                                ->orWhereHas('planner_task_staffs', function ($query) use ($user_id) {
+                                    $query->where('user_id', '=', "{$user_id}");
+                                })
+                                ->orWhere('task_date', 'like', "%{$search}%")
+                                ->orWhere('task_time', 'like', "%{$search}%")
+                                ->orWhere('task_type', 'like', "%{$search}%")
+                                ->orWhere('status', 'like', "%{$search}%")
+                                ->orWhere('created_at', 'like', "%{$search}%");
                             })
-                            ->orWhere('task_date', 'like', "%{$search}%")
-                            ->orWhere('task_time', 'like', "%{$search}%")
-                            ->orWhere('task_type', 'like', "%{$search}%")
-                            ->orWhere('status', 'like', "%{$search}%")
-                            ->orWhere('created_at', 'like', "%{$search}%");
-                        })
-                        ->offset($start)
-                        ->limit($limit)
-                        ->orderBy($order, $dir)
-                        ->get();
+                            ->offset($start)
+                            ->limit($limit)
+                            ->orderBy($order, $dir)
+                            ->get();
 
-			//total number of filtered data matching the search value request in the Category table	
-			$totalFiltered = PlannerTask::where('planner_id',$request->planner_id)
+                //total number of filtered data matching the search value request in the Category table	
+                $totalFiltered = PlannerTask::where('planner_id',$request->planner_id)
+                                    ->where(function ($query) use ($search) {
+                                        $query->orWhereHas('package_task', function ($query) use ($search) {
+                                            $query->where('name', 'like', "%{$search}%");
+                                        })
+                                        ->orWhereHas('planner_task_staffs', function ($query) use ($user_id) {
+                                            $query->where('user_id', '=', "{$user_id}");
+                                        })
+                                        ->orWhere('task_date', 'like', "%{$search}%")
+                                        ->orWhere('task_time', 'like', "%{$search}%")
+                                        ->orWhere('task_type', 'like', "%{$search}%")
+                                        ->orWhere('status', 'like', "%{$search}%")
+                                        ->orWhere('created_at', 'like', "%{$search}%");
+                                    })->count();
+            } else {
+
+                //if admin
+                $posts = PlannerTask::where('planner_id',$request->planner_id)
                                 ->where(function ($query) use ($search) {
                                     $query->orWhereHas('package_task', function ($query) use ($search) {
                                         $query->where('name', 'like', "%{$search}%");
@@ -78,7 +121,25 @@ class PlannerDetailsFetchController extends Controller
                                     ->orWhere('task_type', 'like', "%{$search}%")
                                     ->orWhere('status', 'like', "%{$search}%")
                                     ->orWhere('created_at', 'like', "%{$search}%");
-                                })->count();
+                                })
+                                ->offset($start)
+                                ->limit($limit)
+                                ->orderBy($order, $dir)
+                                ->get();
+
+                //total number of filtered data matching the search value request in the Category table	
+                $totalFiltered = PlannerTask::where('planner_id',$request->planner_id)
+                                    ->where(function ($query) use ($search) {
+                                        $query->orWhereHas('package_task', function ($query) use ($search) {
+                                            $query->where('name', 'like', "%{$search}%");
+                                        })
+                                        ->orWhere('task_date', 'like', "%{$search}%")
+                                        ->orWhere('task_time', 'like', "%{$search}%")
+                                        ->orWhere('task_type', 'like', "%{$search}%")
+                                        ->orWhere('status', 'like', "%{$search}%")
+                                        ->orWhere('created_at', 'like', "%{$search}%");
+                                    })->count();
+            }
 		}		
 					
 		
@@ -97,11 +158,17 @@ class PlannerDetailsFetchController extends Controller
                 $nestedData['task_date_and_time'] = $r->task_date.' '.$r->task_time;
                 $nestedData['task_type'] = $r->task_type;
                 $nestedData['task_status'] = $status;
-                $nestedData['action'] = '
-                    <button name="settings" id="setting-planner-task-staff" data-id="'.$r->id.'" class="btn btn-success btn-xs">Staff Settings</button>
-                    <button name="edit" id="edit-planner-task" data-my-planner-id="'.$r->planner_id.'"  data-id="'.$r->id.'" data-package-task-id="'.$r->package_task_id.'" data-event-date="'.$r->task_date.'" data-event-time="'.$r->task_time.'" data-task-type="'.$r->task_type.'" data-status="'.$r->status.'" class="btn btn-warning btn-xs">Edit</button>
-                    <button name="delete" id="delete-planner-task" data-id="'.$r->id.'" class="btn btn-danger btn-xs">Delete</button>
-                ';
+                if($request->planner_show == 0 && \Auth::user()->job_type_id == 1){
+                    $nestedData['action'] = '
+                        <button name="settings" id="setting-planner-task-staff" data-id="'.$r->id.'" class="btn btn-success btn-xs">Staff Settings</button>
+                        <button name="edit" id="edit-planner-task" data-my-planner-id="'.$r->planner_id.'"  data-id="'.$r->id.'" data-package-task-id="'.$r->package_task_id.'" data-event-date="'.$r->task_date.'" data-event-time="'.$r->task_time.'" data-task-type="'.$r->task_type.'" data-status="'.$r->status.'" class="btn btn-warning btn-xs">Edit</button>
+                        <button name="delete" id="delete-planner-task" data-id="'.$r->id.'" class="btn btn-danger btn-xs">Delete</button>
+                    ';
+                } else {
+                    $nestedData['action'] = '
+                        <button name="edit" id="edit-planner-task" data-my-planner-id="'.$r->planner_id.'"  data-id="'.$r->id.'" data-package-task-id="'.$r->package_task_id.'" data-event-date="'.$r->task_date.'" data-event-time="'.$r->task_time.'" data-task-type="'.$r->task_type.'" data-status="'.$r->status.'" class="btn btn-warning btn-xs">Edit</button>
+                    ';
+                }
                 $data[] = $nestedData;
             }
 		}
@@ -301,14 +368,18 @@ class PlannerDetailsFetchController extends Controller
                 $nestedData['remarks'] = $remarks;
                 $nestedData['status'] = $status;
                 if ($r->status == 'idle') {
+                    if($request->planner_show == 0){
                     $nestedData['action'] = '
                         <button name="edit" id="edit-planner-equipment" data-id="'.$r->id.'" data-planner-equipment-status="'.$r->status.'" data-return-qty="'.$r->return_qty.'" class="btn btn-warning btn-xs">Edit</button>
                         <button name="delete" id="delete-planner-equipment" data-id="'.$r->id.'" class="btn btn-danger btn-xs">Delete</button>
                     ';
+                    }
                 }else {
-                    $nestedData['action'] = '
-                        <button name="edit" id="edit-planner-equipment" data-id="'.$r->id.'" data-planner-equipment-status="'.$r->status.'" data-return-qty="'.$r->return_qty.'" class="btn btn-warning btn-xs">Edit</button>
-                    ';
+                    if($request->planner_show == 0){
+                        $nestedData['action'] = '
+                            <button name="edit" id="edit-planner-equipment" data-id="'.$r->id.'" data-planner-equipment-status="'.$r->status.'" data-return-qty="'.$r->return_qty.'" class="btn btn-warning btn-xs">Edit</button>
+                        ';
+                    }
                 }
                 $data[] = $nestedData;
             }
@@ -390,9 +461,11 @@ class PlannerDetailsFetchController extends Controller
             foreach($posts as $r){
                 $nestedData['name'] = $r->package_other->name;
                 $nestedData['service_price'] = \Str::currency($r->package_other->service_price);
+                if($request->planner_show == 0){
                 $nestedData['action'] = '
                     <button name="delete" id="delete-planner-other" data-id="'.$r->id.'" class="btn btn-danger btn-xs">Delete</button>
                 ';
+                }
                 $data[] = $nestedData;
             }
 		}
@@ -505,14 +578,25 @@ class PlannerDetailsFetchController extends Controller
                 $nestedData['job_type'] = $r->user->job_type->name;
                 $nestedData['attendance'] = $attendance;
                 if($r->attendance == 'inactive'){
-                    $nestedData['action'] = '
-                        <button name="edit" id="edit-planner-staffing" data-id="'.$r->id.'" data-attendance="active" class="btn btn-success btn-xs">ACTIVE</button>
-                        <button name="delete" id="delete-planner-staffing" data-id="'.$r->id.'" class="btn btn-danger btn-xs">Delete</button>
-                    ';
+                    if($request->planner_show == 0){
+                        if(\Auth::user()->job_type_id !=1){
+                            $nestedData['action'] = '
+                            <button name="edit" id="edit-planner-staffing" data-id="'.$r->id.'" data-attendance="active" class="btn btn-success btn-xs">ACTIVE</button>
+                            ';
+                        } else {
+                            $nestedData['action'] = '
+                            <button name="edit" id="edit-planner-staffing" data-id="'.$r->id.'" data-attendance="active" class="btn btn-success btn-xs">ACTIVE</button>
+                            <button name="delete" id="delete-planner-staffing" data-id="'.$r->id.'" class="btn btn-danger btn-xs">Delete</button>
+                            ';
+                        }
+                       
+                    }
                 } else {
-                    $nestedData['action'] = '
-                        <button name="edit" id="edit-planner-staffing" data-id="'.$r->id.'" data-attendance="inactive" class="btn btn-warning btn-xs">INACTIVE</button>
-                    ';
+                    if($request->planner_show == 0){
+                        $nestedData['action'] = '
+                            <button name="edit" id="edit-planner-staffing" data-id="'.$r->id.'" data-attendance="inactive" class="btn btn-warning btn-xs">INACTIVE</button>
+                        ';
+                    }
                 }
                 
                 $data[] = $nestedData;
@@ -588,9 +672,11 @@ class PlannerDetailsFetchController extends Controller
             foreach($posts as $r){
                 $nestedData['task_time'] = $r->task_time;
                 $nestedData['task_name'] = ucwords($r->task_name);
-                $nestedData['action'] = '
-                    <button name="delete" id="delete-planner-time-table" data-id="'.$r->id.'" class="btn btn-danger btn-xs">Delete</button>
-                ';
+                if($request->planner_show == 0){
+                    $nestedData['action'] = '
+                        <button name="delete" id="delete-planner-time-table" data-id="'.$r->id.'" class="btn btn-danger btn-xs">Delete</button>
+                    ';
+                }
                 $data[] = $nestedData;
             }
 		}
@@ -665,9 +751,11 @@ class PlannerDetailsFetchController extends Controller
                 $nestedData['payment_type'] = ucwords($r->payment_type);
                 $nestedData['payment_price'] =  \Str::currency($r->payment_price);
                 $nestedData['created_at'] = date('m-d-Y', strtotime($r->created_at));
-                $nestedData['action'] = '
-                    <button name="delete" id="delete-planner-time-table" data-id="'.$r->id.'" class="btn btn-danger btn-xs">Delete</button>
-                ';
+                if($request->planner_show == 0){
+                    $nestedData['action'] = '
+                        <button name="delete" id="delete-planner-time-table" data-id="'.$r->id.'" class="btn btn-danger btn-xs">Delete</button>
+                    ';
+                }
                 $data[] = $nestedData;
             }
 		}

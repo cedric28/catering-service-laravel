@@ -1,38 +1,10 @@
-<form action="{{ route('storePayment')}}" method="POST" class="mb-2">
-    @csrf
-    <input type="hidden" name="planner_id" value="{{ $planner->id }}"/>
-
-    <div class="form-group row">
-        <label class="col-lg-3 col-form-label">Payment Type:</label>
-        <div class="col-lg-9">
-            <select id="payment_type" name="payment_type" class="@error('payment_type') is-invalid @enderror form-control select2">
-                <option value="">Select Payment Method</option>
-                @foreach ($paymentTypes as $type)
-                    <option value="{{ $type->name }}" {{ ($type->name == old("payment_type")) ? " selected" : "" }}>{{ ucwords($type->name) }}</option>
-                @endforeach
-            </select>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <label class="col-lg-3 col-form-label">Payment Price:</label>
-        <div class="col-lg-9">
-            <input type="text" name="payment_price" value="{{ old('payment_price') }}" class="@error('payment_price') is-invalid @enderror form-control" placeholder="e.g 1000">
-        </div>
-    </div>
-
-    <div class="text-right">
-        <button type="submit" class="btn btn-primary">Save <i class="icon-paperplane ml-2"></i></button>
-    </div>
-    </form>
-    <div class="table-responsive">
+<div class="table-responsive">
     <table class="table table-bordered" id="planner-payment-lists"  width="100%" cellspacing="0">
         <thead>
             <tr>
                 <th>PAYMENT METHOD</th>
                 <th>FEE</th>
                 <th>DATE ADDED</th>
-                <th>ACTION</th>
             </tr>
         </thead>
         <tbody>
@@ -94,7 +66,6 @@
                 { data: "payment_type" },
                 { data: "payment_price" },
                 { data: "created_at" },
-                { data: "action", searchable: false, orderable: false },
             ],
             "columnDefs": [
                 {

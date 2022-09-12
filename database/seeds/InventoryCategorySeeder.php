@@ -20,13 +20,16 @@ class InventoryCategorySeeder extends Seeder
                 'name' => 'Cloth',
             ],
             [
-                'name' => 'Artificials',
+                'name' => 'Dishware',
             ],
             [
                 'name' => 'Chair',
             ],
             [
-                'name' => 'Frames'
+                'name' => 'Decorations'
+            ],
+            [
+                'name' => 'Misc'
             ]
 
         ];

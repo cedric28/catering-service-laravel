@@ -74,6 +74,7 @@
 													<th>TASK DATE & TIME</th>
 													<th>TASK NAME</th>
 													<th>TASK STATUS</th>
+													
 												</tr>
 											</thead>
 											<tbody>
@@ -89,6 +90,7 @@
 													<th>EVENT DATE & TIME</th>
 													<th>EVENT STATUS</th>
 													<th>ATTENDANCE</th>
+													
 												</tr>
 											</thead>
 											<tbody>
@@ -130,7 +132,8 @@
 					"type":"POST",
 					"data":{
 						"_token":"<?= csrf_token() ?>",
-						"user_id": user_id
+						"user_id": user_id,
+						"my_task" : 0
 					}
 				},
 				"dom": 'Bfrtip',
@@ -192,7 +195,8 @@
 					"type":"POST",
 					"data":{
 						"_token":"<?= csrf_token() ?>",
-						"user_id": user_id
+						"user_id": user_id,
+						"my_task" : 0
 					}
 				},
 				"dom": 'Bfrtip',

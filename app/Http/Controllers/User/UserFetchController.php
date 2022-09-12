@@ -14,7 +14,7 @@ class UserFetchController extends Controller
 	public function fetchUser(Request $request)
 	{
 		//prevent other user to access to this page
-		$this->authorize("isAdmin");
+		$this->authorize("isHeadStaffOrAdmin");
 
 		//column list in the table Prpducts
 		$columns = array(
@@ -138,9 +138,6 @@ class UserFetchController extends Controller
 
 	public function fetchUserTaskStaff(Request $request)
 	{
-		//prevent other user to access to this page
-		$this->authorize("isAdmin");
-
 		//column list in the table Prpducts
 		$columns = array(
 			0 => 'task_date',
@@ -165,7 +162,8 @@ class UserFetchController extends Controller
 						->leftJoin('planner_tasks', 'planner_task_staff.planner_task_id', '=', 'planner_tasks.id')
 						->leftJoin('planners', 'planners.id', '=', 'planner_tasks.planner_id')
 						->leftJoin('package_tasks', 'package_tasks.id', '=', 'planner_tasks.package_task_id')
-						->select('package_tasks.name as task_name','planner_tasks.task_date', 'planner_tasks.task_time', 'planner_tasks.status', 'planners.event_name', 'planners.event_venue')
+						->leftJoin('task_staff_notifications', 'task_staff_notifications.planner_task_staff_id', '=', 'planner_task_staff.id')
+						->select('task_staff_notifications.id as task_notif_id','planner_task_staff.user_id','package_tasks.name as task_name','planner_tasks.task_date', 'planner_tasks.task_time', 'planner_tasks.status', 'planners.event_name', 'planners.event_venue')
 						->where([
 							['planner_task_staff.user_id', $request->user_id],
 							['planners.deleted_at', '=', null],
@@ -181,7 +179,8 @@ class UserFetchController extends Controller
 								->leftJoin('planner_tasks', 'planner_task_staff.planner_task_id', '=', 'planner_tasks.id')
 								->leftJoin('planners', 'planners.id', '=', 'planner_tasks.planner_id')
 								->leftJoin('package_tasks', 'package_tasks.id', '=', 'planner_tasks.package_task_id')
-								->select('package_tasks.name as task_name','planner_tasks.task_date', 'planner_tasks.task_time', 'planner_tasks.status', 'planners.event_name', 'planners.event_venue')
+								->leftJoin('task_staff_notifications', 'task_staff_notifications.planner_task_staff_id', '=', 'planner_task_staff.id')
+								->select('task_staff_notifications.id as task_notif_id','planner_task_staff.user_id','package_tasks.name as task_name','planner_tasks.task_date', 'planner_tasks.task_time', 'planner_tasks.status', 'planners.event_name', 'planners.event_venue')
 								->where([
 									['planner_task_staff.user_id', $request->user_id],
 									['planners.deleted_at', '=', null],
@@ -194,7 +193,8 @@ class UserFetchController extends Controller
 							->leftJoin('planner_tasks', 'planner_task_staff.planner_task_id', '=', 'planner_tasks.id')
 							->leftJoin('planners', 'planners.id', '=', 'planner_tasks.planner_id')
 							->leftJoin('package_tasks', 'package_tasks.id', '=', 'planner_tasks.package_task_id')
-							->select('package_tasks.name as task_name','planner_tasks.task_date', 'planner_tasks.task_time', 'planner_tasks.status', 'planners.event_name', 'planners.event_venue')
+							->leftJoin('task_staff_notifications', 'task_staff_notifications.planner_task_staff_id', '=', 'planner_task_staff.id')
+							->select('task_staff_notifications.id as task_notif_id','planner_task_staff.user_id','package_tasks.name as task_name','planner_tasks.task_date', 'planner_tasks.task_time', 'planner_tasks.status', 'planners.event_name', 'planners.event_venue')
 							->where(function ($query) use ($search) {
 								$query->where('planner_tasks.task_date', 'like', '%' . $search . '%')
 									->orWhere('planner_tasks.task_time', 'like', "%{$search}%")
@@ -218,7 +218,8 @@ class UserFetchController extends Controller
 								->leftJoin('planner_tasks', 'planner_task_staff.planner_task_id', '=', 'planner_tasks.id')
 								->leftJoin('planners', 'planners.id', '=', 'planner_tasks.planner_id')
 								->leftJoin('package_tasks', 'package_tasks.id', '=', 'planner_tasks.package_task_id')
-								->select('package_tasks.name as task_name','planner_tasks.task_date', 'planner_tasks.task_time', 'planner_tasks.status', 'planners.event_name', 'planners.event_venue')
+								->leftJoin('task_staff_notifications', 'task_staff_notifications.planner_task_staff_id', '=', 'planner_task_staff.id')
+								->select('task_staff_notifications.id as task_notif_id','planner_task_staff.user_id','package_tasks.name as task_name','planner_tasks.task_date', 'planner_tasks.task_time', 'planner_tasks.status', 'planners.event_name', 'planners.event_venue')
 								->where(function ($query) use ($search) {
 									$query->where('planner_tasks.task_date', 'like', '%' . $search . '%')
 										->orWhere('planner_tasks.task_time', 'like', "%{$search}%")
@@ -246,6 +247,14 @@ class UserFetchController extends Controller
 				$nestedData['task_date_time'] = $r->task_date.' | '.$r->task_time;
 				$nestedData['task_name'] = ucwords($r->task_name);
 				$nestedData['task_status'] =  $status;
+				if($request->my_task == 1){
+					$nestedData['action'] = '
+                    <a name="show" id="show"  href="my-tasks/' . $r->task_notif_id . '" class="btn btn-primary btn-xs">Show</a>
+					';
+				} else {
+					$nestedData['action'] = '-
+					';
+				}
 				$data[] = $nestedData;
 			}
 		}
@@ -263,8 +272,6 @@ class UserFetchController extends Controller
 
 	public function fetchUserStaffing(Request $request)
 	{
-		//prevent other user to access to this page
-		$this->authorize("isAdmin");
 
 		//column list in the table Prpducts
 		$columns = array(
@@ -289,7 +296,8 @@ class UserFetchController extends Controller
 			//get all the product data
 			$posts =  DB::table('planner_staffings')
 						->leftJoin('planners', 'planners.id', '=', 'planner_staffings.planner_id')
-						->select('planners.event_name','planners.status', 'planners.event_venue','planners.event_date','planners.event_time','planner_staffings.attendance')
+						->leftJoin('task_notifications', 'task_notifications.planner_staffing_id', '=', 'planner_staffings.id')
+						->select('task_notifications.id as task_notif_id','planner_staffings.user_id','planners.event_name','planners.status', 'planners.event_venue','planners.event_date','planners.event_time','planner_staffings.attendance')
 						->where([
 							['planner_staffings.user_id', $request->user_id],
 							['planners.deleted_at', '=', null]
@@ -302,7 +310,8 @@ class UserFetchController extends Controller
 			//total number of filtered data
 			$totalFiltered =  DB::table('planner_staffings')
 								->leftJoin('planners', 'planners.id', '=', 'planner_staffings.planner_id')
-								->select('planners.event_name', 'planners.status','planners.event_venue','planners.event_date','planners.event_time','planner_staffings.attendance')
+								->leftJoin('task_notifications', 'task_notifications.planner_staffing_id', '=', 'planner_staffings.id')
+								->select('task_notifications.id as task_notif_id','planner_staffings.user_id','planners.event_name', 'planners.status','planners.event_venue','planners.event_date','planners.event_time','planner_staffings.attendance')
 								->where([
 									['planner_staffings.user_id', $request->user_id],
 									['planners.deleted_at', '=', null]
@@ -312,7 +321,8 @@ class UserFetchController extends Controller
 
 			$posts = DB::table('planner_staffings')
 						->leftJoin('planners', 'planners.id', '=', 'planner_staffings.planner_id')
-						->select('planners.event_name','planners.status', 'planners.event_venue','planners.event_date','planners.event_time','planner_staffings.attendance')
+						->leftJoin('task_notifications', 'task_notifications.planner_staffing_id', '=', 'planner_staffings.id')
+						->select('task_notifications.id as task_notif_id','planner_staffings.user_id','planners.event_name','planners.status', 'planners.event_venue','planners.event_date','planners.event_time','planner_staffings.attendance')
 						->where(function ($query) use ($search) {
 							$query->where('planners.event_name', 'like', '%' . $search . '%')
 								->orWhere('planners.event_venue', 'like', "%{$search}%")
@@ -332,7 +342,8 @@ class UserFetchController extends Controller
 
 			$totalFiltered = DB::table('planner_staffings')
 								->leftJoin('planners', 'planners.id', '=', 'planner_staffings.planner_id')
-								->select('planners.event_name','planners.status', 'planners.event_venue','planners.event_date','planners.event_time','planner_staffings.attendance')
+								->leftJoin('task_notifications', 'task_notifications.planner_staffing_id', '=', 'planner_staffings.id')
+								->select('task_notifications.id as task_notif_id','planner_staffings.user_id','planners.event_name','planners.status', 'planners.event_venue','planners.event_date','planners.event_time','planner_staffings.attendance')
 								->where(function ($query) use ($search) {
 									$query->where('planners.event_name', 'like', '%' . $search . '%')
 										->orWhere('planners.event_venue', 'like', "%{$search}%")
@@ -368,6 +379,15 @@ class UserFetchController extends Controller
 				$nestedData['event_date_time'] =  $r->event_date.' | '.$r->event_time;
 				$nestedData['event_status'] =  $status;
 				$nestedData['attendance'] =  $attendance;
+				if($request->my_task == 1){
+					$nestedData['action'] = '
+                    <a name="show" id="show" href="my-tasks/'.$r->task_notif_id.'" class="btn btn-primary btn-xs">Show</a>
+					';
+				} else {
+					$nestedData['action'] = '-';
+				}
+				
+				
 				$data[] = $nestedData;
 			}
 		}

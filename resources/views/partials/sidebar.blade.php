@@ -28,8 +28,8 @@
     </li>
     @endcan
     @canany(['isHeadStaff', 'isStaff'])
-    <li class="nav-item {{ (request()->is('planners*')) ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('planners.index') }}">
+    <li class="nav-item {{ (request()->is('my-tasks*')) ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('my-tasks.index') }}">
             <i class="far fa-file-alt mr-1"></i>
             <span>My Tasks</span>
         </a>
@@ -77,16 +77,18 @@
     <div class="sidebar-heading">
         REPORTS
     </div>
-    <li class="nav-item {{ (request()->is('users*')) ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('users.index')}}">
+    <li class="nav-item {{ (request()->is('usersActiveTracker')) ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('usersActiveTracker')}}">
             <i class="fas fa-fw fa-users"></i>
-            <span>User's Activities</span></a>
+            <span>Employee's Activities</span></a>
     </li>
     <li class="nav-item {{ (request()->is('revenueMonthly')) ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('revenueMonthly')}}">
             <i class="fas fa-fw fa-calendar"></i>
             <span>Monthly Revenue</span></a>
     </li>
+    @endcan
+    @canany(['isHeadStaff','isAdmin'])
      <!-- Divider -->
      <hr class="sidebar-divider">
   

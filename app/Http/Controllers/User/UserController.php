@@ -19,7 +19,7 @@ class UserController extends Controller
     public function index()
     {
         //prevent other user to access to this page
-        $this->authorize("isAdmin");
+        $this->authorize("isHeadStaffOrAdmin");
 
         $users = User::all();
 
@@ -36,7 +36,7 @@ class UserController extends Controller
     public function create()
     {
         //prevent other user to access to this page
-        $this->authorize("isAdmin");
+        $this->authorize("isHeadStaffOrAdmin");
 
         $roles = Role::all();
         $job_types = JobType::all();
@@ -56,7 +56,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
         //prevent other user to access to this page
-        $this->authorize("isAdmin");
+        $this->authorize("isHeadStaffOrAdmin");
         /*
         | @Begin Transaction
         |---------------------------------------------*/
@@ -105,7 +105,7 @@ class UserController extends Controller
     public function show($id)
     {
         //prevent other user to access to this page
-        $this->authorize("isAdmin");
+        $this->authorize("isHeadStaffOrAdmin");
 
         $user = User::with('role')->findOrFail($id);
 
@@ -123,7 +123,7 @@ class UserController extends Controller
     public function edit($id)
     {
         //prevent other user to access to this page
-        $this->authorize("isAdmin");
+        $this->authorize("isHeadStaffOrAdmin");
 
         $user = User::withTrashed()->findOrFail($id);
         $roles = Role::all();
@@ -147,7 +147,7 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         //prevent other user to access to this page
-        $this->authorize("isAdmin");
+        $this->authorize("isHeadStaffOrAdmin");
 
         /*
         | @Begin Transaction
@@ -199,7 +199,7 @@ class UserController extends Controller
     public function destroy($id)
     {
         //prevent other user to access to this page
-        $this->authorize("isAdmin");
+        $this->authorize("isHeadStaffOrAdmin");
 
         //delete user
         $user = User::findOrFail($id);

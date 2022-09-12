@@ -48,7 +48,7 @@ class PackageEquipmentsSeeder extends Seeder
         \DB::beginTransaction();
 
 
-        foreach ($PackageEquipments as $key => $package) {
+        foreach ($packageEquipments as $key => $package) {
 
             try {
 

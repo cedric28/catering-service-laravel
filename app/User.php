@@ -38,6 +38,11 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function getId()
+    {
+        return $this->id;
+    }
+
     public function scopeBusboy($query)
     {
         return $query->where('job_type_id', '=', 3);

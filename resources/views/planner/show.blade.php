@@ -1,12 +1,30 @@
 @extends('layouts.app')
 
 @section('content')
-
+@push('scripts')
+	<script src="{{ asset('assets/vendor/datatables/jquery.dataTables.min.js') }}"></script>
+	<script src="{{ asset('assets/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
+	<script src="{{ asset('assets/js/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
+	<script src="{{ asset('assets/js/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
+	<script src="{{ asset('assets/js/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
+	<script src="{{ asset('assets/js/datatables-buttons/js/buttons.bootstrap4.min.js') }}"></script>
+	<script src="{{ asset('assets/js/jszip/jszip.min.js') }}"></script>
+	<script src="{{ asset('assets/js/pdfmake/pdfmake.min.js') }}"></script>
+	<script src="{{ asset('assets/js/pdfmake/vfs_fonts.js') }}"></script>
+	<script src="{{ asset('assets/js/datatables-buttons/js/buttons.html5.min.js') }}"></script>
+	<script src="{{ asset('assets/js/datatables-buttons/js/buttons.print.min.js') }}"></script>
+	<script src="{{ asset('assets/js/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
+	<script>
+		let planner_id = {!! json_encode($planner->id) !!};
+		let event_name = {!! json_encode($planner->event_name) !!};
+		let planner_show = 1;
+	</script>
+@endpush
 	<!-- Page header -->
 	<div class="page-header page-header-light">
 		<div class="page-header-content header-elements-md-inline">
 			<div class="page-title d-flex">
-				<h4><i class="icon-arrow-left52 mr-2"></i> <span class="font-weight-semibold">Package</span> -  {{ ucwords($package->name) }} Details</h4>
+				<h4><i class="icon-arrow-left52 mr-2"></i> <span class="font-weight-semibold">Event</span> -  {{ ucwords($planner->event_name) }} Details</h4>
 				<a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
 			</div>
 		</div>
@@ -15,8 +33,8 @@
 			<div class="d-flex">
 				<div class="breadcrumb">
 					<a href="{{ route('home')}}" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Dashboard</a>
-					<a href="{{ route('packages.index')}}" class="breadcrumb-item">Packages</a>
-					<a href="{{ route('packages.show', $package->id )}}" class="breadcrumb-item active"> {{ ucwords($package->name) }} Details</a>
+					<a href="{{ route('planners.index')}}" class="breadcrumb-item">Events</a>
+					<a href="{{ route('planners.show', $planner->id )}}" class="breadcrumb-item active"> {{ ucwords($planner->event_name) }} Details</a>
 				</div>
 
 				<a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
@@ -30,7 +48,11 @@
 			<div class="row">
 				<div class="col-md-10 offset-md-1">
 					<div class="header-elements-inline">
-						<h5 class="card-title">Package Form</h5>
+						<div style="width: 100%">
+							<h5 class="card-title float-left">Planner Form</h5>
+							<a href="{{ route('generateContract', $planner->id)}}" class="btn btn-success float-right ml-2">Generate Contract <i class="fas fa-print ml-2"></i></a>	
+							<a href="{{ route('generateInvoice', $planner->id)}}"  class="btn btn-info float-right">Generate Invoice <i class="fas fa-print ml-2"></i></a>	
+						</div>
 					</div>
 				</div>
 			</div>
@@ -43,20 +65,47 @@
 						<table class="table table-bordered">
 							<thead>
 								<tr>
-									<th>Package Name</th>
-									<th>{{ $package->name }}</th>
+									<th>Event Name</th>
+									<th>{{ $planner->event_name }}</th>
 								</tr>
 								<tr>
-									<th>Package Pax</th>
-									<th>{{ Str::number_comma($package->package_pax) }}</th>
+									<th>Event Venue</th>
+									<th>{{ ucwords($planner->event_venue) }}</th>
 								</tr>
 								<tr>
-									<th>Package Pax</th>
-									<th>{{ Str::currency($package->package_price) }}</th>
+									@php
+										$eventDate = $planner->event_date.' | '.$planner->event_time;
+									@endphp
+									<th>Event Date & Time</th>
+									<th>{{ $eventDate }}</th>
 								</tr>
 								<tr>
-									<th>Package Category</th>
-									<th>{{ $package->main_package->name }}</th>
+									<th>Package</th>
+									<th>{{ $planner->package->name }} - {{ $planner->package->main_package->name }}</th>
+								</tr>
+								<tr>
+									<th>No of Guests</th>
+									<th>{{ $planner->no_of_guests }} persons</th>
+								</tr>
+								<tr>
+									<th>Notes</th>
+									<th>{{ $planner->note }}</th>
+								</tr>
+								<tr>
+									<th>Status</th>
+									<th>{{ strtoupper($planner->status) }}</th>
+								</tr>
+								<tr>
+									<th>Payment Status</th>
+									<th>{{ strtoupper($planner->payment_status->name) }}</th>
+								</tr>
+								<tr>
+									<th>Customer Fullname</th>
+									<th>{{ ucwords($planner->customer_fullname) }}</th>
+								</tr>
+								<tr>
+									<th>Contact No.</th>
+									<th>+63{{ $planner->contact_number }}</th>
 								</tr>
 							</thead>
 						</table>
@@ -76,21 +125,45 @@
 								<li class="nav-item">
 									<a class="nav-link" id="custom-tabs-four-settings-tab" data-toggle="pill" href="#custom-tabs-four-settings" role="tab" aria-controls="custom-tabs-four-settings" aria-selected="false">Other</a>
 								</li>
+								<li class="nav-item">
+									<a class="nav-link" id="custom-tabs-task-distribution-tab" data-toggle="pill" href="#custom-tabs-task-distribution" role="tab" aria-controls="custom-tabs-task-distribution" aria-selected="false">Employee Staffing</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" id="custom-tabs-time-table-tab" data-toggle="pill" href="#custom-tabs-time-table" role="tab" aria-controls="custom-tabs-time-table" aria-selected="false">Time Table</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" id="custom-tabs-beo-tab" data-toggle="pill" href="#custom-tabs-beo" role="tab" aria-controls="custom-tabs-beo" aria-selected="false">BEO</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" id="custom-tabs-payment-tab" data-toggle="pill" href="#custom-tabs-payment" role="tab" aria-controls="custom-tabs-payment" aria-selected="false">Payments</a>
+								</li>
 							</ul>
 						</div>
 						<div class="card-body">
 							<div class="tab-content" id="custom-tabs-four-tabContent">
 								<div class="tab-pane fade active show" id="custom-tabs-four-home" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
-								Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin malesuada lacus ullamcorper dui molestie, sit amet congue quam finibus. Etiam ultricies nunc non magna feugiat commodo. Etiam odio magna, mollis auctor felis vitae, ullamcorper ornare ligula. Proin pellentesque tincidunt nisi, vitae ullamcorper felis aliquam id. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin id orci eu lectus blandit suscipit. Phasellus porta, ante et varius ornare, sem enim sollicitudin eros, at commodo leo est vitae lacus. Etiam ut porta sem. Proin porttitor porta nisl, id tempor risus rhoncus quis. In in quam a nibh cursus pulvinar non consequat neque. Mauris lacus elit, condimentum ac condimentum at, semper vitae lectus. Cras lacinia erat eget sapien porta consectetur.
+									@include('planner.tables_show.task')
 								</div>
 								<div class="tab-pane fade" id="custom-tabs-four-profile" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
-								Mauris tincidunt mi at erat gravida, eget tristique urna bibendum. Mauris pharetra purus ut ligula tempor, et vulputate metus facilisis. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Maecenas sollicitudin, nisi a luctus interdum, nisl ligula placerat mi, quis posuere purus ligula eu lectus. Donec nunc tellus, elementum sit amet ultricies at, posuere nec nunc. Nunc euismod pellentesque diam.
+									@include('planner.tables_show.equipments')
 								</div>
 								<div class="tab-pane fade" id="custom-tabs-four-messages" role="tabpanel" aria-labelledby="custom-tabs-four-messages-tab">
-								Morbi turpis dolor, vulputate vitae felis non, tincidunt congue mauris. Phasellus volutpat augue id mi placerat mollis. Vivamus faucibus eu massa eget condimentum. Fusce nec hendrerit sem, ac tristique nulla. Integer vestibulum orci odio. Cras nec augue ipsum. Suspendisse ut velit condimentum, mattis urna a, malesuada nunc. Curabitur eleifend facilisis velit finibus tristique. Nam vulputate, eros non luctus efficitur, ipsum odio volutpat massa, sit amet sollicitudin est libero sed ipsum. Nulla lacinia, ex vitae gravida fermentum, lectus ipsum gravida arcu, id fermentum metus arcu vel metus. Curabitur eget sem eu risus tincidunt eleifend ac ornare magna.
+									@include('planner.tables_show.food')
 								</div>
 								<div class="tab-pane fade" id="custom-tabs-four-settings" role="tabpanel" aria-labelledby="custom-tabs-four-settings-tab">
-								Pellentesque vestibulum commodo nibh nec blandit. Maecenas neque magna, iaculis tempus turpis ac, ornare sodales tellus. Mauris eget blandit dolor. Quisque tincidunt venenatis vulputate. Morbi euismod molestie tristique. Vestibulum consectetur dolor a vestibulum pharetra. Donec interdum placerat urna nec pharetra. Etiam eget dapibus orci, eget aliquet urna. Nunc at consequat diam. Nunc et felis ut nisl commodo dignissim. In hac habitasse platea dictumst. Praesent imperdiet accumsan ex sit amet facilisis.
+									@include('planner.tables_show.other')
+								</div>
+								<div class="tab-pane fade" id="custom-tabs-task-distribution" role="tabpanel" aria-labelledby="custom-tabs-task-distribution-tab">
+									@include('planner.tables_show.staffing')
+								</div>
+								<div class="tab-pane fade" id="custom-tabs-time-table" role="tabpanel" aria-labelledby="custom-tabs-time-table-tab">
+									@include('planner.tables_show.timetable')
+								</div>
+								<div class="tab-pane fade" id="custom-tabs-beo" role="tabpanel" aria-labelledby="custom-tabs-beo-tab">
+									@include('planner.tables_show.beo')
+								</div>
+								<div class="tab-pane fade" id="custom-tabs-payment" role="tabpanel" aria-labelledby="custom-tabs-payment-tab">
+									@include('planner.tables_show.payment')
 								</div>
 							</div>
 						</div>
