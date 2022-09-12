@@ -20,8 +20,6 @@
 	<meta property="og:image:height" content="48" />
 	<link rel="icon" href="{{ secure_asset('/assets/img/logo-pink.ico') }}">
 	<link rel="shortcut icon" type="image/x-icon" href="{{ secure_asset('/assets/img/logo-pin.ico') }}">
-	<!-- Global stylesheets -->
-	<link href="{{ asset('assets/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
 	<link
 	href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
 	rel="stylesheet">
@@ -30,7 +28,7 @@
 	<link href="{{ secure_asset('/assets/css/styles.css') }}" rel="stylesheet" type="text/css">
 	<link href="{{ secure_asset('/assets/css/main.css') }}" rel="stylesheet" type="text/css">
 	<!-- Font Awesome -->
-	<link rel="stylesheet" href="{{ secure_asset('/plugins/fontawesome-free/css/all.min.css') }}">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 	<!-- Tempusdominus Bootstrap 4 -->
 	<link rel="stylesheet" href="{{ secure_asset('/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
 	<!-- Select2 -->
