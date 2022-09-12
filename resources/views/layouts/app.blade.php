@@ -15,10 +15,10 @@
 	<meta property="og:url" content="https://creative-moments.herokuapp.com/">
 	<meta property="og:title" content="Podomoro City">
 	<meta property="og:description" content="Catering Service Business">
-	<meta property="og:image" content="{{ secure_asset('/assets/img/logo-pin.ico') }}">
+	<meta property="og:image" content="{{ secure_asset('/assets/img/logo-pink.ico') }}">
 	<meta property="og:image:width" content="100" />
 	<meta property="og:image:height" content="48" />
-	<link rel="icon" href="{{ secure_asset('/assets/img/logo-pin.ico') }}">
+	<link rel="icon" href="{{ secure_asset('/assets/img/logo-pink.ico') }}">
 	<link rel="shortcut icon" type="image/x-icon" href="{{ secure_asset('/assets/img/logo-pin.ico') }}">
 	<!-- Global stylesheets -->
 	<link href="{{ secure_asset('/assets/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
