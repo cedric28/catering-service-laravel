@@ -8,6 +8,18 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
 	<title>{{ config('app.name', 'Creative Moment Catering Service') }}</title>
+	<meta name="page_type" content="Home">
+	<meta name="description" content="Catering Service Business">
+	<meta name="language" content="id">
+	<meta property="og:type" content="website">
+	<meta property="og:url" content="https://creative-moments.herokuapp.com/">
+	<meta property="og:title" content="Podomoro City">
+	<meta property="og:description" content="Catering Service Business">
+	<meta property="og:image" content="{{ secure_asset('/assets/img/logo-pin.ico') }}">
+	<meta property="og:image:width" content="100" />
+	<meta property="og:image:height" content="48" />
+	<link rel="icon" href="{{ secure_asset('/assets/img/logo-pin.ico') }}">
+	<link rel="shortcut icon" type="image/x-icon" href="{{ secure_asset('/assets/img/logo-pin.ico') }}">
 	<!-- Global stylesheets -->
 	<link href="{{ secure_asset('/assets/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
 	<link
