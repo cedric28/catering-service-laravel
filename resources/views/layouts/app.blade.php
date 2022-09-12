@@ -7,30 +7,30 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-	<title>{{ config('app.name', 'FarmApp') }}</title>
+	<title>{{ config('app.name', 'Creative Moment Catering Service') }}</title>
 	<!-- Global stylesheets -->
-	<link href="{{ asset('assets/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
+	<link href="{{ asset('/assets/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
 	<link
 	href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
 	rel="stylesheet">
     <!-- Custom styles for this template-->
-	<link href="{{ asset('assets/css/sb-admin-2.css') }}" rel="stylesheet" type="text/css">
-	<link href="{{ asset('assets/css/styles.css') }}" rel="stylesheet" type="text/css">
-	<link href="{{ asset('assets/css/main.css') }}" rel="stylesheet" type="text/css">
+	<link href="{{ asset('/assets/css/sb-admin-2.css') }}" rel="stylesheet" type="text/css">
+	<link href="{{ asset('/assets/css/styles.css') }}" rel="stylesheet" type="text/css">
+	<link href="{{ asset('/assets/css/main.css') }}" rel="stylesheet" type="text/css">
 	<!-- Font Awesome -->
-	<link rel="stylesheet" href="{{ asset('plugins/fontawesome-free/css/all.min.css') }}">
+	<link rel="stylesheet" href="{{ asset('/plugins/fontawesome-free/css/all.min.css') }}">
 	<!-- Tempusdominus Bootstrap 4 -->
-	<link rel="stylesheet" href="{{ asset('plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
+	<link rel="stylesheet" href="{{ asset('/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
 	<!-- Select2 -->
-	<link rel="stylesheet" href="{{ asset('plugins/select2/css/select2.min.css') }}">
-  	<link rel="stylesheet" href="{{ asset('plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
+	<link rel="stylesheet" href="{{ asset('/plugins/select2/css/select2.min.css') }}">
+  	<link rel="stylesheet" href="{{ asset('/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
 	<!-- Daterange picker -->
-	<link rel="stylesheet" href="{{ asset('plugins/daterangepicker/daterangepicker.css') }}">
-	<link rel="stylesheet" href="{{ asset('plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
+	<link rel="stylesheet" href="{{ asset('/plugins/daterangepicker/daterangepicker.css') }}">
+	<link rel="stylesheet" href="{{ asset('/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
 	<!-- DataTables -->
-	<link rel="stylesheet" href="{{ asset('plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
-  	<link rel="stylesheet" href="{{ asset('plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
-  	<link rel="stylesheet" href="{{ asset('plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
+	<link rel="stylesheet" href="{{ asset('/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
+  	<link rel="stylesheet" href="{{ asset('/plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
+  	<link rel="stylesheet" href="{{ asset('/plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
 	<!-- /global stylesheets -->
 	<style>
 		table td.textRight {
