@@ -42,17 +42,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						@foreach ($inventories as $inventory)
-							<tr>
-								<td>{{ $inventory->name }}</td>
-								<td>{{ $inventory->inventory_category->name }}</td>
-								<td>{{ $inventory->quantity }}</td>
-								<td>{{ $inventory->quantity_available }}</td>
-								<td>{{ $inventory->quantity_in_use }}</td>
-								<td>{{ $inventory->created_at }}</td>
-								<td></td>
-							</tr>
-						@endforeach
+						
 					</tbody>
 					<tfoot>
 						<tr>
