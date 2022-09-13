@@ -17,6 +17,7 @@ class InventoryController extends Controller
      */
     public function index()
     {
+        ini_set('max_execution_time', 100);
         //prevent other user to access to this page
         $this->authorize("isAdmin");
 
@@ -34,6 +35,7 @@ class InventoryController extends Controller
      */
     public function create()
     {
+        ini_set('max_execution_time', 100);
         //prevent other user to access to this page
         $this->authorize("isAdmin");
         $inventory_categories = InventoryCategory::all();
@@ -51,6 +53,7 @@ class InventoryController extends Controller
      */
     public function store(Request $request)
     {
+        ini_set('max_execution_time', 100);
         //prevent other user to access to this page
         $this->authorize("isAdmin");
 
@@ -107,6 +110,7 @@ class InventoryController extends Controller
      */
     public function show($id)
     {
+        ini_set('max_execution_time', 100);
         //prevent other user to access to this page
         $this->authorize("isAdmin");
 
@@ -123,6 +127,7 @@ class InventoryController extends Controller
      */
     public function edit($id)
     {
+        ini_set('max_execution_time', 100);
         //prevent other user to access to this page
         $this->authorize("isAdmin");
 
@@ -144,6 +149,7 @@ class InventoryController extends Controller
      */
     public function update(Request $request, $id)
     {
+        ini_set('max_execution_time', 100);
         //prevent other user to access to this page
         $this->authorize("isAdmin");
 
@@ -199,6 +205,7 @@ class InventoryController extends Controller
      */
     public function destroy($id)
     {
+        ini_set('max_execution_time', 100);
         //prevent other user to access to this page
         $this->authorize("isAdmin");
 
