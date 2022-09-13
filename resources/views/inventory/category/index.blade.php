@@ -38,13 +38,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						@foreach ($inventory_categories as $inventory)
-							<tr>
-								<td>{{ $inventory->name }}</td>
-								<td>{{ $inventory->created_at }}</td>
-								<td></td>
-							</tr>
-						@endforeach
+						
 					</tbody>
 				</table>
 			</div>

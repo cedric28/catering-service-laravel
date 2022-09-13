@@ -39,14 +39,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						@foreach ($foods as $food)
-							<tr>
-								<td>{{ $food->name }}</td>
-								<td>{{ $food->category->name }}</td>
-								<td>{{ $food->created_at }}</td>
-								<td></td>
-							</tr>
-						@endforeach
+						
 					</tbody>
 				</table>
 			</div>

@@ -51,13 +51,7 @@
 									</tr>
 								</thead>
 								<tbody>
-									@foreach ($roles as $role)
-										<tr>
-											<td>{{ $role->name }}</td>
-											<td>{{ $role->created_at }}</td>
-											<td></td>
-										</tr>
-									@endforeach
+									
 								</tbody>
 								<tfoot>
 									<tr>
