@@ -11,6 +11,7 @@ class InventoryFetchController extends Controller
 {
     public function fetchInventory(Request $request)
     {
+        ini_set('max_execution_time', 100);
         //column list in the table Prpducts
         $columns = array(
             0 => 'name',
@@ -59,13 +60,13 @@ class InventoryFetchController extends Controller
 
             //total number of filtered data
             $totalFiltered = Inventory::where('name', 'like', "%{$productName}%")
-            ->where('quantity', 'like', "%{$productQuantity}%")
-            ->where('quantity_in_use', 'like', "%{$productQuantityInUse}%")
-            ->where('quantity_available', 'like', "%{$productQuantityAvailable}%")
-            ->where('created_at', 'like', "%{$productCreatedAt}%")
-            ->whereHas('inventory_category', function ($query) use ($productCategory) {
-                $query->where('name', 'like', "%{$productCategory}%");
-            })->count();
+                ->where('quantity', 'like', "%{$productQuantity}%")
+                ->where('quantity_in_use', 'like', "%{$productQuantityInUse}%")
+                ->where('quantity_available', 'like', "%{$productQuantityAvailable}%")
+                ->where('created_at', 'like', "%{$productCreatedAt}%")
+                ->whereHas('inventory_category', function ($query) use ($productCategory) {
+                    $query->where('name', 'like', "%{$productCategory}%");
+                })->count();
         } else {
             $search = $request->input('search.value');
 
@@ -128,6 +129,7 @@ class InventoryFetchController extends Controller
 
     public function fetchInventoryCategory(Request $request)
     {
+        ini_set('max_execution_time', 100);
         //column list in the table Prpducts
         $columns = array(
             0 => 'name',

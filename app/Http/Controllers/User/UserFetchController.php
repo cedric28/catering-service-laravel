@@ -13,6 +13,7 @@ class UserFetchController extends Controller
 {
 	public function fetchUser(Request $request)
 	{
+		ini_set('max_execution_time', 100);
 		//prevent other user to access to this page
 		$this->authorize("isHeadStaffOrAdmin");
 
@@ -25,7 +26,7 @@ class UserFetchController extends Controller
 			4 => 'action'
 		);
 
-		$totalData = User::whereIn('role_id',[2,3])->count();
+		$totalData = User::whereIn('role_id', [2, 3])->count();
 		//total number of data that will show in the datatable default 10
 		$limit = $request->input('length');
 		//start number for pagination ,default 0
@@ -38,27 +39,27 @@ class UserFetchController extends Controller
 		//check if user search for a value in the product datatable
 		if (empty($request->input('search.value'))) {
 			//get all the product data
-			$posts = User::whereIn('role_id',[2,3])
+			$posts = User::whereIn('role_id', [2, 3])
 				->offset($start)
 				->limit($limit)
 				->orderBy($order, $dir)
 				->get();
 
 			//total number of filtered data
-			$totalFiltered = User::whereIn('role_id',[2,3])->count();
+			$totalFiltered = User::whereIn('role_id', [2, 3])->count();
 		} else {
 			$search = $request->input('search.value');
 
 			$posts = User::whereHas('role', function ($query) use ($search) {
-					$query->where('name', 'like', "%{$search}%")
-							->whereIn('id', [2,3]);
-				})
+				$query->where('name', 'like', "%{$search}%")
+					->whereIn('id', [2, 3]);
+			})
 				->whereHas('job_type', function ($query) use ($search) {
 					$query->where('name', 'like', "%{$search}%");
 				})
-				->orWhere(function($query) use ($search){
+				->orWhere(function ($query) use ($search) {
 					$query->where('name', 'like', "%{$search}%")
-						  ->whereIn('role_id',[2,3]);
+						->whereIn('role_id', [2, 3]);
 				})
 				->orWhere('email', 'like', "%{$search}%")
 				->orWhere('created_at', 'like', "%{$search}%")
@@ -69,15 +70,15 @@ class UserFetchController extends Controller
 
 
 			$totalFiltered = User::whereHas('role', function ($query) use ($search) {
-					$query->where('name', 'like', "%{$search}%")
-							->whereIn('id', [2,3]);
-				})
+				$query->where('name', 'like', "%{$search}%")
+					->whereIn('id', [2, 3]);
+			})
 				->whereHas('job_type', function ($query) use ($search) {
 					$query->where('name', 'like', "%{$search}%");
 				})
-				->orWhere(function($query) use ($search){
+				->orWhere(function ($query) use ($search) {
 					$query->where('name', 'like', "%{$search}%")
-						  ->whereIn('role_id',[2,3]);
+						->whereIn('role_id', [2, 3]);
 				})
 				->orWhere('email', 'like', "%{$search}%")
 				->orWhere('created_at', 'like', "%{$search}%")
@@ -91,21 +92,21 @@ class UserFetchController extends Controller
 			//loop posts collection to transfer in another array $nestedData
 			foreach ($posts as $r) {
 				$task = '<span title="Danger" class="badge bg-info">IDLE</span>';
-				if($r->job_type_id == 2 || $r->job_type_id == 1){
+				if ($r->job_type_id == 2 || $r->job_type_id == 1) {
 					$tasksHeadStaff = PlannerTaskStaff::where([
-						['task_date',date('Y-m-d') ],
-						['user_id',$r->id ],
+						['task_date', date('Y-m-d')],
+						['user_id', $r->id],
 					])->get();
-					if(count($tasksHeadStaff) > 0){
+					if (count($tasksHeadStaff) > 0) {
 						$task = '<span title="Danger" class="badge bg-success">ON-TASK</span>';
 					}
 				} else {
 					$taskStaffing = PlannerStaffing::where([
-						['task_date','=', date('Y-m-d') ],
-						['user_id','=', $r->id ],
-						['attendance','=', 'active' ],
+						['task_date', '=', date('Y-m-d')],
+						['user_id', '=', $r->id],
+						['attendance', '=', 'active'],
 					])->get();
-					if(count($taskStaffing) > 0){
+					if (count($taskStaffing) > 0) {
 						$task = '<span title="Danger" class="badge bg-success">ON-TASK</span>';
 					}
 				}
@@ -138,6 +139,7 @@ class UserFetchController extends Controller
 
 	public function fetchUserTaskStaff(Request $request)
 	{
+		ini_set('max_execution_time', 100);
 		//column list in the table Prpducts
 		$columns = array(
 			0 => 'task_date',
@@ -145,7 +147,7 @@ class UserFetchController extends Controller
 			2 => 'action'
 		);
 
-		$totalData = PlannerTaskStaff::where('user_id',$request->user_id)->count();
+		$totalData = PlannerTaskStaff::where('user_id', $request->user_id)->count();
 		//total number of data that will show in the datatable default 10
 		$limit = $request->input('length');
 		//start number for pagination ,default 0
@@ -159,79 +161,79 @@ class UserFetchController extends Controller
 		if (empty($request->input('search.value'))) {
 			//get all the product data
 			$posts =  DB::table('planner_task_staff')
-						->leftJoin('planner_tasks', 'planner_task_staff.planner_task_id', '=', 'planner_tasks.id')
-						->leftJoin('planners', 'planners.id', '=', 'planner_tasks.planner_id')
-						->leftJoin('package_tasks', 'package_tasks.id', '=', 'planner_tasks.package_task_id')
-						->leftJoin('task_staff_notifications', 'task_staff_notifications.planner_task_staff_id', '=', 'planner_task_staff.id')
-						->select('task_staff_notifications.id as task_notif_id','planner_task_staff.user_id','package_tasks.name as task_name','planner_tasks.task_date', 'planner_tasks.task_time', 'planner_tasks.status', 'planners.event_name', 'planners.event_venue')
-						->where([
-							['planner_task_staff.user_id', $request->user_id],
-							['planners.deleted_at', '=', null],
-							['package_tasks.deleted_at', '=', null]
-						])
-						->offset($start)
-						->limit($limit)
-						->orderBy($order, $dir)
-						->get();
+				->leftJoin('planner_tasks', 'planner_task_staff.planner_task_id', '=', 'planner_tasks.id')
+				->leftJoin('planners', 'planners.id', '=', 'planner_tasks.planner_id')
+				->leftJoin('package_tasks', 'package_tasks.id', '=', 'planner_tasks.package_task_id')
+				->leftJoin('task_staff_notifications', 'task_staff_notifications.planner_task_staff_id', '=', 'planner_task_staff.id')
+				->select('task_staff_notifications.id as task_notif_id', 'planner_task_staff.user_id', 'package_tasks.name as task_name', 'planner_tasks.task_date', 'planner_tasks.task_time', 'planner_tasks.status', 'planners.event_name', 'planners.event_venue')
+				->where([
+					['planner_task_staff.user_id', $request->user_id],
+					['planners.deleted_at', '=', null],
+					['package_tasks.deleted_at', '=', null]
+				])
+				->offset($start)
+				->limit($limit)
+				->orderBy($order, $dir)
+				->get();
 
 			//total number of filtered data
 			$totalFiltered =  DB::table('planner_task_staff')
-								->leftJoin('planner_tasks', 'planner_task_staff.planner_task_id', '=', 'planner_tasks.id')
-								->leftJoin('planners', 'planners.id', '=', 'planner_tasks.planner_id')
-								->leftJoin('package_tasks', 'package_tasks.id', '=', 'planner_tasks.package_task_id')
-								->leftJoin('task_staff_notifications', 'task_staff_notifications.planner_task_staff_id', '=', 'planner_task_staff.id')
-								->select('task_staff_notifications.id as task_notif_id','planner_task_staff.user_id','package_tasks.name as task_name','planner_tasks.task_date', 'planner_tasks.task_time', 'planner_tasks.status', 'planners.event_name', 'planners.event_venue')
-								->where([
-									['planner_task_staff.user_id', $request->user_id],
-									['planners.deleted_at', '=', null],
-									['package_tasks.deleted_at', '=', null]
-								])->count();
+				->leftJoin('planner_tasks', 'planner_task_staff.planner_task_id', '=', 'planner_tasks.id')
+				->leftJoin('planners', 'planners.id', '=', 'planner_tasks.planner_id')
+				->leftJoin('package_tasks', 'package_tasks.id', '=', 'planner_tasks.package_task_id')
+				->leftJoin('task_staff_notifications', 'task_staff_notifications.planner_task_staff_id', '=', 'planner_task_staff.id')
+				->select('task_staff_notifications.id as task_notif_id', 'planner_task_staff.user_id', 'package_tasks.name as task_name', 'planner_tasks.task_date', 'planner_tasks.task_time', 'planner_tasks.status', 'planners.event_name', 'planners.event_venue')
+				->where([
+					['planner_task_staff.user_id', $request->user_id],
+					['planners.deleted_at', '=', null],
+					['package_tasks.deleted_at', '=', null]
+				])->count();
 		} else {
 			$search = $request->input('search.value');
 
 			$posts =  DB::table('planner_task_staff')
-							->leftJoin('planner_tasks', 'planner_task_staff.planner_task_id', '=', 'planner_tasks.id')
-							->leftJoin('planners', 'planners.id', '=', 'planner_tasks.planner_id')
-							->leftJoin('package_tasks', 'package_tasks.id', '=', 'planner_tasks.package_task_id')
-							->leftJoin('task_staff_notifications', 'task_staff_notifications.planner_task_staff_id', '=', 'planner_task_staff.id')
-							->select('task_staff_notifications.id as task_notif_id','planner_task_staff.user_id','package_tasks.name as task_name','planner_tasks.task_date', 'planner_tasks.task_time', 'planner_tasks.status', 'planners.event_name', 'planners.event_venue')
-							->where(function ($query) use ($search) {
-								$query->where('planner_tasks.task_date', 'like', '%' . $search . '%')
-									->orWhere('planner_tasks.task_time', 'like', "%{$search}%")
-									->orWhere('planner_tasks.status', 'like', "%{$search}%")
-									->orWhere('planners.event_name', 'like', "%{$search}%")
-									->orWhere('planners.event_venue', 'like', "%{$search}%")
-									->orWhere('package_tasks.name', 'like', "%{$search}%");
-							})
-							->where([
-								['planner_task_staff.user_id', $request->user_id],
-								['planners.deleted_at', '=', null],
-								['package_tasks.deleted_at', '=', null]
-							])
-							->offset($start)
-							->limit($limit)
-							->orderBy($order, $dir)
-							->get();
+				->leftJoin('planner_tasks', 'planner_task_staff.planner_task_id', '=', 'planner_tasks.id')
+				->leftJoin('planners', 'planners.id', '=', 'planner_tasks.planner_id')
+				->leftJoin('package_tasks', 'package_tasks.id', '=', 'planner_tasks.package_task_id')
+				->leftJoin('task_staff_notifications', 'task_staff_notifications.planner_task_staff_id', '=', 'planner_task_staff.id')
+				->select('task_staff_notifications.id as task_notif_id', 'planner_task_staff.user_id', 'package_tasks.name as task_name', 'planner_tasks.task_date', 'planner_tasks.task_time', 'planner_tasks.status', 'planners.event_name', 'planners.event_venue')
+				->where(function ($query) use ($search) {
+					$query->where('planner_tasks.task_date', 'like', '%' . $search . '%')
+						->orWhere('planner_tasks.task_time', 'like', "%{$search}%")
+						->orWhere('planner_tasks.status', 'like', "%{$search}%")
+						->orWhere('planners.event_name', 'like', "%{$search}%")
+						->orWhere('planners.event_venue', 'like', "%{$search}%")
+						->orWhere('package_tasks.name', 'like', "%{$search}%");
+				})
+				->where([
+					['planner_task_staff.user_id', $request->user_id],
+					['planners.deleted_at', '=', null],
+					['package_tasks.deleted_at', '=', null]
+				])
+				->offset($start)
+				->limit($limit)
+				->orderBy($order, $dir)
+				->get();
 
 
 			$totalFiltered = DB::table('planner_task_staff')
-								->leftJoin('planner_tasks', 'planner_task_staff.planner_task_id', '=', 'planner_tasks.id')
-								->leftJoin('planners', 'planners.id', '=', 'planner_tasks.planner_id')
-								->leftJoin('package_tasks', 'package_tasks.id', '=', 'planner_tasks.package_task_id')
-								->leftJoin('task_staff_notifications', 'task_staff_notifications.planner_task_staff_id', '=', 'planner_task_staff.id')
-								->select('task_staff_notifications.id as task_notif_id','planner_task_staff.user_id','package_tasks.name as task_name','planner_tasks.task_date', 'planner_tasks.task_time', 'planner_tasks.status', 'planners.event_name', 'planners.event_venue')
-								->where(function ($query) use ($search) {
-									$query->where('planner_tasks.task_date', 'like', '%' . $search . '%')
-										->orWhere('planner_tasks.task_time', 'like', "%{$search}%")
-										->orWhere('planner_tasks.status', 'like', "%{$search}%")
-										->orWhere('planners.event_name', 'like', "%{$search}%")
-										->orWhere('planners.event_venue', 'like', "%{$search}%")
-										->orWhere('package_tasks.name', 'like', "%{$search}%");
-								})
-								->where([
-									['planner_task_staff.user_id', $request->user_id],
-									['planners.deleted_at', '=', null]
-								])->count();
+				->leftJoin('planner_tasks', 'planner_task_staff.planner_task_id', '=', 'planner_tasks.id')
+				->leftJoin('planners', 'planners.id', '=', 'planner_tasks.planner_id')
+				->leftJoin('package_tasks', 'package_tasks.id', '=', 'planner_tasks.package_task_id')
+				->leftJoin('task_staff_notifications', 'task_staff_notifications.planner_task_staff_id', '=', 'planner_task_staff.id')
+				->select('task_staff_notifications.id as task_notif_id', 'planner_task_staff.user_id', 'package_tasks.name as task_name', 'planner_tasks.task_date', 'planner_tasks.task_time', 'planner_tasks.status', 'planners.event_name', 'planners.event_venue')
+				->where(function ($query) use ($search) {
+					$query->where('planner_tasks.task_date', 'like', '%' . $search . '%')
+						->orWhere('planner_tasks.task_time', 'like', "%{$search}%")
+						->orWhere('planner_tasks.status', 'like', "%{$search}%")
+						->orWhere('planners.event_name', 'like', "%{$search}%")
+						->orWhere('planners.event_venue', 'like', "%{$search}%")
+						->orWhere('package_tasks.name', 'like', "%{$search}%");
+				})
+				->where([
+					['planner_task_staff.user_id', $request->user_id],
+					['planners.deleted_at', '=', null]
+				])->count();
 		}
 
 
@@ -241,13 +243,13 @@ class UserFetchController extends Controller
 			//loop posts collection to transfer in another array $nestedData
 			foreach ($posts as $r) {
 				$status = $r->status == 'finished' ? '<span title="Danger" class="badge bg-success">FINISHED</span>' : '<span title="Danger" class="badge bg-info">PENDING</span>';
-				
+
 				$nestedData['event_name'] = $r->event_name;
 				$nestedData['event_place'] = $r->event_venue;
-				$nestedData['task_date_time'] = $r->task_date.' | '.$r->task_time;
+				$nestedData['task_date_time'] = $r->task_date . ' | ' . $r->task_time;
 				$nestedData['task_name'] = ucwords($r->task_name);
 				$nestedData['task_status'] =  $status;
-				if($request->my_task == 1){
+				if ($request->my_task == 1) {
 					$nestedData['action'] = '
                     <a name="show" id="show"  href="my-tasks/' . $r->task_notif_id . '" class="btn btn-primary btn-xs">Show</a>
 					';
@@ -272,7 +274,7 @@ class UserFetchController extends Controller
 
 	public function fetchUserStaffing(Request $request)
 	{
-
+		ini_set('max_execution_time', 100);
 		//column list in the table Prpducts
 		$columns = array(
 			0 => 'attendance',
@@ -281,7 +283,7 @@ class UserFetchController extends Controller
 			3 => 'action'
 		);
 
-		$totalData = PlannerStaffing::where('user_id',$request->user_id)->count();
+		$totalData = PlannerStaffing::where('user_id', $request->user_id)->count();
 		//total number of data that will show in the datatable default 10
 		$limit = $request->input('length');
 		//start number for pagination ,default 0
@@ -295,67 +297,67 @@ class UserFetchController extends Controller
 		if (empty($request->input('search.value'))) {
 			//get all the product data
 			$posts =  DB::table('planner_staffings')
-						->leftJoin('planners', 'planners.id', '=', 'planner_staffings.planner_id')
-						->leftJoin('task_notifications', 'task_notifications.planner_staffing_id', '=', 'planner_staffings.id')
-						->select('task_notifications.id as task_notif_id','planner_staffings.user_id','planners.event_name','planners.status', 'planners.event_venue','planners.event_date','planners.event_time','planner_staffings.attendance')
-						->where([
-							['planner_staffings.user_id', $request->user_id],
-							['planners.deleted_at', '=', null]
-						])
-						->offset($start)
-						->limit($limit)
-						->orderBy($order, $dir)
-						->get();
+				->leftJoin('planners', 'planners.id', '=', 'planner_staffings.planner_id')
+				->leftJoin('task_notifications', 'task_notifications.planner_staffing_id', '=', 'planner_staffings.id')
+				->select('task_notifications.id as task_notif_id', 'planner_staffings.user_id', 'planners.event_name', 'planners.status', 'planners.event_venue', 'planners.event_date', 'planners.event_time', 'planner_staffings.attendance')
+				->where([
+					['planner_staffings.user_id', $request->user_id],
+					['planners.deleted_at', '=', null]
+				])
+				->offset($start)
+				->limit($limit)
+				->orderBy($order, $dir)
+				->get();
 
 			//total number of filtered data
 			$totalFiltered =  DB::table('planner_staffings')
-								->leftJoin('planners', 'planners.id', '=', 'planner_staffings.planner_id')
-								->leftJoin('task_notifications', 'task_notifications.planner_staffing_id', '=', 'planner_staffings.id')
-								->select('task_notifications.id as task_notif_id','planner_staffings.user_id','planners.event_name', 'planners.status','planners.event_venue','planners.event_date','planners.event_time','planner_staffings.attendance')
-								->where([
-									['planner_staffings.user_id', $request->user_id],
-									['planners.deleted_at', '=', null]
-								])->count();
+				->leftJoin('planners', 'planners.id', '=', 'planner_staffings.planner_id')
+				->leftJoin('task_notifications', 'task_notifications.planner_staffing_id', '=', 'planner_staffings.id')
+				->select('task_notifications.id as task_notif_id', 'planner_staffings.user_id', 'planners.event_name', 'planners.status', 'planners.event_venue', 'planners.event_date', 'planners.event_time', 'planner_staffings.attendance')
+				->where([
+					['planner_staffings.user_id', $request->user_id],
+					['planners.deleted_at', '=', null]
+				])->count();
 		} else {
 			$search = $request->input('search.value');
 
 			$posts = DB::table('planner_staffings')
-						->leftJoin('planners', 'planners.id', '=', 'planner_staffings.planner_id')
-						->leftJoin('task_notifications', 'task_notifications.planner_staffing_id', '=', 'planner_staffings.id')
-						->select('task_notifications.id as task_notif_id','planner_staffings.user_id','planners.event_name','planners.status', 'planners.event_venue','planners.event_date','planners.event_time','planner_staffings.attendance')
-						->where(function ($query) use ($search) {
-							$query->where('planners.event_name', 'like', '%' . $search . '%')
-								->orWhere('planners.event_venue', 'like', "%{$search}%")
-								->orWhere('planners.event_date', 'like', "%{$search}%")
-								->orWhere('planners.event_time', 'like', "%{$search}%")
-								->orWhere('planners.status', 'like', "%{$search}%")
-								->orWhere('planner_staffings.attendance', 'like', "%{$search}%");
-						})
-						->where([
-							['planner_staffings.user_id', $request->user_id],
-							['planners.deleted_at', '=', null]
-						])
-						->offset($start)
-						->limit($limit)
-						->orderBy($order, $dir)
-						->get();
+				->leftJoin('planners', 'planners.id', '=', 'planner_staffings.planner_id')
+				->leftJoin('task_notifications', 'task_notifications.planner_staffing_id', '=', 'planner_staffings.id')
+				->select('task_notifications.id as task_notif_id', 'planner_staffings.user_id', 'planners.event_name', 'planners.status', 'planners.event_venue', 'planners.event_date', 'planners.event_time', 'planner_staffings.attendance')
+				->where(function ($query) use ($search) {
+					$query->where('planners.event_name', 'like', '%' . $search . '%')
+						->orWhere('planners.event_venue', 'like', "%{$search}%")
+						->orWhere('planners.event_date', 'like', "%{$search}%")
+						->orWhere('planners.event_time', 'like', "%{$search}%")
+						->orWhere('planners.status', 'like', "%{$search}%")
+						->orWhere('planner_staffings.attendance', 'like', "%{$search}%");
+				})
+				->where([
+					['planner_staffings.user_id', $request->user_id],
+					['planners.deleted_at', '=', null]
+				])
+				->offset($start)
+				->limit($limit)
+				->orderBy($order, $dir)
+				->get();
 
 			$totalFiltered = DB::table('planner_staffings')
-								->leftJoin('planners', 'planners.id', '=', 'planner_staffings.planner_id')
-								->leftJoin('task_notifications', 'task_notifications.planner_staffing_id', '=', 'planner_staffings.id')
-								->select('task_notifications.id as task_notif_id','planner_staffings.user_id','planners.event_name','planners.status', 'planners.event_venue','planners.event_date','planners.event_time','planner_staffings.attendance')
-								->where(function ($query) use ($search) {
-									$query->where('planners.event_name', 'like', '%' . $search . '%')
-										->orWhere('planners.event_venue', 'like', "%{$search}%")
-										->orWhere('planners.event_date', 'like', "%{$search}%")
-										->orWhere('planners.event_time', 'like', "%{$search}%")
-										->orWhere('planners.status', 'like', "%{$search}%")
-										->orWhere('planner_staffings.attendance', 'like', "%{$search}%");
-								})
-								->where([
-									['planner_staffings.user_id', $request->user_id],
-									['planners.deleted_at', '=', null]
-								])->count();
+				->leftJoin('planners', 'planners.id', '=', 'planner_staffings.planner_id')
+				->leftJoin('task_notifications', 'task_notifications.planner_staffing_id', '=', 'planner_staffings.id')
+				->select('task_notifications.id as task_notif_id', 'planner_staffings.user_id', 'planners.event_name', 'planners.status', 'planners.event_venue', 'planners.event_date', 'planners.event_time', 'planner_staffings.attendance')
+				->where(function ($query) use ($search) {
+					$query->where('planners.event_name', 'like', '%' . $search . '%')
+						->orWhere('planners.event_venue', 'like', "%{$search}%")
+						->orWhere('planners.event_date', 'like', "%{$search}%")
+						->orWhere('planners.event_time', 'like', "%{$search}%")
+						->orWhere('planners.status', 'like', "%{$search}%")
+						->orWhere('planner_staffings.attendance', 'like', "%{$search}%");
+				})
+				->where([
+					['planner_staffings.user_id', $request->user_id],
+					['planners.deleted_at', '=', null]
+				])->count();
 		}
 
 
@@ -365,29 +367,29 @@ class UserFetchController extends Controller
 			//loop posts collection to transfer in another array $nestedData
 			foreach ($posts as $r) {
 				$status = "";
-				if($r->status == 'done'){
+				if ($r->status == 'done') {
 					$status = '<span title="Danger" class="badge bg-success">DONE</span>';
-				} else if ($r->status == 'on-going'){
+				} else if ($r->status == 'on-going') {
 					$status = '<span title="Danger" class="badge bg-primary">ON-GOING</span>';
 				} else {
 					$status =  '<span title="Danger" class="badge bg-info">PENDING</span>';
 				}
-				$attendance= $r->attendance == 'inactive' ? '<span title="Danger" class="badge bg-warning">INACTIVE</span>' : '<span title="Danger" class="badge bg-success">ACTIVE</span>';
-				
+				$attendance = $r->attendance == 'inactive' ? '<span title="Danger" class="badge bg-warning">INACTIVE</span>' : '<span title="Danger" class="badge bg-success">ACTIVE</span>';
+
 				$nestedData['event_name'] = $r->event_name;
 				$nestedData['event_place'] = $r->event_venue;
-				$nestedData['event_date_time'] =  $r->event_date.' | '.$r->event_time;
+				$nestedData['event_date_time'] =  $r->event_date . ' | ' . $r->event_time;
 				$nestedData['event_status'] =  $status;
 				$nestedData['attendance'] =  $attendance;
-				if($request->my_task == 1){
+				if ($request->my_task == 1) {
 					$nestedData['action'] = '
-                    <a name="show" id="show" href="my-tasks/'.$r->task_notif_id.'" class="btn btn-primary btn-xs">Show</a>
+                    <a name="show" id="show" href="my-tasks/' . $r->task_notif_id . '" class="btn btn-primary btn-xs">Show</a>
 					';
 				} else {
 					$nestedData['action'] = '-';
 				}
-				
-				
+
+
 				$data[] = $nestedData;
 			}
 		}

@@ -94,6 +94,7 @@ class FoodFetchController extends Controller
 
     public function fetchFoodCategory(Request $request)
     {
+        ini_set('max_execution_time', 100);
         //column list in the table Prpducts
         $columns = array(
             0 => 'name',

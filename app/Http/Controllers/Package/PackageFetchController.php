@@ -15,6 +15,7 @@ class PackageFetchController extends Controller
 {
     public function fetchPackage(Request $request)
     {
+        ini_set('max_execution_time', 100);
         //column list in the table Prpducts
         $columns = array(
             0 => 'name',
@@ -104,6 +105,7 @@ class PackageFetchController extends Controller
 
     public function fetchPackageTask(Request $request)
     {
+        ini_set('max_execution_time', 100);
         //column list in the table Prpducts
         $columns = array(
             0 => 'name',
@@ -161,7 +163,7 @@ class PackageFetchController extends Controller
             foreach ($posts as $r) {
                 $nestedData['name'] = $r->name;
                 $nestedData['created_at'] = date('d-m-Y', strtotime($r->created_at));
-                if($request->is_show == 0){
+                if ($request->is_show == 0) {
                     $nestedData['action'] = '
                         <button name="edit" id="edit" data-name="' . $r->name . '" data-id="' . $r->id . '" class="btn btn-warning btn-xs">Edit</button>
                         <button name="delete" id="delete-task-package" data-id="' . $r->id . '" class="btn btn-danger btn-xs">Delete</button>
@@ -184,6 +186,7 @@ class PackageFetchController extends Controller
 
     public function fetchPackageFood(Request $request)
     {
+        ini_set('max_execution_time', 100);
         //column list in the table Prpducts
         $columns = array(
             0 => 'category_id',
@@ -221,7 +224,7 @@ class PackageFetchController extends Controller
                     $query->orWhereHas('package_food_category', function ($query) use ($search) {
                         $query->where('name', 'like', "%{$search}%");
                     })
-                    ->orWhere('created_at', 'like', "%{$search}%");
+                        ->orWhere('created_at', 'like', "%{$search}%");
                 })
                 ->offset($start)
                 ->limit($limit)
@@ -234,7 +237,7 @@ class PackageFetchController extends Controller
                     $query->orWhereHas('package_food_category', function ($query) use ($search) {
                         $query->where('name', 'like', "%{$search}%");
                     })
-                    ->orWhere('created_at', 'like', "%{$search}%");
+                        ->orWhere('created_at', 'like', "%{$search}%");
                 })
                 ->count();
         }
@@ -247,7 +250,7 @@ class PackageFetchController extends Controller
             foreach ($posts as $r) {
                 $nestedData['name'] = $r->package_food_category->name;
                 $nestedData['created_at'] = date('d-m-Y', strtotime($r->created_at));
-                if($request->is_show == 0){
+                if ($request->is_show == 0) {
                     $nestedData['action'] = '
                         <button name="edit" id="edit-food-package" data-category-id="' . $r->category_id . '" data-id="' . $r->id . '" class="btn btn-warning btn-xs">Edit</button>
                         <button name="delete" id="delete-food-package" data-id="' . $r->id . '" class="btn btn-danger btn-xs">Delete</button>
@@ -270,6 +273,7 @@ class PackageFetchController extends Controller
 
     public function fetchPackageEquipment(Request $request)
     {
+        ini_set('max_execution_time', 100);
         //column list in the table Prpducts
         $columns = array(
             0 => 'inventory_id',
@@ -305,11 +309,11 @@ class PackageFetchController extends Controller
 
             $posts = PackageEquipments::where('package_id', $request->package_id)
                 ->where(function ($query) use ($search) {
-                    $query ->orWhereHas('package_equipment', function ($query) use ($search) {
+                    $query->orWhereHas('package_equipment', function ($query) use ($search) {
                         $query->where('name', 'like', "%{$search}%");
                     })
-                    ->orWhere('quantity', 'like', "%{$search}%")
-                    ->orWhere('created_at', 'like', "%{$search}%");
+                        ->orWhere('quantity', 'like', "%{$search}%")
+                        ->orWhere('created_at', 'like', "%{$search}%");
                 })
                 ->offset($start)
                 ->limit($limit)
@@ -319,11 +323,11 @@ class PackageFetchController extends Controller
             //total number of filtered data matching the search value request in the Category table	
             $totalFiltered = PackageEquipments::where('package_id', $request->package_id)
                 ->where(function ($query) use ($search) {
-                    $query ->orWhereHas('package_equipment', function ($query) use ($search) {
+                    $query->orWhereHas('package_equipment', function ($query) use ($search) {
                         $query->where('name', 'like', "%{$search}%");
                     })
-                    ->orWhere('quantity', 'like', "%{$search}%")
-                    ->orWhere('created_at', 'like', "%{$search}%");
+                        ->orWhere('quantity', 'like', "%{$search}%")
+                        ->orWhere('created_at', 'like', "%{$search}%");
                 })
                 ->count();
         }
@@ -337,7 +341,7 @@ class PackageFetchController extends Controller
                 $nestedData['name'] = $r->package_equipment->name;
                 $nestedData['quantity'] = $r->quantity;
                 $nestedData['created_at'] = date('d-m-Y', strtotime($r->created_at));
-                if($request->is_show == 0){
+                if ($request->is_show == 0) {
                     // <button name="edit" id="edit-equipment-package" data-quantity="' . $r->quantity . '"  data-inventory-id="' . $r->inventory_id . '" data-id="' . $r->id . '" class="btn btn-warning btn-xs">Edit</button>
                     $nestedData['action'] = '
                         <button name="delete" id="delete-equipment-package" data-id="' . $r->id . '" class="btn btn-danger btn-xs">Delete</button>
@@ -360,6 +364,7 @@ class PackageFetchController extends Controller
 
     public function fetchPackageOther(Request $request)
     {
+        ini_set('max_execution_time', 100);
         //column list in the table Prpducts
         $columns = array(
             0 => 'name',
@@ -421,13 +426,13 @@ class PackageFetchController extends Controller
                 $nestedData['name'] = $r->name;
                 $nestedData['service_price'] = Str::currency($r->service_price);
                 $nestedData['created_at'] = date('d-m-Y', strtotime($r->created_at));
-                if($request->is_show == 0){
+                if ($request->is_show == 0) {
                     $nestedData['action'] = '
                     <button name="edit" id="edit-other-package" data-price="' . $r->service_price . '" data-name="' . $r->name . '" data-id="' . $r->id . '" class="btn btn-warning btn-xs">Edit</button>
                     <button name="delete" id="delete-other-package" data-id="' . $r->id . '" class="btn btn-danger btn-xs">Delete</button>
                     ';
                 }
-                  
+
                 $data[] = $nestedData;
             }
         }
