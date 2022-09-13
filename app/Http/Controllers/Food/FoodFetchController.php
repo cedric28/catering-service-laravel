@@ -12,6 +12,7 @@ class FoodFetchController extends Controller
 {
     public function fetchFood(Request $request)
     {
+        ini_set('max_execution_time', 600);
         //column list in the table Prpducts
         $columns = array(
             0 => 'name',
@@ -136,11 +137,11 @@ class FoodFetchController extends Controller
 
             //total number of filtered data matching the search value request in the Category table	
             $totalFiltered = Category::where('name', 'like', "%{$search}%")
-                    ->orWhere('created_at', 'like', "%{$search}%")
-                    ->orWhereHas('dish_category', function ($query) use ($search) {
-                        $query->where('name', 'like', "%{$search}%");
-                    })
-                    ->count();
+                ->orWhere('created_at', 'like', "%{$search}%")
+                ->orWhereHas('dish_category', function ($query) use ($search) {
+                    $query->where('name', 'like', "%{$search}%");
+                })
+                ->count();
         }
 
 
