@@ -1128,6 +1128,52 @@ class PlannerController extends Controller
         }
     }
 
+    public function updateTimeTable(Request $request)
+    {
+        \DB::beginTransaction();
+        try {
+
+            $messages = [
+                'task_time.unique' => 'The Time in Time Table has already been taken',
+            ];
+
+             //validate request value
+             $validator = Validator::make($request->all(), [
+                'task_time' => [
+                    'required',
+                    Rule::unique('planner_time_tables')->where(function ($query) use($request) {
+                        return $query->where('planner_id', $request->planner_id)
+                        ->where('task_time', $request->task_time);
+                    })->ignore($request->time_table_id),
+                ],
+                'planner_id'=> 'required|integer'
+            ],$messages);
+    
+            if ($validator->fails()) {
+                return response()->json([
+                    'data' => $validator->errors()
+                ], 422);
+            }
+
+            $plannerTimeTable = PlannerTimeTable::find($request->time_table_id);
+            $plannerTimeTable->task_time = $request->task_time;
+            $plannerTimeTable->save();
+
+            \DB::commit();
+
+            return response()->json([
+                'data' => $plannerTimeTable,
+                'status' => 'success'
+            ], 200);
+
+        } catch (\Exception $e) {
+            \DB::rollback();
+            return response()->json([
+                'data' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function destroyTimeTable(Request $request)
     {
         ////prevent other user to access to this page

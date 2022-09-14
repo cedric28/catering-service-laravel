@@ -16,7 +16,7 @@
     <div class="form-group row" id="tasks_input">
         <label class="col-lg-3 col-form-label">Tasks:</label>
         <div class="col-lg-9">
-            <input type="text" name="task_name" value="{{ old('task') }}" class="@error('task') is-invalid @enderror form-control" placeholder="e.g Dinner">
+            <input type="text" name="task_name" value="{{ old('task_name') }}" class="@error('task_name') is-invalid @enderror form-control" placeholder="e.g Dinner">
         </div>
     </div>
 
@@ -24,7 +24,7 @@
         <label class="col-lg-3 col-form-label">Task Time:</label>
         <div class="col-lg-9">
         <div class="input-group date" id="timetable" data-target-input="nearest">
-            <input type="text" name="task_time" value="{{ old('time') }}" placeholder="e.g 8:27 PM" onkeydown="return false;" class="@error('task_date') is-invalid @enderror form-control datetimepicker-input" data-target="#timetable"/>
+            <input type="text" name="task_time" value="{{ old('task_time') }}" placeholder="e.g 8:27 PM" onkeydown="return false;" class="@error('task_time') is-invalid @enderror form-control datetimepicker-input" data-target="#timetable"/>
             <div class="input-group-append" data-target="#timetable" data-toggle="datetimepicker">
                 <div class="input-group-text"><i class="fa fa-calendar"></i></div>
             </div>
@@ -143,4 +143,5 @@
             
         });
 </script>
+@include('planner.modals.timetable_modal')
 @endpush('scripts')

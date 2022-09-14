@@ -674,7 +674,7 @@ class PlannerDetailsFetchController extends Controller
                 $nestedData['task_name'] = ucwords($r->task_name);
                 if($request->planner_show == 0){
                     $nestedData['action'] = '
-                        <button name="edit" id="edit-planner-time-table" data-id="'.$r->id.'" class="btn btn-warning btn-xs">Edit</button>
+                        <button name="edit" id="edit-planner-time-table" data-time="'.$r->task_time.'" data-id="'.$r->id.'" class="btn btn-warning btn-xs">Edit</button>
                         <button name="delete" id="delete-planner-time-table" data-id="'.$r->id.'" class="btn btn-danger btn-xs">Delete</button>
                     ';
                 }

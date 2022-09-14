@@ -121,6 +121,7 @@ Route::middleware('auth')->group(function () {
     Route::post('planners/destroy-staffing', 'Planner\PlannerController@destroyStaffing')->name('destroyStaffing');
     Route::post('planners/change-attendace-staffing', 'Planner\PlannerController@changeAttendanaceStaffing')->name('changeAttendanaceStaffing');
     Route::post('planners/store-time-table', 'Planner\PlannerController@storeTimeTable')->name('storeTimeTable');
+    Route::post('planners/update-time-table', 'Planner\PlannerController@updateTimeTable')->name('updateTimeTable');
     Route::post('planners/destroy-time-table', 'Planner\PlannerController@destroyTimeTable')->name('destroyTimeTable');
     Route::post('planners/store-payment', 'Planner\PlannerController@storePayment')->name('storePayment');
     Route::post('planners/destroy-payment', 'Planner\PlannerController@destroyPayment')->name('destroyPayment');
