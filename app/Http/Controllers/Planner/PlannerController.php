@@ -225,6 +225,18 @@ class PlannerController extends Controller
             ['type' => 'Post-Event']
         ];
 
+        $time_tables_lists = [
+            ['task_name' => 'Truck Departure'],
+            ['task_name' => 'Truck Arrival'],
+            ['task_name' => 'Equipment Checklist'],
+            ['task_name' => 'Venue Ready Time'],
+            ['task_name' => 'Buffet Service'],
+            ['task_name' => 'Pack-up'],
+            ['task_name' => 'Equipment Checklist (Packup)'],
+            ['task_name' => 'End Time'],
+            ['task_name' => 'Staff Departure'],
+        ];
+
         $taskStatus = [
             ['status' => 'pending'],
             ['status' => 'finished']
@@ -259,7 +271,8 @@ class PlannerController extends Controller
             'plannerStaffingsDishwasher' => $plannerStaffingsDishwasher,
             'taskStatus' => $taskStatus,
             'equipmentStatus' => $equipmentStatus,
-            'plannerStatus' => $plannerStatus
+            'plannerStatus' => $plannerStatus,
+            'time_tables_lists' => $time_tables_lists
         ]);
     }
 

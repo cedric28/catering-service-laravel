@@ -2,7 +2,18 @@
 <form action="{{ route('storeTimeTable')}}" method="POST" class="mb-2">
     @csrf
     <input type="hidden" name="planner_id" value="{{ $planner->id }}"/>
-    <div class="form-group row">
+    <!-- <div class="form-group row" id="tasks_dropdown">
+        <label class="col-lg-3 col-form-label">Tasks:</label>
+        <div class="col-lg-9">
+            <select id="task_time_table_id" name="task_name_time_table" class="@error('task_name_time_table') is-invalid @enderror form-control select2">
+                <option value="">Select Task</option>
+                @foreach ($time_tables_lists as $time)
+                    <option value="{{ $time['task_name'] }}" {{ ($time['task_name'] == old("task_name_time_table")) ? " selected" : "" }}>{{ ucwords($time['task_name']) }}</option>
+                @endforeach
+            </select>
+        </div>
+    </div> -->
+    <div class="form-group row" id="tasks_input">
         <label class="col-lg-3 col-form-label">Tasks:</label>
         <div class="col-lg-9">
             <input type="text" name="task_name" value="{{ old('task') }}" class="@error('task') is-invalid @enderror form-control" placeholder="e.g Dinner">
@@ -43,6 +54,16 @@
 
 @push('scripts')
 <script>
+    // var selected_option_time = $('#task_time_table_id option:selected').val();
+    // $('#task_time_table_id').on('change', function(){
+    //     console.log($(this).is(':selected'));
+    //     // if($(this).is(':selected').val() != ""){
+    //     //     console.log("may laman")
+    //     // } else{
+    //     //     console.log("walang laman")
+    //     // }
+    // });
+   
     var tablePlannerTimeTable = $('#planner-time-table-lists').DataTable({
             "responsive": true, 
             "lengthChange": false, 

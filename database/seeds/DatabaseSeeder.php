@@ -32,5 +32,6 @@ class DatabaseSeeder extends Seeder
         $this->call(PackageOtherSeeder::class);
         $this->call(PackageMenuSeeder::class);
         $this->call(FoodsSeeder::class);
+        $this->call(PackageTimeTable::class);
     }
 }
