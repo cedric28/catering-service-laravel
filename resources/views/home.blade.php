@@ -94,9 +94,16 @@
 			<div class="col-xl-8 col-lg-7">
 				<div class="card shadow mb-4">
 					<!-- Card Header - Dropdown -->
-					<div
-						class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-						<h6 class="m-0 font-weight-bold text-primary">Calendar Events</h6>
+					<div class="card-header py-3">
+						<h6 class="m-0 font-weight-bold text-primary mb-3">Calendar Events</h6>
+						<div class="row">
+							<div class="col-md-12">
+								<div class="callout callout-info">
+									<h5><i class="fas fa-info"></i> Note:</h5>
+									You could click an event in the calendar to see the details.
+								</div>
+							</div>
+						</div>
 					</div>
 					<!-- Card Body -->
 					<div class="card-body">
