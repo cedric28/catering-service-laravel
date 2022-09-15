@@ -125,6 +125,55 @@ class PlannerController extends Controller
             $planner->updater_id = $user;
             $planner->save();
 
+            $plannerTime = [
+                [
+                    'task_name' => 'Truck Departure',
+                    'task_time' => '12:01 AM'
+                ],
+                [
+                    'task_name' => 'Truck Arrival',
+                    'task_time' => '12:02 AM'
+                ],
+                [
+                    'task_name' => 'Equipment Checklist',
+                    'task_time' => '12:03 AM'
+                ],
+                [
+                    'task_name' => 'Venue Ready Time',
+                    'task_time' => '12:04 AM'
+                ],
+                [
+                    'task_name' => 'Buffet Service',
+                    'task_time' => '12:05 AM'
+                ],
+                [
+                    'task_name' => 'Pack-up',
+                    'task_time' => '12:06 AM'
+                ],
+                [
+                    'task_name' => 'Equipment Checklist (Packup)',
+                    'task_time' => '12:07 AM'
+                ],
+                [
+                    'task_name' => 'End Time',
+                    'task_time' => '12:08 AM'
+                ],
+                [
+                    'task_name' => 'Staff Departure',
+                    'task_time' => '12:09 AM'
+                ],
+            ];
+
+            foreach ($plannerTime as $key => $time) {
+    
+                // Create Role
+                $timeObj = PlannerTimeTable::create([
+                    'planner_id' => $planner->id,
+                    'task_name' => $time['task_name'],
+                    'task_time' => $time['task_time'],
+                ]);
+            }
+
              /*
             | @End Transaction
             |---------------------------------------------*/
