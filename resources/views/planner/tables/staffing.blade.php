@@ -140,7 +140,7 @@
                 success:function(data)
                 {
                     tablePlannerStaffing.ajax.reload();
-                    location.reload();
+                    // location.reload();
                 }
             })
             

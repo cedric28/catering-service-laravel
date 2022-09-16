@@ -266,9 +266,19 @@ class PlannerController extends Controller
                             ->whereHas('user', function($query){
                                 $query->where('job_type_id',4);
                             })->get();
-        $usersHeadStaff = User::whereDoesntHave('planner_task_staffs')
-                        ->where('job_type_id',2)
-                        ->get();
+        // $usersHeadStaff = User::whereDoesntHave('planner_task_staffs', function($query) use ($planner){
+        //                         $query->whereHas('planner_task', function($query) use($planner) {
+        //                             $query->where('planner_id', $planner->id);
+        //                         })
+        //                         ->where('task_date', $planner->event_date);
+        //                 })
+        //                 ->where('job_type_id',2)
+        //                 ->get();
+        // $usersHeadStaff = User::whereDoesntHave('planner_task_staffs')
+        //                         ->where('job_type_id',2)
+        //                         ->get();
+        $usersHeadStaff = User::where('job_type_id',2)
+                                ->get();
         $paymentTypes = PaymentType::all();
         $usersStaffJobTypes = User::whereIn('job_type_id',[3,4,5])->whereDoesntHave('planner_staffings',function (Builder $query) use ($plannerDate) {
             $query->where('task_date','=', $plannerDate);
@@ -761,8 +771,11 @@ class PlannerController extends Controller
                 Rule::unique('planner_task_staff')->where(function ($query) use($request) {
                     $plannerTask = PlannerTask::find($request->planner_task_id);
                     return $query->where('user_id', $request->user_id)
-                                ->where('planner_task_id', $request->planner_task_id)
-                                ->orWhere('task_date', $plannerTask->task_date);
+                            ->where('planner_task_id', $request->planner_task_id)
+                            ->orWhere('task_date', $plannerTask->task_date);
+                    // return $query->where('planner_task_id', $request->planner_task_id)
+                    //             ->where('user_id', $request->user_id)
+                    //             ->where('task_date', $plannerTask->task_date);
                 }),
                 // Rule::unique('planner_tasks')->where(function ($query) use($request) {
                 //     $planner_task = PlannerTask::find($request->planner_task_id);
