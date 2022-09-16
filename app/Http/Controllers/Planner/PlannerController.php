@@ -261,7 +261,9 @@ class PlannerController extends Controller
                             ->whereHas('user', function($query){
                                 $query->where('job_type_id',4);
                             })->get();
-        $usersHeadStaff = User::where('job_type_id',2)->get();
+        $usersHeadStaff = User::whereDoesntHave('planner_task_staffs')
+                        ->where('job_type_id',2)
+                        ->get();
         $paymentTypes = PaymentType::all();
         $usersStaffJobTypes = User::whereIn('job_type_id',[3,4,5])->whereDoesntHave('planner_staffings',function (Builder $query) use ($plannerDate) {
             $query->where('task_date','=', $plannerDate);
