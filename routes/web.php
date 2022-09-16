@@ -145,14 +145,17 @@ Route::middleware('auth')->group(function () {
 
     //Reports
     Route::get('revenue-report-monthly', 'Report\RevenueController@revenueMonthly')->name('revenueMonthly');
+    Route::get('revenue-report-yearly', 'Report\RevenueController@revenueYearly')->name('revenueYearly');
     Route::get('user-activities-report-monthly', 'Report\UserActivityController@usersActiveTracker')->name('usersActiveTracker');
 
 
     //PDF
     Route::get('invoice/{id}', 'PDF\PDFController@generateInvoice')->name('generateInvoice');
     Route::get('contract/{id}', 'PDF\PDFController@generateContract')->name('generateContract');
-    Route::get('generate-pdf-monthy-sales', 'PDF\PDFController@generateMonthlyRevenue')->name('generateMonthlyRevenue');
+    Route::get('generate-pdf-monthly-sales', 'PDF\PDFController@generateMonthlyRevenue')->name('generateMonthlyRevenue');
     Route::get('print-monthly-sales', 'PDF\PDFController@printMonthlyRevenue')->name('printMonthlyRevenue');
+    Route::get('generate-pdf-yearly-sales', 'PDF\PDFController@generateYearlyRevenue')->name('generateYearlyRevenue');
+    Route::get('print-yearly-sales', 'PDF\PDFController@printYearlyRevenue')->name('printYearlyRevenue');
     Route::get('print-beo/{id}', 'PDF\PDFController@printBEO')->name('printBEO');
 
     Route::get('generate-pdf-employee-activities', 'PDF\PDFController@generateEmployeeActivity')->name('generateEmployeeActivity');

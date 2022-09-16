@@ -50,6 +50,14 @@
     border-left-color: #117a8b;
 }
 
+.callout.callout-info {
+    border-left-color: #117a8b;
+}
+
+.callout.callout-success {
+    border-left-color: #28a745;
+}
+
 .callout {
     border-radius: 0.25rem;
     box-shadow: 0 1px 30px rgb(0 0 0 / 12%), 0 1px 2px rgb(0 0 0 / 24%);

@@ -249,6 +249,11 @@ class PlannerController extends Controller
         $package_equipments = PackageEquipments::where('package_id',$planner->package_id)->get();
         $package_others = PackageOther::where('package_id',$planner->package_id)->get();
         $package_menus = PackageMenu::where('package_id',$planner->package_id)->get();
+
+        // PackageMenu::where('package_id',$planner->package_id)
+        //                     ->whereHas('planners', function($query) use ($planner){
+        //                         $query->where('package_menu_id',$planner->package_id);
+        //                     })->get();
         $plannerStaffingsServer = PlannerStaffing::where('planner_id',$planner->id)
                             ->whereHas('user', function($query){
                                 $query->where('job_type_id',5);
@@ -306,6 +311,26 @@ class PlannerController extends Controller
             ['status' => 'returned']
         ];
 
+        $plannerOther = PlannerOther::where('planner_id',$planner->id)->get();
+       
+        $servicePriceTotal = 0;
+        if(count($plannerOther) > 0 ){
+            foreach($plannerOther as $other){
+                $packageOtherServicePrice = PackageOther::select(\DB::raw("SUM(service_price) as price"))->where('id',$other->package_other_id)->get();
+                $servicePriceTotal +=$packageOtherServicePrice[0]->price;
+            }
+        }
+
+        $overallPayment  = 0;
+        $payments = Payment::select(\DB::raw("SUM(payment_price) as price"))->where('planner_id',$planner->id)->get();
+        if(count($payments) > 0){
+            foreach($payments as $payment){
+                $overallPayment += $payment->price;
+            }
+        }
+     
+        $totalBalance = $planner->total_price + $servicePriceTotal - $overallPayment;
+
         return view('planner.edit', [
             'planner' => $planner,
             'packages' => $packages,
@@ -324,7 +349,8 @@ class PlannerController extends Controller
             'taskStatus' => $taskStatus,
             'equipmentStatus' => $equipmentStatus,
             'plannerStatus' => $plannerStatus,
-            'time_tables_lists' => $time_tables_lists
+            'time_tables_lists' => $time_tables_lists,
+            'totalBalance' => $totalBalance
         ]);
     }
 

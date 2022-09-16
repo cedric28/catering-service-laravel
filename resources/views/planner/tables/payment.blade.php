@@ -122,6 +122,7 @@
                 success:function(data)
                 {
                     tablePlannerPayment.ajax.reload();
+                    location.reload();
                 }
             })
             

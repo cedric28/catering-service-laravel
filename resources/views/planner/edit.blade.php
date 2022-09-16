@@ -69,10 +69,14 @@
 								<h5><i class="fas fa-info"></i> Note:</h5>
 								If you set the event status to "Done" , you will not be able to change the other details permanently.
 							</div>
+							<div class="callout callout-success">
+								<h5><i class="fas fa-success"></i> Total Balance: {{ Str::currency($totalBalance) }}</h5>
+							</div>
 							<form action="{{ route('planners.update', $planner->id )}}" method="POST">
 								@csrf
 								@method('PATCH')
 								<input type="hidden" name="date_today" value="{{ date('Y-m-d') }}" />
+
 								<div class="form-group row">
 									<label class="col-lg-3 col-form-label">Event Name:</label>
 									<div class="col-lg-9">
