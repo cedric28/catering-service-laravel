@@ -535,18 +535,19 @@ class PlannerController extends Controller
                     ->where('package_task_id', $request->package_task_id);
                 }),
             ],
-            'task_date' => [
-                'required',
-                'string',
-                Rule::unique('planner_tasks')->where(function ($query) use($request) {
-                    $taskDateTime = explode(" | ", $request->task_date);
-                    $taskDate = $taskDateTime[0];
-                    $taskTime = $taskDateTime[1];
-                    return $query->where('planner_id', $request->planner_id)
-                    ->where('task_time', $taskTime)
-                    ->where('task_date', $taskDate);
-                }),
-            ],
+            // 'task_date' => [
+            //     'required',
+            //     'string',
+            //     Rule::unique('planner_tasks')->where(function ($query) use($request) {
+            //         $taskDateTime = explode(" | ", $request->task_date);
+            //         $taskDate = $taskDateTime[0];
+            //         $taskTime = $taskDateTime[1];
+            //         return $query->where('planner_id', $request->planner_id)
+            //         ->where('task_time', $taskTime)
+            //         ->where('task_date', $taskDate);
+            //     }),
+            // ],
+            'task_date' => 'required|string',
             'task_type'=> 'required|string',
             'planner_id'=> 'required|integer'
             ],$messages);
@@ -611,18 +612,19 @@ class PlannerController extends Controller
                     ->where('package_task_id', $request->package_task_id);
                 })->ignore($request->planner_task_ids),
             ],
-            'task_date' => [
-                'required',
-                'string',
-                Rule::unique('planner_tasks')->where(function ($query) use($request) {
-                    $taskDateTime = explode(" | ", $request->task_date);
-                    $taskDate = $taskDateTime[0];
-                    $taskTime = $taskDateTime[1];
-                    return $query->where('planner_id', $request->planner_id)
-                    ->where('task_time', $taskTime)
-                    ->where('task_date', $taskDate);
-                })->ignore($request->planner_task_ids),
-            ],
+            // 'task_date' => [
+            //     'required',
+            //     'string',
+            //     Rule::unique('planner_tasks')->where(function ($query) use($request) {
+            //         $taskDateTime = explode(" | ", $request->task_date);
+            //         $taskDate = $taskDateTime[0];
+            //         $taskTime = $taskDateTime[1];
+            //         return $query->where('planner_id', $request->planner_id)
+            //         ->where('task_time', $taskTime)
+            //         ->where('task_date', $taskDate);
+            //     })->ignore($request->planner_task_ids),
+            // ],
+            'task_date' => 'required|string',
             'task_type'=> 'required|string',
             'task_status'=> 'required|string',
             'planner_id'=> 'required|integer'
@@ -731,7 +733,7 @@ class PlannerController extends Controller
                 Rule::unique('planner_task_staff')->where(function ($query) use($request) {
                     $plannerTask = PlannerTask::find($request->planner_task_id);
                     return $query->where('user_id', $request->user_id)
-                                ->orWhere('planner_task_id', $request->planner_task_id)
+                                ->where('planner_task_id', $request->planner_task_id)
                                 ->orWhere('task_date', $plannerTask->task_date);
                 }),
                 // Rule::unique('planner_tasks')->where(function ($query) use($request) {
