@@ -136,6 +136,129 @@ class UserFetchController extends Controller
 		return response()->json($json_data);
 	}
 
+	public function fetchInactiveUser(Request $request)
+	{
+		//prevent other user to access to this page
+		$this->authorize("isHeadStaffOrAdmin");
+
+		//column list in the table Prpducts
+		$columns = array(
+			0 => 'name',
+			1 => 'email',
+			2 => 'role_id',
+			3 => 'created_at',
+			4 => 'action'
+		);
+
+		$totalData = User::onlyTrashed()->whereIn('role_id',[2,3])->count();
+		//total number of data that will show in the datatable default 10
+		$limit = $request->input('length');
+		//start number for pagination ,default 0
+		$start = $request->input('start');
+		//order list of the column
+		$order = $columns[$request->input('order.0.column')];
+		//order by ,default asc 
+		$dir = $request->input('order.0.dir');
+
+		//check if user search for a value in the product datatable
+		if (empty($request->input('search.value'))) {
+			//get all the product data
+			$posts = User::onlyTrashed()->whereIn('role_id',[2,3])
+				->offset($start)
+				->limit($limit)
+				->orderBy($order, $dir)
+				->get();
+
+			//total number of filtered data
+			$totalFiltered = User::onlyTrashed()->whereIn('role_id',[2,3])->count();
+		} else {
+			$search = $request->input('search.value');
+
+			$posts = User::onlyTrashed()->whereHas('role', function ($query) use ($search) {
+					$query->where('name', 'like', "%{$search}%")
+							->whereIn('id', [2,3]);
+				})
+				->whereHas('job_type', function ($query) use ($search) {
+					$query->where('name', 'like', "%{$search}%");
+				})
+				->orWhere(function($query) use ($search){
+					$query->where('name', 'like', "%{$search}%")
+						  ->whereIn('role_id',[2,3]);
+				})
+				->orWhere('email', 'like', "%{$search}%")
+				->orWhere('created_at', 'like', "%{$search}%")
+				->offset($start)
+				->limit($limit)
+				->orderBy($order, $dir)
+				->get();
+
+
+			$totalFiltered = User::onlyTrashed()->whereHas('role', function ($query) use ($search) {
+					$query->where('name', 'like', "%{$search}%")
+							->whereIn('id', [2,3]);
+				})
+				->whereHas('job_type', function ($query) use ($search) {
+					$query->where('name', 'like', "%{$search}%");
+				})
+				->orWhere(function($query) use ($search){
+					$query->where('name', 'like', "%{$search}%")
+						  ->whereIn('role_id',[2,3]);
+				})
+				->orWhere('email', 'like', "%{$search}%")
+				->orWhere('created_at', 'like', "%{$search}%")
+				->count();
+		}
+
+
+		$data = array();
+
+		if ($posts) {
+			//loop posts collection to transfer in another array $nestedData
+			foreach ($posts as $r) {
+				$task = '<span title="Danger" class="badge bg-info">IDLE</span>';
+				if($r->job_type_id == 2 || $r->job_type_id == 1){
+					$tasksHeadStaff = PlannerTaskStaff::where([
+						['task_date',date('Y-m-d') ],
+						['user_id',$r->id ],
+					])->get();
+					if(count($tasksHeadStaff) > 0){
+						$task = '<span title="Danger" class="badge bg-success">ON-TASK</span>';
+					}
+				} else {
+					$taskStaffing = PlannerStaffing::where([
+						['task_date','=', date('Y-m-d') ],
+						['user_id','=', $r->id ],
+						['attendance','=', 'active' ],
+					])->get();
+					if(count($taskStaffing) > 0){
+						$task = '<span title="Danger" class="badge bg-success">ON-TASK</span>';
+					}
+				}
+				$nestedData['id'] = $r->id;
+				$nestedData['name'] = $r->name;
+				$nestedData['email'] = $r->email;
+				$nestedData['role'] =  $r->role->name;
+				$nestedData['job_type'] =  $r->job_type->name;
+				$nestedData['status'] =  $task;
+				$nestedData['created_at'] = date('m-d-Y', strtotime($r->created_at));
+				$nestedData['action'] = '
+                    <button name="show" id="restore-user" data-id="' . $r->id . '" class="btn btn-success btn-sm">Restore</button>
+				';
+				$data[] = $nestedData;
+			}
+		}
+
+		$json_data = array(
+			"draw"			    => intval($request->input('draw')),
+			"recordsTotal"	    => intval($totalData),
+			"recordsFiltered"   => intval($totalFiltered),
+			"data"			    => $data
+		);
+
+		//return the data in json response
+		return response()->json($json_data);
+	}
+
 	public function fetchUserTaskStaff(Request $request)
 	{
 		//column list in the table Prpducts

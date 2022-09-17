@@ -28,25 +28,53 @@
 			<a type="button" href="{{ route('inventory-category.create')}}" class="btn btn-outline-success btn-sm float-left"><i class="icon-add mr-2"></i> Add Inventory Category</a>
 		</div>
 		<div class="card-body">
-			<div class="table-responsive">
-				<table class="table table-bordered" id="inventory-category-lists"  width="100%" cellspacing="0">
-					<thead>
-						<tr>
-							<th>NAME</th>
-							<th>DATE ADDED</th>
-							<th>ACTION</th>
-						</tr>
-					</thead>
-					<tbody>
-						@foreach ($inventory_categories as $inventory)
-							<tr>
-								<td>{{ $inventory->name }}</td>
-								<td>{{ $inventory->created_at }}</td>
-								<td></td>
-							</tr>
-						@endforeach
-					</tbody>
-				</table>
+		<div class="card shadow card-primary card-outline card-outline-tabs border-top-primary">
+				<div class="card-header p-0 border-bottom-0">
+					<ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
+						<li class="nav-item">
+							<a class="nav-link active" id="custom-tabs-four-home-tab" data-toggle="pill" href="#custom-tabs-four-home" role="tab" aria-controls="custom-tabs-four-home" aria-selected="true">Active Inventory Category</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" id="custom-tabs-four-profile-tab" data-toggle="pill" href="#custom-tabs-four-profile" role="tab" aria-controls="custom-tabs-four-profile" aria-selected="false">Archived Inventory Category</a>
+						</li>
+					</ul>
+				</div>
+				<div class="card-body">
+					<div class="tab-content" id="custom-tabs-four-tabContent">
+						<div class="tab-pane fade active show" id="custom-tabs-four-home" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
+							<div class="table-responsive">
+								<table class="table table-bordered" id="inventory-category-lists"  width="100%" cellspacing="0">
+									<thead>
+										<tr>
+											<th>NAME</th>
+											<th>DATE ADDED</th>
+											<th>ACTION</th>
+										</tr>
+									</thead>
+									<tbody>
+										
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div class="tab-pane fade" id="custom-tabs-four-profile" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
+							<div class="table-responsive">
+								<table class="table table-bordered" id="inactive-inventory-category-lists"  width="100%" cellspacing="0">
+									<thead>
+										<tr>
+											<th>NAME</th>
+											<th>DATE ADDED</th>
+											<th>ACTION</th>
+										</tr>
+									</thead>
+									<tbody>
+										
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -167,10 +195,81 @@
 					{
 						setTimeout(function(){
 							$('#confirmModal').modal('hide');
+							$('#ok_button').text('OK');
 							table.ajax.reload();
+							tableInactiveInventoryCategory.ajax.reload();
 						}, 2000);
 					}
 				})
+			});
+
+
+			var tableInactiveInventoryCategory = $('#inactive-inventory-category-lists').DataTable({
+				"responsive": true, 
+				"lengthChange": false, 
+				"autoWidth": false,
+				"buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+				"processing": true,
+				"serverSide": true,
+				"ajax": {
+					"url":"<?= route('InactiveInventoryCategory') ?>",
+					"dataType":"json",
+					"type":"POST",
+					"data":{"_token":"<?= csrf_token() ?>"}
+				},
+				"dom": 'Bfrtip',
+				"buttons": [
+					{
+						"extend": 'collection',
+						"text": 'Export',
+						"buttons": [
+							{
+								"extend": 'csv',
+								'title' :`ARCHIVED-CATEGORY-LISTS`,
+								"exportOptions": {
+									"columns": [0,1]
+								}
+							},
+							{
+								"extend": 'pdf',
+								'title' :`ARCHIVED-CATEGORY-LISTS`,
+								"exportOptions": {
+									"columns": [0,1]
+								}
+							},
+							{
+								"extend": 'print',
+								'title' :`ARCHIVED-CATEGORY-LISTS`,
+								"exportOptions": {
+									"columns": [0,1]
+								}
+							}
+						],
+					}
+				],
+				"columns":[
+					{"data":"name"},
+					{"data":"created_at"},
+					{"data":"action","searchable":false,"orderable":false}
+				],
+				"columnDefs": [
+					{
+						"targets": [0,1],   // target column
+						"className": "textCenter",
+					}
+				]
+			});
+
+			$(document).on('click', '#restore-inventory-category', function(){
+				const inventoryCategoryId = $(this).attr('data-id');
+				$.ajax({
+                    url:"inventory-category/restore/"+inventoryCategoryId,
+                    success:function(data)
+                    {
+						tableInactiveInventoryCategory.ajax.reload();
+                    	table.ajax.reload();
+                    }
+                })
 			});
 		</script>
         @endpush('scripts')

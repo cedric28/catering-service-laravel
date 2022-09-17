@@ -95,6 +95,9 @@
 								<li class="nav-item">
 									<a class="nav-link" id="custom-tabs-four-settings-tab" data-toggle="pill" href="#custom-tabs-four-settings" role="tab" aria-controls="custom-tabs-four-settings" aria-selected="false">Other</a>
 								</li>
+								<li class="nav-item">
+									<a class="nav-link" id="custom-tabs-archived-settings-tab" data-toggle="pill" href="#custom-tabs-archived-settings" role="tab" aria-controls="custom-tabs-archived-settings" aria-selected="false">Archived</a>
+								</li>
 							</ul>
 						</div>
 						<div class="card-body">
@@ -155,6 +158,70 @@
 									<button type="button" id="add-other" class="btn btn-outline-success btn-sm float-left mb-2"><i class="mr-2"></i> Add Additional Service</button>
 									<div class="table-responsive">
 										<table class="table table-bordered" id="package-others-lists"  width="100%" cellspacing="0">
+											<thead>
+												<tr>
+													<th>NAME</th>
+													<th>SERVICE FEE</th>
+													<th>DATE ADDED</th>
+													<th>ACTION</th>
+												</tr>
+											</thead>
+											<tbody>
+												
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<div class="tab-pane fade" id="custom-tabs-archived-settings" role="tabpanel" aria-labelledby="custom-tabs-archived-settings-tab">
+									<h5 class="card-title text-center">Archived Package Tasks</h5>
+									<div class="table-responsive mb-4">
+										<table class="table table-bordered" id="inactive-package-tasks-lists"  width="100%" cellspacing="0">
+											<thead>
+												<tr>
+													<th>TASK NAME</th>
+													<th>DATE ADDED</th>
+													<th>ACTION</th>
+												</tr>
+											</thead>
+											<tbody>
+												
+											</tbody>
+										</table>
+									</div>
+									<h5 class="card-title text-center">Archived Package Equipments</h5>
+									<div class="table-responsive mb-4">
+										<table class="table table-bordered" id="inactive-package-equipments-lists"  width="100%" cellspacing="0">
+											<thead>
+												<tr>
+													<th>EQUIPMENT NAME</th>
+													<th>QUANTITY</th>
+													<th>DATE ADDED</th>
+													<th>ACTION</th>
+												</tr>
+											</thead>
+											<tbody>
+												
+											</tbody>
+										</table>
+									</div>
+									<h5 class="card-title text-center">Archived Package Food</h5>
+									<div class="table-responsive mb-4">
+										<table class="table table-bordered" id="inactive-package-foods-lists"  width="100%" cellspacing="0">
+											<thead>
+												<tr>
+													<th>FOOD CATEGORY</th>
+													<th>DATE ADDED</th>
+													<th>ACTION</th>
+												</tr>
+											</thead>
+											<tbody>
+												
+											</tbody>
+										</table>
+									</div>
+									<h5 class="card-title text-center">Archived Package Other</h5>
+									<div class="table-responsive mb-4">
+										<table class="table table-bordered" id="inactive-package-others-lists"  width="100%" cellspacing="0">
 											<thead>
 												<tr>
 													<th>NAME</th>

@@ -101,27 +101,28 @@
             var package_food_id;
             $(document).on('click', '#delete-food-package', function(){
                 package_food_id = $(this).attr('data-id');
-                $('#confirmModal').modal('show');
+                $('#confirmFoodModal').modal('show');
             });
 
-            $('#ok_button').click(function(){
+            $('#ok_food_button').click(function(){
                 $.ajax({
                     url:"/packages-food/destroy/"+package_food_id,
                     beforeSend:function(){
-                        $('#ok_button').text('Deleting...');
+                        $('#ok_food_button').text('Deleting...');
                     },
                     success:function(data)
                     {
-                        $('#confirmModal').modal('hide');
-                        $('#ok_button').text('OK');
+                        $('#confirmFoodModal').modal('hide');
+                        $('#ok_food_button').text('OK');
                         tableFood.ajax.reload();
+                        tableInactiveFood.ajax.reload();
                     }
                 })
             });
 
 			function closeFoodModal() {
 					$("#foodData").trigger("reset");
-                    $('#ok_button').text('OK');
+                    $('#ok_food_button').text('OK');
 					$("#foodData input:hidden").val("");
 					$("#category_id").removeClass("is-invalid");
 					$('#generalFoodError').text("");
@@ -190,5 +191,72 @@
 					}
                 })
             });
+
+    var tableInactiveFood = $('#inactive-package-foods-lists').DataTable({
+				"responsive": true, 
+				"lengthChange": false, 
+				"autoWidth": false,
+      			"buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    "url":"<?= route('InactivePackageFood') ?>",
+                    "dataType":"json",
+                    "type":"POST",
+                    "data":{
+						"_token":"<?= csrf_token() ?>",
+						"package_id": packageId,
+                        "is_show" : isShow
+					}
+                },
+				"dom": 'Bfrtip',
+                "buttons": [
+                    {
+                        "extend": 'collection',
+                        "text": 'Export',
+                        "buttons": [
+                            {
+                                "extend": 'csv',
+                                'title' :`ARCHIVED-PACKAGE-${packageName}-FOOD-MENU`,
+                                "exportOptions": {
+                                    "columns": [0,1]
+                                }
+                            },
+                            {
+                                "extend": 'pdf',
+                                'title' :`ARCHIVED-PACKAGE-${packageName}-FOOD-MENU`,
+                                "exportOptions": {
+                                    "columns": [0,1]
+                                }
+                            },
+                            {
+                                "extend": 'print',
+                                'title' :`ARCHIVED-PACKAGE-${packageName}-FOOD-MENU`,
+                                "exportOptions": {
+                                    "columns": [0,1]
+                                }
+                            }
+                        ],
+                    }
+                ],
+                "columns": columnsFood,
+				"columnDefs": [
+				{
+					"targets": [0,1],   // target column
+					"className": "textCenter",
+				}
+				]
+    });
+    $(document).on('click', '#restore-package-food', function(){
+        const packageFoodId = $(this).attr('data-id');
+        $.ajax({
+            url:"/packages-food/restore/"+packageFoodId,
+            success:function(data)
+            {
+                tableInactiveFood.ajax.reload();
+                tableFood.ajax.reload();
+            }
+        })
+    });
 </script>
 @endpush('scripts')

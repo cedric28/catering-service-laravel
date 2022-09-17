@@ -197,4 +197,29 @@ class FoodController extends Controller
         $food = Foods::findOrFail($id);
         $food->delete();
     }
+
+    /**
+     * Restore the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function restore($id)
+    {
+        \DB::beginTransaction();
+        try {
+
+            $food = Foods::onlyTrashed()->findOrFail($id);
+
+            /* Restore food */
+            $food->restore();
+
+
+            \DB::commit();
+            return back()->with("successMsg", "Successfully Restore the data");
+        } catch (\Exception $e) {
+            \DB::rollback();
+            return back()->withErrors($e->getMessage());
+        }
+    }
 }

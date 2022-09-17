@@ -80,7 +80,7 @@
                     <div class="table-responsive">
                         <table class="table table-bordered">
                             <tbody>
-                            @forelse($package_menus as $menu)
+                            @forelse($package_menus_beo as $menu)
                                 <tr> 
                                     <td>{{ $menu->package_food_category->name }}</td>
                                     <td>

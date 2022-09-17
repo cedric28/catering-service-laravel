@@ -28,22 +28,59 @@
 			<a type="button" href="{{ route('packages.create')}}" class="btn btn-outline-success btn-sm float-left"><i class="icon-add mr-2"></i> Add Package</a>
 		</div>
 		<div class="card-body">
-			<div class="table-responsive">
-				<table class="table table-hover table-bordered table-striped" id="packages-lists"  width="100%" cellspacing="0">
-					<thead>
-						<tr>
-							<th>PACKAGE NAME</th>
-							<th>PACKAGE PAX</th>
-							<th>PACKAGE PRICE</th>
-							<th>MAIN PACKAGE CATEGORY</th>
-                            <th>DATE ADDED</th>
-							<th>ACTION</th>
-						</tr>
-					</thead>
-					<tbody>
-						
-					</tbody>
-				</table>
+			<div class="card shadow card-primary card-outline card-outline-tabs border-top-primary">
+				<div class="card-header p-0 border-bottom-0">
+					<ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
+						<li class="nav-item">
+							<a class="nav-link active" id="custom-tabs-four-home-tab" data-toggle="pill" href="#custom-tabs-four-home" role="tab" aria-controls="custom-tabs-four-home" aria-selected="true">Active Packages</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" id="custom-tabs-four-profile-tab" data-toggle="pill" href="#custom-tabs-four-profile" role="tab" aria-controls="custom-tabs-four-profile" aria-selected="false">Archived Packages</a>
+						</li>
+					</ul>
+				</div>
+				<div class="card-body">
+					<div class="tab-content" id="custom-tabs-four-tabContent">
+						<div class="tab-pane fade active show" id="custom-tabs-four-home" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
+							<div class="table-responsive">
+								<table class="table table-hover table-bordered table-striped" id="packages-lists"  width="100%" cellspacing="0">
+									<thead>
+										<tr>
+											<th>PACKAGE NAME</th>
+											<th>PACKAGE PAX</th>
+											<th>PACKAGE PRICE</th>
+											<th>MAIN PACKAGE CATEGORY</th>
+											<th>DATE ADDED</th>
+											<th>ACTION</th>
+										</tr>
+									</thead>
+									<tbody>
+										
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div class="tab-pane fade" id="custom-tabs-four-profile" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
+							<div class="table-responsive">
+								<table class="table table-hover table-bordered table-striped" id="inactive-packages-lists"  width="100%" cellspacing="0">
+									<thead>
+										<tr>
+											<th>PACKAGE NAME</th>
+											<th>PACKAGE PAX</th>
+											<th>PACKAGE PRICE</th>
+											<th>MAIN PACKAGE CATEGORY</th>
+											<th>DATE ADDED</th>
+											<th>ACTION</th>
+										</tr>
+									</thead>
+									<tbody>
+										
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -170,13 +207,90 @@
 					},
 					success:function(data)
 					{
-						setTimeout(function(){
-							$('#confirmModal').modal('hide');
-							table.ajax.reload();
-						}, 2000);
+						$('#confirmModal').modal('hide');
+						$('#ok_button').text('OK');
+						table.ajax.reload();
+						tableInactivePackages.ajax.reload();
 					}
 				})
 			});
+
+			//inactive
+			var tableInactivePackages = $('#inactive-packages-lists').DataTable({
+				"responsive": true, 
+				"lengthChange": false, 
+				"autoWidth": false,
+      			"buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+				"processing": true,
+				"serverSide": true,
+				"ajax": {
+					"url":"<?= route('InactivePackage') ?>",
+					"dataType":"json",
+					"type":"POST",
+					"data":{"_token":"<?= csrf_token() ?>"}
+				},
+				"dom": 'Bfrtip',
+                "buttons": [
+                    {
+                        "extend": 'collection',
+                        "text": 'Export',
+                        "buttons": [
+                            {
+                                "extend": 'csv',
+								'title' :`ARCHIVED-PACKAGE-LISTS`,
+                                "exportOptions": {
+                                    "columns": [0,1,2,3,4]
+                                }
+                            },
+                            {
+                                "extend": 'pdf',
+								'title' :`ARCHIVED-PACKAGE-LISTS`,
+                                "exportOptions": {
+                                    "columns": [0,1,2,3,4]
+                                }
+                            },
+                            {
+                                "extend": 'print',
+								'title' :`ARCHIVED-PACKAGE-LISTS`,
+                                "exportOptions": {
+                                    "columns": [0,1,2,3,4]
+                                }
+                            }
+                        ],
+                    }
+                ],
+				"columns":[
+					{"data":"name"},
+					{"data":"package_pax"},
+					{"data":"package_price"},
+					{"data":"main_package_name"},
+					{"data":"created_at"},
+					{"data":"action","searchable":false,"orderable":false}
+				],
+				"columnDefs": [
+					{
+						"targets": [1,2],   // target column
+						"className": "textRight",
+					},
+					{
+						"targets": [4],   // target column
+						"className": "textCenter",
+					}
+				]
+			});
+
+			$(document).on('click', '#restore-package', function(){
+				const packageId = $(this).attr('data-id');
+				$.ajax({
+                    url:"packages/restore/"+packageId,
+                    success:function(data)
+                    {
+						tableInactivePackages.ajax.reload();
+                    	table.ajax.reload();
+                    }
+                })
+			});
+
 		</script>
         @endpush('scripts')
 @endsection

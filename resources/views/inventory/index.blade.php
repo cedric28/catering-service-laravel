@@ -28,44 +28,83 @@
 			<a type="button" href="{{ route('inventories.create')}}" class="btn btn-outline-success btn-sm float-left"><i class="icon-add mr-2"></i> Add Inventory</a>
 		</div>
 		<div class="card-body">
-			<div class="table-responsive">
-				<table class="table table-bordered" id="inventory-lists"  width="100%" cellspacing="0">
-					<thead>
-						<tr>
-							<th>NAME</th>
-							<th>CATEGORY</th>
-							<th>TOTAL QUANTITY</th>
-							<th>QUANTITY AVAILABLE</th>
-							<th>QUANTITY IN USE</th>
-							<th>DATE ADDED</th>
-							<th>ACTION</th>
-						</tr>
-					</thead>
-					<tbody>
-						@foreach ($inventories as $inventory)
-							<tr>
-								<td>{{ $inventory->name }}</td>
-								<td>{{ $inventory->inventory_category->name }}</td>
-								<td>{{ $inventory->quantity }}</td>
-								<td>{{ $inventory->quantity_available }}</td>
-								<td>{{ $inventory->quantity_in_use }}</td>
-								<td>{{ $inventory->created_at }}</td>
-								<td></td>
-							</tr>
-						@endforeach
-					</tbody>
-					<tfoot>
-						<tr>
-							<th>NAME</th>
-							<th>CATEGORY</th>
-							<th>TOTAL QUANTITY</th>
-							<th>QUANTITY AVAILABLE</th>
-							<th>QUANTITY IN USE</th>
-							<th>DATE ADDED</th>
-							<th>ACTION</th>
-						</tr>
-					</tfoot>
-				</table>
+			<div class="card shadow card-primary card-outline card-outline-tabs border-top-primary">
+				<div class="card-header p-0 border-bottom-0">
+					<ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
+						<li class="nav-item">
+							<a class="nav-link active" id="custom-tabs-four-home-tab" data-toggle="pill" href="#custom-tabs-four-home" role="tab" aria-controls="custom-tabs-four-home" aria-selected="true">Active Inventory</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" id="custom-tabs-four-profile-tab" data-toggle="pill" href="#custom-tabs-four-profile" role="tab" aria-controls="custom-tabs-four-profile" aria-selected="false">Archived Inventory</a>
+						</li>
+					</ul>
+				</div>
+				<div class="card-body">
+					<div class="tab-content" id="custom-tabs-four-tabContent">
+						<div class="tab-pane fade active show" id="custom-tabs-four-home" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
+							<div class="table-responsive">
+								<table class="table table-bordered" id="inventory-lists"  width="100%" cellspacing="0">
+									<thead>
+										<tr>
+											<th>NAME</th>
+											<th>CATEGORY</th>
+											<th>TOTAL QUANTITY</th>
+											<th>QUANTITY AVAILABLE</th>
+											<th>QUANTITY IN USE</th>
+											<th>DATE ADDED</th>
+											<th>ACTION</th>
+										</tr>
+									</thead>
+									<tbody>
+										
+									</tbody>
+									<tfoot>
+										<tr>
+											<th>NAME</th>
+											<th>CATEGORY</th>
+											<th>TOTAL QUANTITY</th>
+											<th>QUANTITY AVAILABLE</th>
+											<th>QUANTITY IN USE</th>
+											<th>DATE ADDED</th>
+											<th>ACTION</th>
+										</tr>
+									</tfoot>
+								</table>
+							</div>
+						</div>
+						<div class="tab-pane fade" id="custom-tabs-four-profile" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
+							<div class="table-responsive">
+								<table class="table table-bordered" id="inactive-inventory-lists"  width="100%" cellspacing="0">
+									<thead>
+										<tr>
+											<th>NAME</th>
+											<th>CATEGORY</th>
+											<th>TOTAL QUANTITY</th>
+											<th>QUANTITY AVAILABLE</th>
+											<th>QUANTITY IN USE</th>
+											<th>DATE ADDED</th>
+											<th>ACTION</th>
+										</tr>
+									</thead>
+									<tbody>
+										
+									</tbody>
+									<tfoot>
+										<tr>
+											<th>NAME</th>
+											<th>CATEGORY</th>
+											<th>TOTAL QUANTITY</th>
+											<th>QUANTITY AVAILABLE</th>
+											<th>QUANTITY IN USE</th>
+											<th>DATE ADDED</th>
+											<th>ACTION</th>
+										</tr>
+									</tfoot>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -214,11 +253,112 @@
 					{
 						setTimeout(function(){
 							$('#confirmModal').modal('hide');
+							$('#ok_button').text('OK');
 							table.ajax.reload();
+							tableInactiveInventory.ajax.reload();
 						}, 2000);
 					}
 				})
 			});
+
+
+
+			var tableInactiveInventory = $('#inactive-inventory-lists').DataTable({
+				"responsive": true, 
+				"lengthChange": false, 
+				"autoWidth": false,
+				"buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+				"processing": true,
+				"serverSide": true,
+				"ajax": {
+					"url":"<?= route('InactiveInventory') ?>",
+					"dataType":"json",
+					"type":"POST",
+					"data":{"_token":"<?= csrf_token() ?>"}
+				},
+				"dom": 'Bfrtip',
+				"buttons": [
+					{
+						"extend": 'collection',
+						"text": 'Export',
+						"buttons": [
+							{
+								"extend": 'csv',
+								'title' :`ARCHIVED-INVENTORY-LISTS`,
+								"exportOptions": {
+									"columns": [0,1,2,3,4,5]
+								}
+							},
+							{
+								"extend": 'pdf',
+								'title' :`ARCHIVED-INVENTORY-LISTS`,
+								"exportOptions": {
+									"columns": [0,1,2,3,4,5]
+								}
+							},
+							{
+								"extend": 'print',
+								'title' :`ARCHIVED-INVENTORY-LISTS`,
+								"exportOptions": {
+									"columns": [0,1,2,3,4,5]
+								}
+							}
+						],
+					}
+				],
+				initComplete: function () {
+					this.api().columns().every( function () {
+						var column = this;
+						var select = $('<select><option value=""></option></select>')
+							.appendTo( $(column.footer()).empty() )
+							.on( 'change', function () {
+								var val = $.fn.dataTable.util.escapeRegex(
+									$(this).val()
+								);
+		
+								column
+									.search( val ? val : '', true, false )
+									.draw();
+							} );
+		
+						column.data().unique().sort().each( function ( d, j ) {
+							select.append( '<option value="'+d+'">'+d+'</option>' )
+						} );
+					} );
+				},
+				"columns":[
+					{"data":"name"},
+					{"data":"category"},
+					{"data":"quantity"},
+					{"data":"quantity_available"},
+					{"data":"quantity_in_use"},
+					{"data":"created_at"},
+					{"data":"action","searchable":false,"orderable":false}
+				],
+				"columnDefs": [
+					{
+						"targets": [0,1,5],   // target column
+						"className": "textCenter",
+					},
+					{
+						"targets": [2,3,4],   // target column
+						"className": "textRight",
+					}
+				]
+			});
+
+			$(document).on('click', '#restore-inventory', function(){
+				const inventoryId = $(this).attr('data-id');
+				$.ajax({
+                    url:"inventories/restore/"+inventoryId,
+                    success:function(data)
+                    {
+						tableInactiveInventory.ajax.reload();
+                    	table.ajax.reload();
+                    }
+                })
+			});
+
 		</script>
         @endpush('scripts')
 @endsection

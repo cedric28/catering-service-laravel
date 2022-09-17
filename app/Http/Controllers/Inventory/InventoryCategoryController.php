@@ -185,4 +185,29 @@ class InventoryCategoryController extends Controller
         $inventory_category = InventoryCategory::findOrFail($id);
         $inventory_category->delete();
     }
+
+     /**
+     * Restore the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function restore($id)
+    {
+        \DB::beginTransaction();
+        try {
+
+            $inventory_category = InventoryCategory::onlyTrashed()->findOrFail($id);
+
+            /* Restore inventory_category */
+            $inventory_category->restore();
+
+
+            \DB::commit();
+            return back()->with("successMsg", "Successfully Restore the data");
+        } catch (\Exception $e) {
+            \DB::rollback();
+            return back()->withErrors($e->getMessage());
+        }
+    }
 }

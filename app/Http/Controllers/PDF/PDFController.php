@@ -290,7 +290,11 @@ class PDFController extends Controller
     {
         $planner = Planner::find($id);
         $formattedDate = Carbon::now()->format('F d Y');
-        $package_menus = PackageMenu::where('package_id',$planner->package_id)->get();
+        $package_menus = PackageMenu::where('package_id',$planner->package_id)
+                        ->whereHas('planners', function($query) use ($planner){
+                            $query->where('planner_id',$planner->id);
+                        })
+                        ->get();
 
         $plannerStaffingsServer = PlannerStaffing::where('planner_id',$planner->id)
                                                 ->whereHas('user', function($query){

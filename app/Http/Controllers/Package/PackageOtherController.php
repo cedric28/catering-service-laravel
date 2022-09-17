@@ -87,7 +87,32 @@ class PackageOtherController extends Controller
          //prevent other user to access to this page
          $this->authorize("isAdmin");
 
-         $package = PackageMenu::findOrFail($id);
+         $package = PackageOther::findOrFail($id);
          $package->delete();
     }
+     /**
+     * Restore the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function restore($id)
+    {
+        \DB::beginTransaction();
+        try {
+
+            $package = PackageOther::onlyTrashed()->findOrFail($id);
+
+            /* Restore package */
+            $package->restore();
+
+
+            \DB::commit();
+            return back()->with("successMsg", "Successfully Restore the data");
+        } catch (\Exception $e) {
+            \DB::rollback();
+            return back()->withErrors($e->getMessage());
+        }
+    }
+    
 }

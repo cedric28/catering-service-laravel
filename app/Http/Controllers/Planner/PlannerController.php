@@ -206,7 +206,14 @@ class PlannerController extends Controller
         $package_tasks = PackageTask::where('package_id',$planner->package_id)->get();
         $package_equipments = PackageEquipments::where('package_id',$planner->package_id)->get();
         $package_others = PackageOther::where('package_id',$planner->package_id)->get();
-        $package_menus = PackageMenu::where('package_id',$planner->package_id)->get();
+        $package_menus_beo = PackageMenu::where('package_id',$planner->package_id)
+                                ->whereHas('planners', function($query) use ($planner){
+                                        $query->where('planner_id',$planner->id);
+                                })
+                                ->get();
+
+        $package_menus = PackageMenu::where('package_id',$planner->package_id)
+                                ->get();
         $plannerStaffingsServer = PlannerStaffing::where('planner_id',$planner->id)
                             ->whereHas('user', function($query){
                                 $query->where('job_type_id',5);
@@ -229,6 +236,7 @@ class PlannerController extends Controller
             'plannerStaffingsServer' => $plannerStaffingsServer,
             'plannerStaffingsBusboy' => $plannerStaffingsBusboy,
             'plannerStaffingsDishwasher' => $plannerStaffingsDishwasher,
+            'package_menus_beo' => $package_menus_beo
         ]);
     }
 
@@ -248,7 +256,16 @@ class PlannerController extends Controller
         $package_tasks = PackageTask::where('package_id',$planner->package_id)->get();
         $package_equipments = PackageEquipments::where('package_id',$planner->package_id)->get();
         $package_others = PackageOther::where('package_id',$planner->package_id)->get();
-        $package_menus = PackageMenu::where('package_id',$planner->package_id)->get();
+        $package_menus_beo = PackageMenu::where('package_id',$planner->package_id)
+                            ->whereHas('planners', function($query) use ($planner){
+                                    $query->where('planner_id',$planner->id);
+                            })
+                            ->get();
+
+        $package_menus = PackageMenu::where('package_id',$planner->package_id)
+                            ->get();
+
+        // $planner_package_menu_planner = PackageMenuPlanner::where('planner_id', $planner->id)->get();
 
         // PackageMenu::where('package_id',$planner->package_id)
         //                     ->whereHas('planners', function($query) use ($planner){
@@ -360,7 +377,8 @@ class PlannerController extends Controller
             'equipmentStatus' => $equipmentStatus,
             'plannerStatus' => $plannerStatus,
             'time_tables_lists' => $time_tables_lists,
-            'totalBalance' => $totalBalance
+            'totalBalance' => $totalBalance,
+            'package_menus_beo' => $package_menus_beo
         ]);
     }
 
