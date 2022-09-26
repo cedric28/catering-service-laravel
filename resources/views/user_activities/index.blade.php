@@ -83,7 +83,7 @@
                                     $percentage = $att->present / $att->total_days * 100;
                                     $status = $percentage > 70 ? 'ACTIVE' : 'INACTIVE';
                                 @endphp
-                                <td class="textCenter">{{ ucwords($att->employee_name) }}</td>
+                                <td class="">{{ ucwords($att->employee_name) }}</td>
                                 <td class="textCenter"> <span title="Danger" class="badge {{ $status == 'ACTIVE' ? 'bg-success' : 'bg-warning' }}">{{ $status }}</span></td>
                             </tr>
                             @endforeach

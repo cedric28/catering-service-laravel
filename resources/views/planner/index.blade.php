@@ -34,7 +34,7 @@
 				<div class="card-header p-0 border-bottom-0">
 					<ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
 						<li class="nav-item">
-							<a class="nav-link active" id="custom-tabs-four-home-tab" data-toggle="pill" href="#custom-tabs-four-home" role="tab" aria-controls="custom-tabs-four-home" aria-selected="true">Done Events</a>
+							<a class="nav-link active" id="custom-tabs-four-home-tab" data-toggle="pill" href="#custom-tabs-four-home" role="tab" aria-controls="custom-tabs-four-home" aria-selected="true">Completed Events</a>
 						</li>
 						<li class="nav-item">
 							<a class="nav-link" id="custom-tabs-four-profile-tab" data-toggle="pill" href="#custom-tabs-four-profile" role="tab" aria-controls="custom-tabs-four-profile" aria-selected="false">On-Going Events</a>
@@ -60,6 +60,7 @@
 											<th>EVENT TYPE & PACKAGE</th>
 											<th>NO OF GUESTS</th>
 											<th>CUSTOMER NAME</th>
+											<th>PAYMENT STATUS</th>
 											<th>EVENT STATUS</th>
 											<th>DATE ADDED</th>
 											<th>ACTION</th>
@@ -82,6 +83,7 @@
 											<th>EVENT TYPE & PACKAGE</th>
 											<th>NO OF GUESTS</th>
 											<th>CUSTOMER NAME</th>
+											<th>PAYMENT STATUS</th>
 											<th>EVENT STATUS</th>
 											<th>DATE ADDED</th>
 											<th>ACTION</th>
@@ -104,6 +106,7 @@
 											<th>EVENT TYPE & PACKAGE</th>
 											<th>NO OF GUESTS</th>
 											<th>CUSTOMER NAME</th>
+											<th>PAYMENT STATUS</th>
 											<th>EVENT STATUS</th>
 											<th>DATE ADDED</th>
 											<th>ACTION</th>
@@ -126,6 +129,7 @@
 											<th>EVENT TYPE & PACKAGE</th>
 											<th>NO OF GUESTS</th>
 											<th>CUSTOMER NAME</th>
+											<th>PAYMENT STATUS</th>
 											<th>EVENT STATUS</th>
 											<th>DATE ADDED</th>
 											<th>ACTION</th>
@@ -219,23 +223,23 @@
 							"buttons": [
 								{
 									"extend": 'csv',
-									'title' :`DONE-EVENT-LISTS`,
+									'title' :`COMPLETED-EVENT-LISTS`,
 									"exportOptions": {
-										"columns": [0,1,2,3,4,5,6,7]
+										"columns": [0,1,2,3,4,5,6,7,8]
 									}
 								},
 								{
 									"extend": 'pdf',
-									'title' :`DONE-EVENT-LISTS`,
+									'title' :`COMPLETED-EVENT-LISTS`,
 									"exportOptions": {
-										"columns": [0,1,2,3,4,5,6,7]
+										"columns": [0,1,2,3,4,5,6,7,8]
 									}
 								},
 								{
 									"extend": 'print',
-									'title' :`DONE-EVENT-LISTS`,
+									'title' :`COMPLETED-EVENT-LISTS`,
 									"exportOptions": {
-										"columns": [0,1,2,3,4,5,6,7]
+										"columns": [0,1,2,3,4,5,6,7,8]
 									}
 								}
 							],
@@ -248,13 +252,14 @@
 						{ data: "event_type_and_package" },
 						{ data: "no_of_guests" },
 						{ data: "customer_fullname" },
+						{ data: "payment_status" },
 						{ data: "event_status" },
 						{ data: "created_at" },
 						{ data: "action", searchable: false, orderable: false },
 					],
 					"columnDefs": [
 						{
-							"targets": [0,1,2,3,5,6,7],   // target column
+							"targets": [2,3,5,6,7,8],   // target column
 							"className": "textCenter",
 						},
 						{
@@ -264,12 +269,12 @@
 					]
 				});
 
-				$(document).on("click", "#show-done-planner", function () {
+				$(document).on("click", "#show-completed-planner", function () {
 					var plannerDoneId = $(this).attr("data-id");
 					window.location.href = "planners/" + plannerDoneId;
 				});
 
-				$(document).on("click", "#edit-done-planner", function () {
+				$(document).on("click", "#edit-completed-planner", function () {
 					var id = $(this).attr("data-id");
 					window.location.href = "planners/" + id + "/edit";
 				});
@@ -298,21 +303,21 @@
 									"extend": 'csv',
 									'title' :`PENDING-EVENT-LISTS`,
 									"exportOptions": {
-										"columns": [0,1,2,3,4,5,6,7]
+										"columns": [0,1,2,3,4,5,6,7,8]
 									}
 								},
 								{
 									"extend": 'pdf',
 									'title' :`PENDING-EVENT-LISTS`,
 									"exportOptions": {
-										"columns": [0,1,2,3,4,5,6,7]
+										"columns": [0,1,2,3,4,5,6,7,8]
 									}
 								},
 								{
 									"extend": 'print',
 									'title' :`PENDING-EVENT-LISTS`,
 									"exportOptions": {
-										"columns": [0,1,2,3,4,5,6,7]
+										"columns": [0,1,2,3,4,5,6,7,8]
 									}
 								}
 							],
@@ -325,13 +330,14 @@
 						{ data: "event_type_and_package" },
 						{ data: "no_of_guests" },
 						{ data: "customer_fullname" },
+						{ data: "payment_status" },
 						{ data: "event_status" },
 						{ data: "created_at" },
 						{ data: "action", searchable: false, orderable: false },
 					],
 					"columnDefs": [
 						{
-							"targets": [0,1,2,3,5,6,7],   // target column
+							"targets": [2,3,5,6,7,8],   // target column
 							"className": "textCenter",
 						},
 						{
@@ -399,21 +405,21 @@
 									"extend": 'csv',
 									'title' :`ON-GOING-EVENT-LISTS`,
 									"exportOptions": {
-										"columns": [0,1,2,3,4,5,6,7]
+										"columns": [0,1,2,3,4,5,6,7,8]
 									}
 								},
 								{
 									"extend": 'pdf',
 									'title' :`ON-GOING-EVENT-LISTS`,
 									"exportOptions": {
-										"columns": [0,1,2,3,4,5,6,7]
+										"columns": [0,1,2,3,4,5,6,7,8]
 									}
 								},
 								{
 									"extend": 'print',
 									'title' :`ON-GOING-EVENT-LISTS`,
 									"exportOptions": {
-										"columns": [0,1,2,3,4,5,6,7]
+										"columns": [0,1,2,3,4,5,6,7,8]
 									}
 								}
 							],
@@ -426,13 +432,14 @@
 						{ data: "event_type_and_package" },
 						{ data: "no_of_guests" },
 						{ data: "customer_fullname" },
+						{ data: "payment_status" },
 						{ data: "event_status" },
 						{ data: "created_at" },
 						{ data: "action", searchable: false, orderable: false },
 					],
 					"columnDefs": [
 						{
-							"targets": [0,1,2,3,5,6,7],   // target column
+							"targets": [2,3,5,6,7,8],   // target column
 							"className": "textCenter",
 						},
 						{
@@ -499,21 +506,21 @@
 									"extend": 'csv',
 									'title' :`IN-ACTIVE-EVENT-LISTS`,
 									"exportOptions": {
-										"columns": [0,1,2,3,4,5,6,7]
+										"columns": [0,1,2,3,4,5,6,7,8]
 									}
 								},
 								{
 									"extend": 'pdf',
 									'title' :`IN-ACTIVE-EVENT-LISTS`,
 									"exportOptions": {
-										"columns": [0,1,2,3,4,5,6,7]
+										"columns": [0,1,2,3,4,5,6,7,8]
 									}
 								},
 								{
 									"extend": 'print',
 									'title' :`IN-ACTIVE-EVENT-LISTS`,
 									"exportOptions": {
-										"columns": [0,1,2,3,4,5,6,7]
+										"columns": [0,1,2,3,4,5,6,7,8]
 									}
 								}
 							],
@@ -526,13 +533,14 @@
 						{ data: "event_type_and_package" },
 						{ data: "no_of_guests" },
 						{ data: "customer_fullname" },
+						{ data: "payment_status" },
 						{ data: "event_status" },
 						{ data: "created_at" },
 						{ data: "action", searchable: false, orderable: false },
 					],
 					"columnDefs": [
 						{
-							"targets": [0,1,2,3,5,6,7],   // target column
+							"targets": [2,3,5,6,7,8],   // target column
 							"className": "textCenter",
 						},
 						{

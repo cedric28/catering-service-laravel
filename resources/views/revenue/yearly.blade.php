@@ -74,7 +74,7 @@
                         <tbody>
                             @foreach ($sales as $sale)
                             <tr>
-                                <td class="textCenter">{{$sale->planner->or_no}}</td>
+                                <td class="">{{$sale->planner->or_no}}</td>
                                 <td class="textRight">{{ Str::currency($sale->payment_price) }}</td>
                                 <td class="textCenter">{{ date('Y-m-d', strtotime($sale->created_at)) }}</td>
                             </tr>

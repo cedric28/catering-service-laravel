@@ -177,7 +177,7 @@
 				],
 				"columnDefs": [
 					{
-						"targets": [0,1,2,3,4,5],   // target column
+						"targets": [2,3,4,5],   // target column
 						"className": "textCenter",
 					}
 				]
@@ -272,7 +272,7 @@
 				],
 				"columnDefs": [
 					{
-						"targets": [0,1,2,3,4,5],   // target column
+						"targets": [2,3,4,5],   // target column
 						"className": "textCenter",
 					}
 				]

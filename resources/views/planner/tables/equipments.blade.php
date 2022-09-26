@@ -1,4 +1,4 @@
-@if($planner->status != 'done' && Auth::user()->job_type_id == 1)
+@if($planner->status != 'completed' && Auth::user()->job_type_id == 1)
 <form action="{{ route('storeEquipment')}}" method="POST" class="mb-2">
     @csrf
     <input type="hidden" name="planner_id" value="{{ $planner->id }}"/>

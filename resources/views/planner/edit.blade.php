@@ -67,10 +67,10 @@
 						<div class="col-md-12">
 							<div class="callout callout-info">
 								<h5><i class="fas fa-info"></i> Note:</h5>
-								If you set the event status to "Done" , you will not be able to change the other details permanently.
+								If you set the event status to "Completed" , you will not be able to change the other details permanently.
 							</div>
 							<div class="callout callout-success">
-								<h5><i class="fas fa-success"></i> Total Balance: {{ Str::currency($totalBalance) }}</h5>
+								<h5><i class="fas fa-success"></i><strong> Total Balance: {{ Str::currency($totalBalance) }}</strong></h5>
 							</div>
 							<form action="{{ route('planners.update', $planner->id )}}" method="POST">
 								@csrf
@@ -80,14 +80,14 @@
 								<div class="form-group row">
 									<label class="col-lg-3 col-form-label">Event Name:</label>
 									<div class="col-lg-9">
-										<input type="text" @if($planner->status == "done" || Auth::user()->job_type_id != 1) disabled='disabled' @endif name="event_name" value="{{ old('event_name', $planner->event_name) }}" class="@error('event_name') is-invalid @enderror form-control" placeholder="e.g Yash & Ivan Wedding">
+										<input type="text" @if($planner->status == "completed" || Auth::user()->job_type_id != 1) disabled='disabled' @endif name="event_name" value="{{ old('event_name', $planner->event_name) }}" class="@error('event_name') is-invalid @enderror form-control" placeholder="e.g Yash & Ivan Wedding">
 									</div>
 								</div>
 
 								<div class="form-group row">
 									<label class="col-lg-3 col-form-label">Event Venue:</label>
 									<div class="col-lg-9">
-										<input type="text" @if($planner->status == "done" || Auth::user()->job_type_id != 1) disabled='disabled' @endif name="event_venue" value="{{ old('event_venue', $planner->event_venue) }}" class="@error('event_venue') is-invalid @enderror form-control" placeholder="e.g Manila Hotel">
+										<input type="text" @if($planner->status == "completed" || Auth::user()->job_type_id != 1) disabled='disabled' @endif name="event_venue" value="{{ old('event_venue', $planner->event_venue) }}" class="@error('event_venue') is-invalid @enderror form-control" placeholder="e.g Manila Hotel">
 									</div>
 								</div>
 
@@ -98,7 +98,7 @@
 											$eventDate = $planner->event_date.' | '.$planner->event_time;
 										@endphp
 										<div class="input-group date" id="reservationdate" data-target-input="nearest">
-											<input type="text" @if($planner->status == "done" || Auth::user()->job_type_id != 1) disabled='disabled' @endif id="event_date_time" name="event_date" value="{{ old('event_date', $eventDate) }}" placeholder="e.g 2022-08-20 8:27 PM" onkeydown="return false;" class="@error('event_date') is-invalid @enderror form-control datetimepicker-input" data-target="#reservationdate"/>
+											<input type="text" @if($planner->status == "completed" || Auth::user()->job_type_id != 1) disabled='disabled' @endif id="event_date_time" name="event_date" value="{{ old('event_date', $eventDate) }}" placeholder="e.g 2022-08-20 8:27 PM" onkeydown="return false;" class="@error('event_date') is-invalid @enderror form-control datetimepicker-input" data-target="#reservationdate"/>
 											<div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
 												<div class="input-group-text"><i class="fa fa-calendar"></i></div>
 											</div>
@@ -108,7 +108,7 @@
 								<div class="form-group row">
 									<label class="col-lg-3 col-form-label">Package:</label>
 									<div class="col-lg-9">
-										<select id="package_id" @if($planner->status == "done" || Auth::user()->job_type_id != 1) disabled='disabled' @endif name="package_id" class="@error('package_id') is-invalid @enderror form-control select2">
+										<select id="package_id" @if($planner->status == "completed" || Auth::user()->job_type_id != 1) disabled='disabled' @endif name="package_id" class="@error('package_id') is-invalid @enderror form-control select2">
 											<option value="">Select Package</option>
 											@foreach ($packages as $package)
 												<option data-guest="{{ $package->package_pax }}" value="{{ $package->id }}" {{ ($package->id == old('package_id',$planner->package_id)) ? ' selected' : '' }}>{{ ucwords($package->name) }} - {{ $package->main_package->name }}</option>
@@ -127,7 +127,7 @@
 								<div class="form-group row">
 									<label class="col-form-label col-lg-3">Notes:</label>
 									<div class="col-lg-9">
-										<textarea rows="3" cols="3" @if($planner->status == "done" || Auth::user()->job_type_id != 1) disabled='disabled' @endif name="note" class="@error('note') is-invalid @enderror form-control" placeholder="e.g special request">{{ $planner->note }}</textarea>
+										<textarea rows="3" cols="3" @if($planner->status == "completed" || Auth::user()->job_type_id != 1) disabled='disabled' @endif name="note" class="@error('note') is-invalid @enderror form-control" placeholder="e.g special request">{{ $planner->note }}</textarea>
 									</div>
 								</div>
 
@@ -135,7 +135,7 @@
 								<div class="form-group row">
 									<label class="col-lg-3 col-form-label">Status:</label>
 									<div class="col-lg-9">
-										<select id="planner_status" @if($planner->status == "done" || Auth::user()->job_type_id != 1) disabled='disabled' @endif name="planner_status" class="@error('planner_status') is-invalid @enderror form-control select2">
+										<select id="planner_status" @if($planner->status == "completed" || Auth::user()->job_type_id != 1) disabled='disabled' @endif name="planner_status" class="@error('planner_status') is-invalid @enderror form-control select2">
 											<option value="">Select Status</option>
 											@foreach ($plannerStatus as $status)
 												<option value="{{ $status['status'] }}" {{ ($status["status"] == old("planner_status", $planner->status)) ? " selected" : "" }}>{{ ucwords($status['status']) }}</option>
@@ -147,7 +147,7 @@
 								<div class="form-group row">
 									<label class="col-lg-3 col-form-label">Payment Status:</label>
 									<div class="col-lg-9">
-										<select id="payment_status_id" @if($planner->status == "done" || Auth::user()->job_type_id != 1) disabled='disabled' @endif  name="payment_status_id" class="@error('payment_status_id') is-invalid @enderror form-control select2">
+										<select id="payment_status_id" @if($planner->status == "completed" || Auth::user()->job_type_id != 1) disabled='disabled' @endif  name="payment_status_id" class="@error('payment_status_id') is-invalid @enderror form-control select2">
 											<option value="">Select Payment Status</option>
 											@foreach ($paymentStatus as $status)
 												<option value="{{ $status->id }}"{{ ($status->id == old('payment_status_id', $planner->payment_status_id)) ? ' selected' : '' }}>{{ ucwords($status->name) }}</option>
@@ -159,7 +159,7 @@
 								<div class="form-group row">
 									<label class="col-lg-3 col-form-label">Customer Fullname:</label>
 									<div class="col-lg-9">
-										<input type="text" name="customer_fullname" @if($planner->status == "done" || Auth::user()->job_type_id != 1) disabled='disabled' @endif value="{{ old('customer_fullname', $planner->customer_fullname) }}" class="@error('customer_fullname') is-invalid @enderror form-control" placeholder="e.g Yash Lozano">
+										<input type="text" name="customer_fullname" @if($planner->status == "completed" || Auth::user()->job_type_id != 1) disabled='disabled' @endif value="{{ old('customer_fullname', $planner->customer_fullname) }}" class="@error('customer_fullname') is-invalid @enderror form-control" placeholder="e.g Yash Lozano">
 									</div>
 								</div>	
 
@@ -170,13 +170,13 @@
 											<div class="input-group-prepend">
 												<span class="input-group-text">+63</span>
 											</div>
-											<input type="text" @if($planner->status == "done" || Auth::user()->job_type_id != 1) disabled='disabled' @endif name="contact_number" value="{{ old('contact_number',  $planner->contact_number) }}" class="@error('contact_number') is-invalid @enderror form-control" placeholder="e.g 9176270449" >
+											<input type="text" @if($planner->status == "completed" || Auth::user()->job_type_id != 1) disabled='disabled' @endif name="contact_number" value="{{ old('contact_number',  $planner->contact_number) }}" class="@error('contact_number') is-invalid @enderror form-control" placeholder="e.g 9176270449" >
 										</div>
 									</div>
 								</div>
 
 								<div class="text-right">
-									<button type="submit" @if($planner->status == "done" || Auth::user()->job_type_id != 1) disabled='disabled' @endif class="btn btn-primary">Save <i class="icon-paperplane ml-2"></i></button>
+									<button type="submit" @if($planner->status == "completed" || Auth::user()->job_type_id != 1) disabled='disabled' @endif class="btn btn-primary">Save <i class="icon-paperplane ml-2"></i></button>
 								</div>
 							</form>
 						</div>

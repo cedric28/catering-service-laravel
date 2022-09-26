@@ -33,11 +33,11 @@
 					<div class="card-body">
 						<div class="row no-gutters align-items-center">
 							<div class="col mr-2">
-								<div class="text-xs font-weight-bold text-success text-uppercase mb-1">DONE EVENTS
+								<div class="text-xs font-weight-bold text-success text-uppercase mb-1">COMPLETED EVENTS
 								</div>
 								<div class="row no-gutters align-items-center">
 									<div class="col-auto">
-										<div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ $plannerDone }}</div>
+										<div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ $plannerCompleted }}</div>
 									</div>
 								</div>
 							</div>
@@ -120,7 +120,7 @@
 					</div>
 					<div class="card-body">
 						<div id="external-events">
-							<div class="external-event bg-success ui-draggable ui-draggable-handle" style="position: relative;">Done</div>
+							<div class="external-event bg-success ui-draggable ui-draggable-handle" style="position: relative;">Completed</div>
 							<!-- <div class="external-event bg-warning ui-draggable ui-draggable-handle" style="position: relative;">G</div> -->
 							<div class="external-event bg-info ui-draggable ui-draggable-handle" style="position: relative;">On Going Event</div>			
 						</div>
@@ -170,11 +170,9 @@
 		<script src="{{ asset('assets/js/fullcalendar.min.js') }}"></script>
 		<script>
 			$("#event_date").html("-");
-			$("#event_name").html("-")
 			$("#event_package").html("-");
 			$("#event_place").html("-");
 			$("#event_time").html("-");
-			$("#no_of_guests").html("-");
 			$("#event_note").html("-");
 			$("#customer").html("-");
 			$("#contact_no").html("-");

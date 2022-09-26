@@ -2,7 +2,7 @@
     <table class="table table-bordered" id="planner-package-tasks-lists"  width="100%" cellspacing="0">
         <thead>
             <tr>
-                <th>TASK</th>
+                <th>TITLE</th>
                 <th>DATE & TIME</th>
                 <th>TYPE</th>
                 <th>STATUS</th>

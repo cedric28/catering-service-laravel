@@ -329,7 +329,7 @@ class PlannerController extends Controller
         $plannerStatus = [
             ['status' => 'pending'],
             ['status' => 'on-going'],
-            ['status' => 'done']
+            ['status' => 'completed']
         ];
 
         $equipmentStatus = [
@@ -466,10 +466,10 @@ class PlannerController extends Controller
             $planner->updater_id = $user;
             
 
-            if($request->planner_status == 'done'){
+            if($request->planner_status == 'completed'){
                 $payments = Payment::where('planner_id',$planner->id)->get();
                 if(count($payments) <= 0){
-                    return back()->withErrors(['planner_status' => 'Please make a payment first and set other details before changing the status to DONE'])->withInput();
+                    return back()->withErrors(['planner_status' => 'Please make a payment first and set other details before changing the status to completed'])->withInput();
                 } else {
                     $planner->save();
                 }
@@ -1356,6 +1356,11 @@ class PlannerController extends Controller
             $plannerPayment->creator_id = $user;
             $plannerPayment->updater_id = $user;
             $plannerPayment->save();
+
+            if($totalPayment == $totalBalance){
+                $planner->payment_status_id = 2;
+                $planner->save();
+            }
 
             \DB::commit();
 

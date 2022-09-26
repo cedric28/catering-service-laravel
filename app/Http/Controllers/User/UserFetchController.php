@@ -488,8 +488,8 @@ class UserFetchController extends Controller
 			//loop posts collection to transfer in another array $nestedData
 			foreach ($posts as $r) {
 				$status = "";
-				if($r->status == 'done'){
-					$status = '<span title="Danger" class="badge bg-success">DONE</span>';
+				if($r->status == 'completed'){
+					$status = '<span title="Danger" class="badge bg-success">COMPLETED</span>';
 				} else if ($r->status == 'on-going'){
 					$status = '<span title="Danger" class="badge bg-primary">ON-GOING</span>';
 				} else {

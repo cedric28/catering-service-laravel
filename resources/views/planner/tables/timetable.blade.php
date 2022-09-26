@@ -1,4 +1,4 @@
-@if($planner->status != 'done')
+@if($planner->status != 'completed')
 <form action="{{ route('storeTimeTable')}}" method="POST" class="mb-2">
     @csrf
     <input type="hidden" name="planner_id" value="{{ $planner->id }}"/>

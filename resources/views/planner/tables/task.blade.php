@@ -1,9 +1,9 @@
-@if($planner->status != 'done' && Auth::user()->job_type_id == 1)
+@if($planner->status != 'completed' && Auth::user()->job_type_id == 1)
 <form action="{{ route('storeTask')}}" method="POST" class="mb-2">
     @csrf
     <input type="hidden" name="planner_id" value="{{ $planner->id }}"/>
     <div class="form-group row">
-        <label class="col-lg-3 col-form-label">Tasks:</label>
+        <label class="col-lg-3 col-form-label">Title:</label>
         <div class="col-lg-9">
             <select id="package_task_id" name="package_task_id" class="@error('package_task_id') is-invalid @enderror form-control select2">
                 <option value="">Select Task</option>
@@ -47,7 +47,7 @@
     <table class="table table-bordered" id="planner-package-tasks-lists"  width="100%" cellspacing="0">
         <thead>
             <tr>
-                <th>TASK</th>
+                <th>TITLE</th>
                 <th>DATE & TIME</th>
                 <th>TYPE</th>
                 <th>STATUS</th>
