@@ -97,6 +97,8 @@ Route::middleware('auth')->group(function () {
     Route::get('packages/destroy/{id}', 'Package\PackageController@destroy');
     Route::get('packages/restore/{id}', 'Package\PackageController@restore');
 
+    Route::get('/packages-show/{id}', 'Package\PackageController@showPackage')->name('showPackage');
+
     //package task
     Route::post('packages-task/add-task', 'Package\PackageTaskController@addTask')->name('addTask');
     Route::get('packages-task/destroy/{id}', 'Package\PackageTaskController@destroy');

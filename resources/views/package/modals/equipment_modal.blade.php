@@ -41,7 +41,7 @@
 @push('scripts')
 <script>
         //add equipment
-      
+       
         const columnsEquipment = isShow == 0 ? [ 
                 {"data":"name"},
                 {"data":"quantity"},
@@ -75,25 +75,47 @@
                     "extend": 'collection',
                     "text": 'Export',
                     "buttons": [
-                        {
-                            "extend": 'csv',
-                            'title' :`PACKAGE-${packageName}-EQUIPMENTS-LISTS`,
-                            "exportOptions": {
-                                "columns": [0,1,2]
-                            }
-                        },
-                        {
-                            "extend": 'pdf',
-                            'title' :`PACKAGE-${packageName}-EQUIPMENTS-LISTS`,
-                            "exportOptions": {
-                                "columns": [0,1,2]
-                            }
-                        },
+                        // {
+                        //     "extend": 'csv',
+                        //     'title' :`PACKAGE-${packageName}-EQUIPMENTS-LISTS`,
+                        //     "exportOptions": {
+                        //         "columns": [0,1,2]
+                        //     }
+                        // },
+                        // {
+                        //     "extend": 'pdf',
+                        //     'title' :`PACKAGE-${packageName}-EQUIPMENTS-LISTS`,
+                        //     "exportOptions": {
+                        //         "columns": [0,1,2]
+                        //     }
+                        // },
                         {
                             "extend": 'print',
-                            'title' :`PACKAGE-${packageName}-EQUIPMENTS-LISTS`,
+                            'title' : ``,
                             "exportOptions": {
                                 "columns": [0,1,2]
+                            },
+                            "customize": function ( win ) {
+                                $(win.document.body)
+                                    .css( 'font-size', '10pt' )
+                                    .prepend(
+                                        `
+                                        <div style="display:flex;justify-content: space-between;margin-bottom: 20px;">
+                                            <div class="title-header">
+                                                <h2>PACKAGE-${packageName}-EQUIPMENTS-LISTS</h2>
+                                                <h5>Date Issued: ${dateToday.toDateString()}</h5>
+                                                <h5>Prepared By: ${user_login}</h5>
+                                            </div>
+                                            <div class="image-header">
+                                                <img src="${logo}" style=""/>
+                                            </div>
+                                        </div>
+                                        `
+                                    );
+            
+                                $(win.document.body).find( 'table' )
+                                    .addClass( 'compact' )
+                                    .css( 'font-size', 'inherit' );
                             }
                         }
                     ],
@@ -253,25 +275,47 @@
                     "extend": 'collection',
                     "text": 'Export',
                     "buttons": [
-                        {
-                            "extend": 'csv',
-                            'title' :`ARCHIVED-PACKAGE-${packageName}-EQUIPMENTS-LISTS`,
-                            "exportOptions": {
-                                "columns": [0,1,2]
-                            }
-                        },
-                        {
-                            "extend": 'pdf',
-                            'title' :`ARCHIVED-PACKAGE-${packageName}-EQUIPMENTS-LISTS`,
-                            "exportOptions": {
-                                "columns": [0,1,2]
-                            }
-                        },
+                        // {
+                        //     "extend": 'csv',
+                        //     'title' :`ARCHIVED-PACKAGE-${packageName}-EQUIPMENTS-LISTS`,
+                        //     "exportOptions": {
+                        //         "columns": [0,1,2]
+                        //     }
+                        // },
+                        // {
+                        //     "extend": 'pdf',
+                        //     'title' :`ARCHIVED-PACKAGE-${packageName}-EQUIPMENTS-LISTS`,
+                        //     "exportOptions": {
+                        //         "columns": [0,1,2]
+                        //     }
+                        // },
                         {
                             "extend": 'print',
-                            'title' :`ARCHIVED-PACKAGE-${packageName}-EQUIPMENTS-LISTS`,
+                            'title' : ``,
                             "exportOptions": {
                                 "columns": [0,1,2]
+                            },
+                            "customize": function ( win ) {
+                                $(win.document.body)
+                                    .css( 'font-size', '10pt' )
+                                    .prepend(
+                                        `
+                                        <div style="display:flex;justify-content: space-between;margin-bottom: 20px;">
+                                            <div class="title-header">
+                                                <h2>ARCHIVED-PACKAGE-${packageName}-EQUIPMENTS-LISTS</h2>
+                                                <h5>Date Issued: ${dateToday.toDateString()}</h5>
+                                                <h5>Prepared By: ${user_login}</h5>
+                                            </div>
+                                            <div class="image-header">
+                                                <img src="${logo}" style=""/>
+                                            </div>
+                                        </div>
+                                        `
+                                    );
+            
+                                $(win.document.body).find( 'table' )
+                                    .addClass( 'compact' )
+                                    .css( 'font-size', 'inherit' );
                             }
                         }
                     ],

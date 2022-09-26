@@ -325,25 +325,47 @@
 							"extend": 'collection',
 							"text": 'Export',
 							"buttons": [
-								{
-									"extend": 'csv',
-									'title' :`PENDING-EVENT-LISTS`,
-									"exportOptions": {
-										"columns": [0,1,2,3,4,5,6,7,8]
-									}
-								},
-								{
-									"extend": 'pdf',
-									'title' :`PENDING-EVENT-LISTS`,
-									"exportOptions": {
-										"columns": [0,1,2,3,4,5,6,7,8]
-									}
-								},
+								// {
+								// 	"extend": 'csv',
+								// 	'title' :`PENDING-EVENT-LISTS`,
+								// 	"exportOptions": {
+								// 		"columns": [0,1,2,3,4,5,6,7,8]
+								// 	}
+								// },
+								// {
+								// 	"extend": 'pdf',
+								// 	'title' :`PENDING-EVENT-LISTS`,
+								// 	"exportOptions": {
+								// 		"columns": [0,1,2,3,4,5,6,7,8]
+								// 	}
+								// },
 								{
 									"extend": 'print',
-									'title' :`PENDING-EVENT-LISTS`,
+									'title' :``,
 									"exportOptions": {
 										"columns": [0,1,2,3,4,5,6,7,8]
+									},
+									"customize": function ( win ) {
+										$(win.document.body)
+											.css( 'font-size', '10pt' )
+											.prepend(
+												`
+												<div style="display:flex;justify-content: space-between;margin-bottom: 20px;">
+													<div class="title-header">
+														<h2>PENDING-EVENT-LISTS</h2>
+														<h5>Date Issued: ${dateToday.toDateString()}</h5>
+														<h5>Prepared By: ${user_login}</h5>
+													</div>
+													<div class="image-header">
+														<img src="${logo}" style=""/>
+													</div>
+												</div>
+												`
+											);
+					
+										$(win.document.body).find( 'table' )
+											.addClass( 'compact' )
+											.css( 'font-size', 'inherit' );
 									}
 								}
 							],
@@ -427,25 +449,47 @@
 							"extend": 'collection',
 							"text": 'Export',
 							"buttons": [
-								{
-									"extend": 'csv',
-									'title' :`ON-GOING-EVENT-LISTS`,
-									"exportOptions": {
-										"columns": [0,1,2,3,4,5,6,7,8]
-									}
-								},
-								{
-									"extend": 'pdf',
-									'title' :`ON-GOING-EVENT-LISTS`,
-									"exportOptions": {
-										"columns": [0,1,2,3,4,5,6,7,8]
-									}
-								},
+								// {
+								// 	"extend": 'csv',
+								// 	'title' :`ON-GOING-EVENT-LISTS`,
+								// 	"exportOptions": {
+								// 		"columns": [0,1,2,3,4,5,6,7,8]
+								// 	}
+								// },
+								// {
+								// 	"extend": 'pdf',
+								// 	'title' :`ON-GOING-EVENT-LISTS`,
+								// 	"exportOptions": {
+								// 		"columns": [0,1,2,3,4,5,6,7,8]
+								// 	}
+								// },
 								{
 									"extend": 'print',
-									'title' :`ON-GOING-EVENT-LISTS`,
+									'title' :``,
 									"exportOptions": {
 										"columns": [0,1,2,3,4,5,6,7,8]
+									},
+									"customize": function ( win ) {
+										$(win.document.body)
+											.css( 'font-size', '10pt' )
+											.prepend(
+												`
+												<div style="display:flex;justify-content: space-between;margin-bottom: 20px;">
+													<div class="title-header">
+														<h2>ON-GOING-EVENT-LISTS</h2>
+														<h5>Date Issued: ${dateToday.toDateString()}</h5>
+														<h5>Prepared By: ${user_login}</h5>
+													</div>
+													<div class="image-header">
+														<img src="${logo}" style=""/>
+													</div>
+												</div>
+												`
+											);
+					
+										$(win.document.body).find( 'table' )
+											.addClass( 'compact' )
+											.css( 'font-size', 'inherit' );
 									}
 								}
 							],
@@ -528,26 +572,49 @@
 							"extend": 'collection',
 							"text": 'Export',
 							"buttons": [
-								{
-									"extend": 'csv',
-									'title' :`IN-ACTIVE-EVENT-LISTS`,
-									"exportOptions": {
-										"columns": [0,1,2,3,4,5,6,7,8]
-									}
-								},
-								{
-									"extend": 'pdf',
-									'title' :`IN-ACTIVE-EVENT-LISTS`,
-									"exportOptions": {
-										"columns": [0,1,2,3,4,5,6,7,8]
-									}
-								},
+								// {
+								// 	"extend": 'csv',
+								// 	'title' :`IN-ACTIVE-EVENT-LISTS`,
+								// 	"exportOptions": {
+								// 		"columns": [0,1,2,3,4,5,6,7,8]
+								// 	}
+								// },
+								// {
+								// 	"extend": 'pdf',
+								// 	'title' :`IN-ACTIVE-EVENT-LISTS`,
+								// 	"exportOptions": {
+								// 		"columns": [0,1,2,3,4,5,6,7,8]
+								// 	}
+								// },
 								{
 									"extend": 'print',
-									'title' :`IN-ACTIVE-EVENT-LISTS`,
+									'title' :``,
 									"exportOptions": {
 										"columns": [0,1,2,3,4,5,6,7,8]
+									},
+									"customize": function ( win ) {
+										$(win.document.body)
+											.css( 'font-size', '10pt' )
+											.prepend(
+												`
+												<div style="display:flex;justify-content: space-between;margin-bottom: 20px;">
+													<div class="title-header">
+														<h2>IN-ACTIVE-EVENT-LISTS</h2>
+														<h5>Date Issued: ${dateToday.toDateString()}</h5>
+														<h5>Prepared By: ${user_login}</h5>
+													</div>
+													<div class="image-header">
+														<img src="${logo}" style=""/>
+													</div>
+												</div>
+												`
+											);
+					
+										$(win.document.body).find( 'table' )
+											.addClass( 'compact' )
+											.css( 'font-size', 'inherit' );
 									}
+									
 								}
 							],
 						}

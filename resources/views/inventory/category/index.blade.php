@@ -112,7 +112,9 @@
 		<script src="{{ asset('assets/js/datatables-buttons/js/buttons.print.min.js') }}"></script>
 		<script src="{{ asset('assets/js/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
 		<script>
-
+				let logo = window.location.origin + '/assets/img/logo-pink.png';
+			let user_login = {!! json_encode( ucwords(Auth::user()->name)) !!};
+			let dateToday = new Date();
 			var table = $('#inventory-category-lists').DataTable({
 				"responsive": true, 
 				"lengthChange": false, 
@@ -132,25 +134,47 @@
 						"extend": 'collection',
 						"text": 'Export',
 						"buttons": [
-							{
-								"extend": 'csv',
-								'title' :`CATEGORY-LISTS`,
-								"exportOptions": {
-									"columns": [0,1]
-								}
-							},
-							{
-								"extend": 'pdf',
-								'title' :`CATEGORY-LISTS`,
-								"exportOptions": {
-									"columns": [0,1]
-								}
-							},
+							// {
+							// 	"extend": 'csv',
+							// 	'title' :`CATEGORY-LISTS`,
+							// 	"exportOptions": {
+							// 		"columns": [0,1]
+							// 	}
+							// },
+							// {
+							// 	"extend": 'pdf',
+							// 	'title' :`CATEGORY-LISTS`,
+							// 	"exportOptions": {
+							// 		"columns": [0,1]
+							// 	}
+							// },
 							{
 								"extend": 'print',
-								'title' :`CATEGORY-LISTS`,
+								'title' :``,
 								"exportOptions": {
 									"columns": [0,1]
+								},
+								"customize": function ( win ) {
+									$(win.document.body)
+										.css( 'font-size', '10pt' )
+										.prepend(
+											`
+											<div style="display:flex;justify-content: space-between;margin-bottom: 20px;">
+												<div class="title-header">
+													<h2>CATEGORY-LISTS</h2>
+													<h5>Date Issued: ${dateToday.toDateString()}</h5>
+													<h5>Prepared By: ${user_login}</h5>
+												</div>
+												<div class="image-header">
+													<img src="${logo}" style=""/>
+												</div>
+											</div>
+											`
+										);
+				
+									$(win.document.body).find( 'table' )
+										.addClass( 'compact' )
+										.css( 'font-size', 'inherit' );
 								}
 							}
 						],
@@ -223,25 +247,47 @@
 						"extend": 'collection',
 						"text": 'Export',
 						"buttons": [
-							{
-								"extend": 'csv',
-								'title' :`ARCHIVED-CATEGORY-LISTS`,
-								"exportOptions": {
-									"columns": [0,1]
-								}
-							},
-							{
-								"extend": 'pdf',
-								'title' :`ARCHIVED-CATEGORY-LISTS`,
-								"exportOptions": {
-									"columns": [0,1]
-								}
-							},
+							// {
+							// 	"extend": 'csv',
+							// 	'title' :`ARCHIVED-CATEGORY-LISTS`,
+							// 	"exportOptions": {
+							// 		"columns": [0,1]
+							// 	}
+							// },
+							// {
+							// 	"extend": 'pdf',
+							// 	'title' :`ARCHIVED-CATEGORY-LISTS`,
+							// 	"exportOptions": {
+							// 		"columns": [0,1]
+							// 	}
+							// },
 							{
 								"extend": 'print',
-								'title' :`ARCHIVED-CATEGORY-LISTS`,
+								'title' : ``,
 								"exportOptions": {
 									"columns": [0,1]
+								},
+								"customize": function ( win ) {
+									$(win.document.body)
+										.css( 'font-size', '10pt' )
+										.prepend(
+											`
+											<div style="display:flex;justify-content: space-between;margin-bottom: 20px;">
+												<div class="title-header">
+													<h2>ARCHIVED-CATEGORY-LISTS</h2>
+													<h5>Date Issued: ${dateToday.toDateString()}</h5>
+													<h5>Prepared By: ${user_login}</h5>
+												</div>
+												<div class="image-header">
+													<img src="${logo}" style=""/>
+												</div>
+											</div>
+											`
+										);
+				
+									$(win.document.body).find( 'table' )
+										.addClass( 'compact' )
+										.css( 'font-size', 'inherit' );
 								}
 							}
 						],

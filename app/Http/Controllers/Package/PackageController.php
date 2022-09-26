@@ -35,6 +35,7 @@ class PackageController extends Controller
         //prevent other user to access to this page
         $this->authorize("isAdmin");
         $package_categories = MainPackage::all();
+        
 
         return view('package.create', [
             'package_categories' => $package_categories
@@ -116,6 +117,38 @@ class PackageController extends Controller
             'inventories' => $inventories,
             'isShow' => 1
         ]);
+    }
+
+    public function showPackage($id)
+    {
+        try {
+            $this->authorize("isAdmin");
+
+
+            $validator = Validator::make(['package' => $id ],[
+                'package' => 'required|integer',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'data' => $validator->errors()
+                ], 422); 
+            }
+
+            $package = Package::findOrFail($id);
+            $package_main = $package->main_package->name;
+            
+            return response()->json([
+                'package' => $package,
+                'package_main' => $package_main,
+                'status' => 'success'
+            ], 200);
+    
+        } catch (\Exception $e) {
+            return response()->json([
+                'data' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**

@@ -16,6 +16,9 @@
 
 @push('scripts')
 <script>
+     let logo = window.location.origin + '/assets/img/logo-pink.png';
+    let user_login = {!! json_encode( ucwords(Auth::user()->name)) !!};
+    let dateToday = new Date();
     var tablePlannerTask = $('#planner-package-tasks-lists').DataTable({
             "responsive": true, 
             "lengthChange": false, 
@@ -39,28 +42,49 @@
                     "extend": 'collection',
                     "text": 'Export',
                     "buttons": [
-                        {
-                            "extend": 'csv',
-                            'title' :`EVENT-${event_name}-TASKS-LISTS`,
-                            "messageTop": 'Task: ',
-                            "exportOptions": {
-                                "columns": [0,1,2,3]
-                            }
-                        },
-                        {
-                            "extend": 'pdf',
-                            'title' :`EVENT-${event_name}-TASKS-LISTS`,
-                            "messageTop": 'Task: ',
-                            "exportOptions": {
-                                "columns": [0,1,2,3]
-                            }
-                        },
+                        // {
+                        //     "extend": 'csv',
+                        //     'title' :`EVENT-${event_name}-TASKS-LISTS`,
+                        //     "messageTop": 'Task: ',
+                        //     "exportOptions": {
+                        //         "columns": [0,1,2,3]
+                        //     }
+                        // },
+                        // {
+                        //     "extend": 'pdf',
+                        //     'title' :`EVENT-${event_name}-TASKS-LISTS`,
+                        //     "messageTop": 'Task: ',
+                        //     "exportOptions": {
+                        //         "columns": [0,1,2,3]
+                        //     }
+                        // },
                         {
                             "extend": 'print',
-                            'title' :`EVENT-${event_name}-TASKS-LISTS`,
-                            "messageTop": 'Task: ',
+                            'title' :``,
                             "exportOptions": {
                                 "columns": [0,1,2,3]
+                            },
+                            "customize": function ( win ) {
+                                $(win.document.body)
+                                    .css( 'font-size', '10pt' )
+                                    .prepend(
+                                        `
+                                        <div style="display:flex;justify-content: space-between;margin-bottom: 20px;">
+                                            <div class="title-header">
+                                                <h2>EVENT-${event_name}-TASKS-LISTS</h2>
+                                                <h5>Date Issued: ${dateToday.toDateString()}</h5>
+                                                <h5>Prepared By: ${user_login}</h5>
+                                            </div>
+                                            <div class="image-header">
+                                                <img src="${logo}" style=""/>
+                                            </div>
+                                        </div>
+                                        `
+                                    );
+            
+                                $(win.document.body).find( 'table' )
+                                    .addClass( 'compact' )
+                                    .css( 'font-size', 'inherit' );
                             }
                         }
                     ],

@@ -26,6 +26,8 @@ use App\PaymentType;
 use App\User;
 use App\TaskStaffNotification;
 use App\TaskNotification;
+use App\MainPackage;
+use App\Category;
 use Validator;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
@@ -53,10 +55,15 @@ class PlannerController extends Controller
     {
         $packages = Package::all();
         $paymentStatus = PaymentStatus::all();
-
+        $package_categories = MainPackage::all();
+        $food_categories = Category::all();
+        $inventories = Inventory::all();
         return view("planner.create",[
             'packages' => $packages,
-            'paymentStatus' => $paymentStatus
+            'paymentStatus' => $paymentStatus,
+            'package_categories' => $package_categories,
+            'food_categories' => $food_categories,
+            'inventories' => $inventories,
         ]);
     }
 

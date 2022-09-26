@@ -28,6 +28,7 @@
 
 @push('scripts')
 <script>
+    
      const columnsTask = isShow == 0 ? [ 
             {"data":"name"},
             {"data":"created_at"},
@@ -59,25 +60,47 @@
                 "extend": 'collection',
                 "text": 'Export',
                 "buttons": [
-                    {
-                        "extend": 'csv',
-                        'title' :`PACKAGE-${packageName}-TASK-LISTS`,
-                        "exportOptions": {
-                            "columns": [0,1]
-                        }
-                    },
-                    {
-                        "extend": 'pdf',
-                        'title' :`PACKAGE-${packageName}-TASK-LISTS`,
-                        "exportOptions": {
-                            "columns": [0,1]
-                        }
-                    },
+                    // {
+                    //     "extend": 'csv',
+                    //     'title' :`PACKAGE-${packageName}-TASK-LISTS`,
+                    //     "exportOptions": {
+                    //         "columns": [0,1]
+                    //     }
+                    // },
+                    // {
+                    //     "extend": 'pdf',
+                    //     'title' :`PACKAGE-${packageName}-TASK-LISTS`,
+                    //     "exportOptions": {
+                    //         "columns": [0,1]
+                    //     }
+                    // },
                     {
                         "extend": 'print',
-                        'title' :`PACKAGE-${packageName}-TASK-LISTS`,
+                        'title' :``,
                         "exportOptions": {
                             "columns": [0,1]
+                        },
+                        "customize": function ( win ) {
+                            $(win.document.body)
+                                .css( 'font-size', '10pt' )
+                                .prepend(
+                                    `
+                                    <div style="display:flex;justify-content: space-between;margin-bottom: 20px;">
+                                        <div class="title-header">
+                                            <h2>PACKAGE-${packageName}-TASK-LISTS</h2>
+                                            <h5>Date Issued: ${dateToday.toDateString()}</h5>
+                                            <h5>Prepared By: ${user_login}</h5>
+                                        </div>
+                                        <div class="image-header">
+                                            <img src="${logo}" style=""/>
+                                        </div>
+                                    </div>
+                                    `
+                                );
+        
+                            $(win.document.body).find( 'table' )
+                                .addClass( 'compact' )
+                                .css( 'font-size', 'inherit' );
                         }
                     }
                 ],
@@ -209,25 +232,47 @@
                 "extend": 'collection',
                 "text": 'Export',
                 "buttons": [
-                    {
-                        "extend": 'csv',
-                        'title' :`ARCHIVED-PACKAGE-${packageName}-TASK-LISTS`,
-                        "exportOptions": {
-                            "columns": [0,1]
-                        }
-                    },
-                    {
-                        "extend": 'pdf',
-                        'title' :`ARCHIVED-PACKAGE-${packageName}-TASK-LISTS`,
-                        "exportOptions": {
-                            "columns": [0,1]
-                        }
-                    },
+                    // {
+                    //     "extend": 'csv',
+                    //     'title' :`ARCHIVED-PACKAGE-${packageName}-TASK-LISTS`,
+                    //     "exportOptions": {
+                    //         "columns": [0,1]
+                    //     }
+                    // },
+                    // {
+                    //     "extend": 'pdf',
+                    //     'title' :`ARCHIVED-PACKAGE-${packageName}-TASK-LISTS`,
+                    //     "exportOptions": {
+                    //         "columns": [0,1]
+                    //     }
+                    // },
                     {
                         "extend": 'print',
-                        'title' :`ARCHIVED-PACKAGE-${packageName}-TASK-LISTS`,
+                        'title' :``,
                         "exportOptions": {
                             "columns": [0,1]
+                        },
+                        "customize": function ( win ) {
+                            $(win.document.body)
+                                .css( 'font-size', '10pt' )
+                                .prepend(
+                                    `
+                                    <div style="display:flex;justify-content: space-between;margin-bottom: 20px;">
+                                        <div class="title-header">
+                                            <h2>ARCHIVED-PACKAGE-${packageName}-TASK-LISTS</h2>
+                                            <h5>Date Issued: ${dateToday.toDateString()}</h5>
+                                            <h5>Prepared By: ${user_login}</h5>
+                                        </div>
+                                        <div class="image-header">
+                                            <img src="${logo}" style=""/>
+                                        </div>
+                                    </div>
+                                    `
+                                );
+        
+                            $(win.document.body).find( 'table' )
+                                .addClass( 'compact' )
+                                .css( 'font-size', 'inherit' );
                         }
                     }
                 ],

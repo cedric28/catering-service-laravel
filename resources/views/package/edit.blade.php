@@ -261,6 +261,9 @@
 			let packageId = {!! json_encode($package->id) !!};
     		let packageName = {!! json_encode($package->name) !!};
 			let isShow = {!! json_encode($isShow) !!};
+			let logo = window.location.origin + '/assets/img/logo-pink.png';
+			let user_login = {!! json_encode( ucwords(Auth::user()->name)) !!};
+			let dateToday = new Date();
 		</script>
 	@endpush('scripts')
 	@include('package.modals.delete_modal')

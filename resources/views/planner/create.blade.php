@@ -74,7 +74,7 @@
 								<select id="package_id" name="package_id" class="@error('package_id') is-invalid @enderror form-control select2">
 									<option data-guest="0" value="">Select Package</option>
 									@foreach ($packages as $package)
-										<option data-guest="{{ $package->package_pax }}" value="{{ $package->id }}"{{ ($package->id == old('package_id')) ? ' selected' : '' }}>{{ ucwords($package->name) }} - {{ $package->main_package->name }}</option>
+										<option data-guest="{{ $package->package_pax }}" data-package-name="{{ $package->name }}" value="{{ $package->id }}"{{ ($package->id == old('package_id')) ? ' selected' : '' }}>{{ ucwords($package->name) }} - {{ $package->main_package->name }}</option>
 									@endforeach
 								</select>
 							</div>
@@ -139,7 +139,9 @@
 	<!-- /page content -->
 	@push('scripts')
 	<script>	
+	 let isShow = 1;
 	let packagePaxValue = $("#package_id option:selected" ).data('guest');
+	let packageName = $("#package_id option:selected" ).data('package-name');
 	let packageId = $("#package_id option:selected" ).val();
 	$('#no_of_guests').val(packagePaxValue);
 	$('#package_id').on('change', function() {

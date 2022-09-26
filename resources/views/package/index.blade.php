@@ -119,7 +119,9 @@
 		<script src="{{ asset('assets/js/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
 
 		<script>
-
+			let logo = window.location.origin + '/assets/img/logo-pink.png';
+				let user_login = {!! json_encode( ucwords(Auth::user()->name)) !!};
+				let dateToday = new Date();
 			var table = $('#packages-lists').DataTable({
 				"responsive": true, 
 				"lengthChange": false, 
@@ -139,26 +141,48 @@
                         "extend": 'collection',
                         "text": 'Export',
                         "buttons": [
-                            {
-                                "extend": 'csv',
-								'title' :`PACKAGE-LISTS`,
-                                "exportOptions": {
-                                    "columns": [0,1,2,3,4]
-                                }
-                            },
-                            {
-                                "extend": 'pdf',
-								'title' :`PACKAGE-LISTS`,
-                                "exportOptions": {
-                                    "columns": [0,1,2,3,4]
-                                }
-                            },
+                            // {
+                            //     "extend": 'csv',
+							// 	'title' :`PACKAGE-LISTS`,
+                            //     "exportOptions": {
+                            //         "columns": [0,1,2,3,4]
+                            //     }
+                            // },
+                            // {
+                            //     "extend": 'pdf',
+							// 	'title' :`PACKAGE-LISTS`,
+                            //     "exportOptions": {
+                            //         "columns": [0,1,2,3,4]
+                            //     }
+                            // },
                             {
                                 "extend": 'print',
-								'title' :`PACKAGE-LISTS`,
+								'title' : ``,
                                 "exportOptions": {
                                     "columns": [0,1,2,3,4]
-                                }
+                                },
+								"customize": function ( win ) {
+									$(win.document.body)
+										.css( 'font-size', '10pt' )
+										.prepend(
+											`
+											<div style="display:flex;justify-content: space-between;margin-bottom: 20px;">
+												<div class="title-header">
+													<h2>PACKAGE-LISTS</h2>
+													<h5>Date Issued: ${dateToday.toDateString()}</h5>
+													<h5>Prepared By: ${user_login}</h5>
+												</div>
+												<div class="image-header">
+													<img src="${logo}" style=""/>
+												</div>
+											</div>
+											`
+										);
+				
+									$(win.document.body).find( 'table' )
+										.addClass( 'compact' )
+										.css( 'font-size', 'inherit' );
+								}
                             }
                         ],
                     }
@@ -235,26 +259,48 @@
                         "extend": 'collection',
                         "text": 'Export',
                         "buttons": [
-                            {
-                                "extend": 'csv',
-								'title' :`ARCHIVED-PACKAGE-LISTS`,
-                                "exportOptions": {
-                                    "columns": [0,1,2,3,4]
-                                }
-                            },
-                            {
-                                "extend": 'pdf',
-								'title' :`ARCHIVED-PACKAGE-LISTS`,
-                                "exportOptions": {
-                                    "columns": [0,1,2,3,4]
-                                }
-                            },
+                            // {
+                            //     "extend": 'csv',
+							// 	'title' :`ARCHIVED-PACKAGE-LISTS`,
+                            //     "exportOptions": {
+                            //         "columns": [0,1,2,3,4]
+                            //     }
+                            // },
+                            // {
+                            //     "extend": 'pdf',
+							// 	'title' :`ARCHIVED-PACKAGE-LISTS`,
+                            //     "exportOptions": {
+                            //         "columns": [0,1,2,3,4]
+                            //     }
+                            // },
                             {
                                 "extend": 'print',
-								'title' :`ARCHIVED-PACKAGE-LISTS`,
+								'title' : ``,
                                 "exportOptions": {
                                     "columns": [0,1,2,3,4]
-                                }
+                                },
+								"customize": function ( win ) {
+									$(win.document.body)
+										.css( 'font-size', '10pt' )
+										.prepend(
+											`
+											<div style="display:flex;justify-content: space-between;margin-bottom: 20px;">
+												<div class="title-header">
+													<h2>ARCHIVED-PACKAGE-LISTS</h2>
+													<h5>Date Issued: ${dateToday.toDateString()}</h5>
+													<h5>Prepared By: ${user_login}</h5>
+												</div>
+												<div class="image-header">
+													<img src="${logo}" style=""/>
+												</div>
+											</div>
+											`
+										);
+				
+									$(win.document.body).find( 'table' )
+										.addClass( 'compact' )
+										.css( 'font-size', 'inherit' );
+								}
                             }
                         ],
                     }
