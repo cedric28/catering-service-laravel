@@ -100,7 +100,7 @@
 							<div class="col-md-12">
 								<div class="callout callout-info">
 									<h5><i class="fas fa-info"></i> Note:</h5>
-									You could click an event in the calendar to see the details.
+									Click an event in the calendar to see its details.
 								</div>
 							</div>
 						</div>
