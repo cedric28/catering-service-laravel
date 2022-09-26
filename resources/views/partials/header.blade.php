@@ -99,7 +99,8 @@
         <li class="nav-item dropdown no-arrow">
             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ ucwords(Auth::user()->name) }} ({{ strtoupper(Auth::user()->role->name) }})</span>
+                <span class="mr-2 d-none d-lg-inline text-gray-600 small"><strong>{{ ucwords(Auth::user()->name) }}</strong> ({{ strtoupper(Auth::user()->role->name) }})</span><br/>
+                <span class="d-none d-lg-inline text-gray-600 small">Welcome</span>
                 @can('isAdmin')
                 <img class="img-profile rounded-circle"
                     src="{{ asset('images/undraw_profile.svg') }}">

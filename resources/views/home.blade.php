@@ -139,7 +139,7 @@
 								<div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
 									<span id="event_date"></span>
 								</div>
-								<div class="h5 mb-0 font-weight-bold text-gray-800"><span id="event_name">No Event</span></div>
+								<div class="h5 mb-0 font-weight-bold text-gray-800"><span id="event_name">No Selected</span></div>
 							</div>
 							<div class="col-auto">
 								<i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -169,6 +169,17 @@
         <!-- Javascript -->
 		<script src="{{ asset('assets/js/fullcalendar.min.js') }}"></script>
 		<script>
+			$("#event_date").html("-");
+			$("#event_name").html("-")
+			$("#event_package").html("-");
+			$("#event_place").html("-");
+			$("#event_time").html("-");
+			$("#no_of_guests").html("-");
+			$("#event_note").html("-");
+			$("#customer").html("-");
+			$("#contact_no").html("-");
+			$("#payment_method").html("-");
+			$("#payment_status").html("-");
 			let planners = {!! json_encode($planners) !!};
 			const filteredPlanners = planners.reduce((prevPlan, currPlan) => {
 				prevPlan.push({
