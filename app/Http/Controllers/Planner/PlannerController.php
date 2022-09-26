@@ -1175,7 +1175,7 @@ class PlannerController extends Controller
     public function changeAttendanaceStaffing(Request $request)
     {
         ////prevent other user to access to this page
-        $this->authorize("isAdmin");
+        
 
         //delete category
         $plannerStaffing = PlannerStaffing::findOrFail($request->id);
