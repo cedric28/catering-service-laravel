@@ -92,7 +92,7 @@
                 "columns": columnsFood,
 				"columnDefs": [
 				{
-					"targets": [0,1],   // target column
+					"targets": [1],   // target column
 					"className": "textCenter",
 				}
 				]
@@ -242,7 +242,7 @@
                 "columns": columnsFood,
 				"columnDefs": [
 				{
-					"targets": [0,1],   // target column
+					"targets": [1],   // target column
 					"className": "textCenter",
 				}
 				]

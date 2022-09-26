@@ -86,7 +86,7 @@
         "columns":columnsTask,
         "columnDefs": [
         {
-            "targets": [0,1],   // target column
+            "targets": [1],   // target column
             "className": "textCenter",
         }
         ]
@@ -236,7 +236,7 @@
         "columns":columnsTask,
         "columnDefs": [
         {
-            "targets": [0,1],   // target column
+            "targets": [1],   // target column
             "className": "textCenter",
         }
         ]

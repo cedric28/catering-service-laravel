@@ -102,7 +102,7 @@
             "columns": columnsEquipment,
             "columnDefs": [
                 {
-                    "targets": [0],   // target column
+                    "targets": [2],   // target column
                     "className": "textCenter",
                 },
                 {
@@ -280,7 +280,7 @@
             "columns": columnsEquipment,
             "columnDefs": [
                 {
-                    "targets": [0],   // target column
+                    "targets": [2],   // target column
                     "className": "textCenter",
                 },
                 {

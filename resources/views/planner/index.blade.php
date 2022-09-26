@@ -201,6 +201,10 @@
 				function closePlannerModal() {
 					$(".button-delete").attr("id", "");
 				}
+
+				let logo = window.location.origin + '/assets/img/logo-pink.png';
+				let user_login = {!! json_encode( ucwords(Auth::user()->name)) !!};
+				let dateToday = new Date();
 				//done 
 				var planner_table_done = $("#planners-done-lists").DataTable({
 					"responsive": true, 
@@ -221,25 +225,47 @@
 							"extend": 'collection',
 							"text": 'Export',
 							"buttons": [
-								{
-									"extend": 'csv',
-									'title' :`COMPLETED-EVENT-LISTS`,
-									"exportOptions": {
-										"columns": [0,1,2,3,4,5,6,7,8]
-									}
-								},
-								{
-									"extend": 'pdf',
-									'title' :`COMPLETED-EVENT-LISTS`,
-									"exportOptions": {
-										"columns": [0,1,2,3,4,5,6,7,8]
-									}
-								},
+								// {
+								// 	"extend": 'csv',
+								// 	'title' :`COMPLETED-EVENT-LISTS`,
+								// 	"exportOptions": {
+								// 		"columns": [0,1,2,3,4,5,6,7,8]
+								// 	}
+								// },
+								// {
+								// 	"extend": 'pdf',
+								// 	'title' :``,
+								// 	"exportOptions": {
+								// 		"columns": [0,1,2,3,4,5,6,7,8]
+								// 	},
+								// },
 								{
 									"extend": 'print',
-									'title' :`COMPLETED-EVENT-LISTS`,
+									'title' :``,
 									"exportOptions": {
 										"columns": [0,1,2,3,4,5,6,7,8]
+									},
+									"customize": function ( win ) {
+										$(win.document.body)
+											.css( 'font-size', '10pt' )
+											.prepend(
+												`
+												<div style="display:flex;justify-content: space-between;margin-bottom: 20px;">
+													<div class="title-header">
+														<h2>COMPLETED-EVENT-LISTS</h2>
+														<h5>Date Issued: ${dateToday.toDateString()}</h5>
+														<h5>Prepared By: ${user_login}</h5>
+													</div>
+													<div class="image-header">
+														<img src="${logo}" style=""/>
+													</div>
+												</div>
+												`
+											);
+					
+										$(win.document.body).find( 'table' )
+											.addClass( 'compact' )
+											.css( 'font-size', 'inherit' );
 									}
 								}
 							],

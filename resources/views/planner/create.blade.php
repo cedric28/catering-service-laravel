@@ -70,13 +70,16 @@
 						</div>
 						<div class="form-group row">
 							<label class="col-lg-3 col-form-label">Package:</label>
-							<div class="col-lg-9">
+							<div class="col-lg-7">
 								<select id="package_id" name="package_id" class="@error('package_id') is-invalid @enderror form-control select2">
 									<option data-guest="0" value="">Select Package</option>
 									@foreach ($packages as $package)
 										<option data-guest="{{ $package->package_pax }}" value="{{ $package->id }}"{{ ($package->id == old('package_id')) ? ' selected' : '' }}>{{ ucwords($package->name) }} - {{ $package->main_package->name }}</option>
 									@endforeach
 								</select>
+							</div>
+							<div class="col-lg-2">
+								<a href="#" name="see-details" id="see-details" class="btn btn-success btn-xs">See Details</a>
 							</div>
 						</div>
 
@@ -137,11 +140,15 @@
 	@push('scripts')
 	<script>	
 	let packagePaxValue = $("#package_id option:selected" ).data('guest');
+	let packageId = $("#package_id option:selected" ).val();
 	$('#no_of_guests').val(packagePaxValue);
 	$('#package_id').on('change', function() {
 		let packagePaxValues = $(this).find(":selected").data('guest');
+		packageId = $(this).find(":selected").val();
 		$('#no_of_guests').val(packagePaxValues);
 	});
+
+	console.log(packageId);
 	
 	$(function () {
 		var bindDatePicker = function() {
@@ -196,5 +203,6 @@
 		bindDatePicker();
  	});
 	</script>
+	@include('planner.modals.seedetails_modal')
 	@endpush('scripts')
 @endsection
