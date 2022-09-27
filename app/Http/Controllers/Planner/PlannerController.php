@@ -98,7 +98,8 @@ class PlannerController extends Controller
                 'no_of_guests' => 'numeric|gt:0',
                 'note' => 'max:200',
                 'payment_status_id' => 'required|integer',
-                'customer_fullname' => 'required|string|max:50',
+                'customer_firstname' => 'required|string|max:50',
+                'customer_lastname' => 'required|string|max:50',
                 'contact_number' => 'required|digits:10'
             ],$messages);
     
@@ -126,7 +127,7 @@ class PlannerController extends Controller
             $planner->package_id = $package->id;
             $planner->note = $request->note;
             $planner->payment_status_id = $request->payment_status_id;
-            $planner->customer_fullname = $request->customer_fullname;
+            $planner->customer_fullname = $request->customer_firstname . ' ' . $request->customer_lastname ;
             $planner->contact_number = $request->contact_number;
             $planner->total_price = $package->package_price;
             $planner->creator_id = $user;

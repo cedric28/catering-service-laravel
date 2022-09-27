@@ -60,6 +60,10 @@
                 font-size: 15px;
 			}
 
+			.invoice-box table tr.information table th.address {
+				font-style: normal !important;  
+			}
+
 			.invoice-box table tr.information table  {
 				border: 5px solid black;
                 padding: 20px;
@@ -154,16 +158,16 @@
 					<td colspan="2">
 						<table>
 							<tr>
-                                <th>BILLED TO:</th>
+                                <th>BILLED TO: {{ ucwords($planner->customer_fullname) }}</th>
 								<th>CREATIVE MOMENTS CATERING SERVICES</th>
 							</tr>
                             <tr>
-                                <th>{{ ucwords($planner->customer_fullname) }}</th>
-								<th>2nd floor, Miranda Plaza Building</th>
+                                <th>+63{{ ($planner->contact_number) }}</th>
+								<th class="address">2nd floor, Miranda Plaza Building</th>
 							</tr>
 							<tr>
-                                <th>+63{{ ($planner->contact_number) }}</th>
-								<th>Binan City, Laguna</th>
+                                <th></th>
+								<th class="address">Binan City, Laguna</th>
 							</tr>
 							<tr>
                                 <th></th>
