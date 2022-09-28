@@ -65,7 +65,9 @@ Route::middleware('auth')->group(function () {
     //Inventories
     Route::resource('inventories', 'Inventory\InventoryController');
     Route::post('inventories/fetch/q', 'Inventory\InventoryFetchController@fetchInventory')->name('activeInventory');
+    Route::post('inventories-v2/fetch/q', 'Inventory\InventoryFetchController@fetchInventoryV2')->name('activeInventoryV2');
     Route::post('inactive-inventories/fetch/q', 'Inventory\InventoryFetchController@fetchInactiveInventory')->name('InactiveInventory');
+    Route::post('inactive-inventories-v2/fetch/q', 'Inventory\InventoryFetchController@fetchInactiveInventoryV2')->name('InactiveInventoryV2');
     Route::get('inventories/destroy/{id}', 'Inventory\InventoryController@destroy');
     Route::get('inventories/restore/{id}', 'Inventory\InventoryController@restore');
 

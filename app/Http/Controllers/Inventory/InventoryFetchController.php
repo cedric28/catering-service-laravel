@@ -126,6 +126,33 @@ class InventoryFetchController extends Controller
         return response()->json($json_data);
     }
 
+    public function fetchInventoryV2(Request $request)
+    {
+    
+        $posts = Inventory::orderBy('name', 'ASC')->get();
+        $data = array();
+        foreach ($posts as $r) {
+            $nestedData['name'] = $r->name;
+            $nestedData['category'] = $r->inventory_category->name;
+            $nestedData['quantity'] = $r->quantity;
+            $nestedData['quantity_in_use'] = $r->quantity_in_use;
+            $nestedData['quantity_available'] = $r->quantity_available;
+            $nestedData['created_at'] = date('d-m-Y', strtotime($r->created_at));
+            $nestedData['action'] = '
+                <button name="show" id="show" data-id="' . $r->id . '" class="btn btn-primary btn-xs">Show</button>
+                <button name="edit" id="edit" data-id="' . $r->id . '" class="btn btn-warning btn-xs">Edit</button>
+                <button name="delete" id="delete" data-id="' . $r->id . '" class="btn btn-danger btn-xs">Delete</button>
+            ';
+            $data[] = $nestedData;
+        }
+
+        //return the data in json response
+        $json_data = array("data" => $data);
+
+        //return the data in json response
+        return response()->json($json_data);
+    }
+
     public function fetchInactiveInventory(Request $request)
     {
         //column list in the table Prpducts
@@ -236,6 +263,31 @@ class InventoryFetchController extends Controller
             "recordsFiltered"   => intval($totalFiltered),
             "data"                => $data
         );
+
+        //return the data in json response
+        return response()->json($json_data);
+    }
+
+    public function fetchInactiveInventoryV2(Request $request)
+    {
+    
+        $posts = Inventory::onlyTrashed()->orderBy('name', 'ASC')->get();
+        $data = array();
+        foreach ($posts as $r) {
+            $nestedData['name'] = $r->name;
+            $nestedData['category'] = $r->inventory_category->name;
+            $nestedData['quantity'] = $r->quantity;
+            $nestedData['quantity_in_use'] = $r->quantity_in_use;
+            $nestedData['quantity_available'] = $r->quantity_available;
+            $nestedData['created_at'] = date('d-m-Y', strtotime($r->created_at));
+            $nestedData['action'] = '
+                <button name="restore" id="restore-inventory" data-id="' . $r->id . '" class="btn btn-success btn-sm">Restore</button>
+            ';
+            $data[] = $nestedData;
+        }
+
+        //return the data in json response
+        $json_data = array("data" => $data);
 
         //return the data in json response
         return response()->json($json_data);

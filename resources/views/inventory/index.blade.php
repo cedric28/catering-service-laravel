@@ -43,7 +43,7 @@
 					<div class="tab-content" id="custom-tabs-four-tabContent">
 						<div class="tab-pane fade active show" id="custom-tabs-four-home" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
 							<div class="table-responsive">
-								<table class="table table-bordered" id="inventory-lists"  width="100%" cellspacing="0">
+								<table class="table table-bordered display" id="inventory-lists"  width="100%" cellspacing="0">
 									<thead>
 										<tr>
 											<th>NAME</th>
@@ -56,7 +56,21 @@
 										</tr>
 									</thead>
 									<tbody>
-										
+										@foreach ($inventories as $inventory)
+											<tr>
+												<td>{{ $inventory->name }}</td>
+												<td>
+													{{ $inventory->inventory_category->name }}
+												</td>
+												<td>{{ $inventory->quantity }}</td>
+												<td>{{ $inventory->quantity_available }}</td>
+												<td>{{ $inventory->quantity_in_use }}</td>
+												<td>{{ $inventory->created_at }}</td>
+												<td>
+													
+												</td>
+											</tr>
+										@endforeach
 									</tbody>
 									<tfoot>
 										<tr>
@@ -74,7 +88,7 @@
 						</div>
 						<div class="tab-pane fade" id="custom-tabs-four-profile" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
 							<div class="table-responsive">
-								<table class="table table-bordered" id="inactive-inventory-lists"  width="100%" cellspacing="0">
+								<table class="table table-bordered display" id="inactive-inventory-lists"  width="100%" cellspacing="0">
 									<thead>
 										<tr>
 											<th>NAME</th>
@@ -145,6 +159,7 @@
 			let logo = window.location.origin + '/assets/img/logo-pink.png';
 			let user_login = {!! json_encode( ucwords(Auth::user()->name)) !!};
 			let dateToday = new Date();
+
 			var table = $('#inventory-lists').DataTable({
 				"responsive": true, 
 				"lengthChange": false, 
@@ -210,26 +225,40 @@
 						],
 					}
 				],
-				initComplete: function () {
-					this.api().columns().every( function () {
-						var column = this;
-						var select = $('<select><option value=""></option></select>')
-							.appendTo( $(column.footer()).empty() )
-							.on( 'change', function () {
-								var val = $.fn.dataTable.util.escapeRegex(
-									$(this).val()
-								);
+				// initComplete: function () {
+				// 	// Apply the search
+				// 	this.api()
+				// 		.columns()
+				// 		.every(function () {
+				// 			var that = this;
 		
-								column
-									.search( val ? val : '', true, false )
-									.draw();
-							} );
+				// 			$('input', this.footer()).on('keyup change clear', function () {
+				// 				if (that.search() !== this.value) {
+				// 					that.search(this.value).draw();
+				// 				}
+				// 			});
+				// 		});
+				// },
+				// initComplete: function () {
+				// 	console.log(this.api().columns())
+				// 	this.api().columns().every( function () {
+				// 		var column = this;
+				// 		var select = $('<select><option value=""></option></select>')
+				// 			.appendTo( $(column.footer()).empty() )
+				// 			.on( 'change', function () {
+				// 				var val = $.fn.dataTable.util.escapeRegex(
+				// 					$(this).val()
+				// 				);
 		
-						column.data().unique().sort().each( function ( d, j ) {
-							select.append( '<option value="'+d+'">'+d+'</option>' )
-						} );
-					} );
-				},
+				// 				column
+				// 					.search( val ? val : '', true, false )
+				// 					.draw();
+				// 			} );
+
+							
+						
+				// 	} );
+				// },
 				"columns":[
 					{"data":"name"},
 					{"data":"category"},
@@ -249,6 +278,38 @@
 						"className": "textRight",
 					}
 				]
+			});
+
+			$.ajax({
+				url:"<?= route('activeInventoryV2') ?>",
+				dataType:"json",
+				type:"POST",
+				data:{"_token":"<?= csrf_token() ?>"},
+				success:function(data)
+				{
+					console.log(data.data);
+					table.clear().draw();
+            		table.rows.add(data.data).draw();
+ 
+					table.columns().every( function () {
+						var column = this;
+						var select = $('<select><option value=""></option></select>')
+							.appendTo( $(column.footer()).empty() )
+							.on( 'change', function () {
+								var val = $.fn.dataTable.util.escapeRegex(
+									$(this).val()
+								);
+		
+								column
+									.search( val ? val : '', true, false )
+									.draw();
+							} );
+		
+						column.data().unique().sort().each( function ( d, j ) {
+							select.append( '<option value="'+d+'">'+d+'</option>' )
+						} );
+					} );
+				}
 			});
 
 			$(document).on('click', '#show', function(){
@@ -284,8 +345,6 @@
 					}
 				})
 			});
-
-
 
 			var tableInactiveInventory = $('#inactive-inventory-lists').DataTable({
 				"responsive": true, 
@@ -352,26 +411,26 @@
 						],
 					}
 				],
-				initComplete: function () {
-					this.api().columns().every( function () {
-						var column = this;
-						var select = $('<select><option value=""></option></select>')
-							.appendTo( $(column.footer()).empty() )
-							.on( 'change', function () {
-								var val = $.fn.dataTable.util.escapeRegex(
-									$(this).val()
-								);
+				// initComplete: function () {
+				// 	this.api().columns().every( function () {
+				// 		var column = this;
+				// 		var select = $('<select><option value=""></option></select>')
+				// 			.appendTo( $(column.footer()).empty() )
+				// 			.on( 'change', function () {
+				// 				var val = $.fn.dataTable.util.escapeRegex(
+				// 					$(this).val()
+				// 				);
 		
-								column
-									.search( val ? val : '', true, false )
-									.draw();
-							} );
+				// 				column
+				// 					.search( val ? val : '', true, false )
+				// 					.draw();
+				// 			} );
 		
-						column.data().unique().sort().each( function ( d, j ) {
-							select.append( '<option value="'+d+'">'+d+'</option>' )
-						} );
-					} );
-				},
+				// 		column.data().unique().sort().each( function ( d, j ) {
+				// 			select.append( '<option value="'+d+'">'+d+'</option>' )
+				// 		} );
+				// 	} );
+				// },
 				"columns":[
 					{"data":"name"},
 					{"data":"category"},
@@ -391,6 +450,38 @@
 						"className": "textRight",
 					}
 				]
+			});
+
+			$.ajax({
+				url:"<?= route('InactiveInventoryV2') ?>",
+				dataType:"json",
+				type:"POST",
+				data:{"_token":"<?= csrf_token() ?>"},
+				success:function(data)
+				{
+					console.log(data.data);
+					tableInactiveInventory.clear().draw();
+            		tableInactiveInventory.rows.add(data.data).draw();
+ 
+					tableInactiveInventory.columns().every( function () {
+						var column = this;
+						var select = $('<select><option value=""></option></select>')
+							.appendTo( $(column.footer()).empty() )
+							.on( 'change', function () {
+								var val = $.fn.dataTable.util.escapeRegex(
+									$(this).val()
+								);
+		
+								column
+									.search( val ? val : '', true, false )
+									.draw();
+							} );
+		
+						column.data().unique().sort().each( function ( d, j ) {
+							select.append( '<option value="'+d+'">'+d+'</option>' )
+						} );
+					} );
+				}
 			});
 
 			$(document).on('click', '#restore-inventory', function(){
