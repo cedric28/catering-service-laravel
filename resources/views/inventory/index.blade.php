@@ -28,34 +28,97 @@
 			<a type="button" href="{{ route('inventories.create')}}" class="btn btn-outline-success btn-sm float-left"><i class="icon-add mr-2"></i> Add Inventory</a>
 		</div>
 		<div class="card-body">
-			<div class="table-responsive">
-				<table class="table table-bordered" id="inventory-lists"  width="100%" cellspacing="0">
-					<thead>
-						<tr>
-							<th>NAME</th>
-							<th>CATEGORY</th>
-							<th>TOTAL QUANTITY</th>
-							<th>QUANTITY AVAILABLE</th>
-							<th>QUANTITY IN USE</th>
-							<th>DATE ADDED</th>
-							<th>ACTION</th>
-						</tr>
-					</thead>
-					<tbody>
-						
-					</tbody>
-					<tfoot>
-						<tr>
-							<th>NAME</th>
-							<th>CATEGORY</th>
-							<th>TOTAL QUANTITY</th>
-							<th>QUANTITY AVAILABLE</th>
-							<th>QUANTITY IN USE</th>
-							<th>DATE ADDED</th>
-							<th>ACTION</th>
-						</tr>
-					</tfoot>
-				</table>
+			<div class="card shadow card-primary card-outline card-outline-tabs border-top-primary">
+				<div class="card-header p-0 border-bottom-0">
+					<ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
+						<li class="nav-item">
+							<a class="nav-link active" id="custom-tabs-four-home-tab" data-toggle="pill" href="#custom-tabs-four-home" role="tab" aria-controls="custom-tabs-four-home" aria-selected="true">Active Inventory</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" id="custom-tabs-four-profile-tab" data-toggle="pill" href="#custom-tabs-four-profile" role="tab" aria-controls="custom-tabs-four-profile" aria-selected="false">Archived Inventory</a>
+						</li>
+					</ul>
+				</div>
+				<div class="card-body">
+					<div class="tab-content" id="custom-tabs-four-tabContent">
+						<div class="tab-pane fade active show" id="custom-tabs-four-home" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
+							<div class="table-responsive">
+								<table class="table table-bordered display" id="inventory-lists"  width="100%" cellspacing="0">
+									<thead>
+										<tr>
+											<th>NAME</th>
+											<th>CATEGORY</th>
+											<th>TOTAL QUANTITY</th>
+											<th>QUANTITY AVAILABLE</th>
+											<th>QUANTITY IN USE</th>
+											<th>DATE ADDED</th>
+											<th>ACTION</th>
+										</tr>
+									</thead>
+									<tbody>
+										@foreach ($inventories as $inventory)
+											<tr>
+												<td>{{ $inventory->name }}</td>
+												<td>
+													{{ $inventory->inventory_category->name }}
+												</td>
+												<td>{{ $inventory->quantity }}</td>
+												<td>{{ $inventory->quantity_available }}</td>
+												<td>{{ $inventory->quantity_in_use }}</td>
+												<td>{{ $inventory->created_at }}</td>
+												<td>
+													
+												</td>
+											</tr>
+										@endforeach
+									</tbody>
+									<tfoot>
+										<tr>
+											<th>NAME</th>
+											<th>CATEGORY</th>
+											<th>TOTAL QUANTITY</th>
+											<th>QUANTITY AVAILABLE</th>
+											<th>QUANTITY IN USE</th>
+											<th>DATE ADDED</th>
+											<th>ACTION</th>
+										</tr>
+									</tfoot>
+								</table>
+							</div>
+						</div>
+						<div class="tab-pane fade" id="custom-tabs-four-profile" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
+							<div class="table-responsive">
+								<table class="table table-bordered display" id="inactive-inventory-lists"  width="100%" cellspacing="0">
+									<thead>
+										<tr>
+											<th>NAME</th>
+											<th>CATEGORY</th>
+											<th>TOTAL QUANTITY</th>
+											<th>QUANTITY AVAILABLE</th>
+											<th>QUANTITY IN USE</th>
+											<th>DATE ADDED</th>
+											<th>ACTION</th>
+										</tr>
+									</thead>
+									<tbody>
+										
+									</tbody>
+									<tfoot>
+										<tr>
+											<th>NAME</th>
+											<th>CATEGORY</th>
+											<th>TOTAL QUANTITY</th>
+											<th>QUANTITY AVAILABLE</th>
+											<th>QUANTITY IN USE</th>
+											<th>DATE ADDED</th>
+											<th>ACTION</th>
+										</tr>
+									</tfoot>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -93,6 +156,9 @@
 		<script src="{{ asset('assets/js/datatables-buttons/js/buttons.print.min.js') }}"></script>
 		<script src="{{ asset('assets/js/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
 		<script>
+			let logo = window.location.origin + '/assets/img/logo-pink.png';
+			let user_login = {!! json_encode( ucwords(Auth::user()->name)) !!};
+			let dateToday = new Date();
 
 			var table = $('#inventory-lists').DataTable({
 				"responsive": true, 
@@ -113,32 +179,119 @@
 						"extend": 'collection',
 						"text": 'Export',
 						"buttons": [
-							{
-								"extend": 'csv',
-								'title' :`INVENTORY-LISTS`,
-								"exportOptions": {
-									"columns": [0,1,2,3,4,5]
-								}
-							},
-							{
-								"extend": 'pdf',
-								'title' :`INVENTORY-LISTS`,
-								"exportOptions": {
-									"columns": [0,1,2,3,4,5]
-								}
-							},
+							// {
+							// 	"extend": 'csv',
+							// 	'title' :`INVENTORY-LISTS`,
+							// 	"exportOptions": {
+							// 		"columns": [0,1,2,3,4,5]
+							// 	}
+							// },
+							// {
+							// 	"extend": 'pdf',
+							// 	'title' :`INVENTORY-LISTS`,
+							// 	"exportOptions": {
+							// 		"columns": [0,1,2,3,4,5]
+							// 	}
+							// },
 							{
 								"extend": 'print',
-								'title' :`INVENTORY-LISTS`,
+								'title' :``,
 								"exportOptions": {
 									"columns": [0,1,2,3,4,5]
+								},
+								"customize": function ( win ) {
+									$(win.document.body)
+										.css( 'font-size', '10pt' )
+										.prepend(
+											`
+											<div style="display:flex;justify-content: space-between;margin-bottom: 20px;">
+												<div class="title-header">
+													<h2>INVENTORY-LISTS</h2>
+													<h5>Date Issued: ${dateToday.toDateString()}</h5>
+													<h5>Prepared By: ${user_login}</h5>
+												</div>
+												<div class="image-header">
+													<img src="${logo}" style=""/>
+												</div>
+											</div>
+											`
+										);
+				
+									$(win.document.body).find( 'table' )
+										.addClass( 'compact' )
+										.css( 'font-size', 'inherit' );
 								}
 							}
 						],
 					}
 				],
-				initComplete: function () {
-					this.api().columns().every( function () {
+				// initComplete: function () {
+				// 	// Apply the search
+				// 	this.api()
+				// 		.columns()
+				// 		.every(function () {
+				// 			var that = this;
+		
+				// 			$('input', this.footer()).on('keyup change clear', function () {
+				// 				if (that.search() !== this.value) {
+				// 					that.search(this.value).draw();
+				// 				}
+				// 			});
+				// 		});
+				// },
+				// initComplete: function () {
+				// 	console.log(this.api().columns())
+				// 	this.api().columns().every( function () {
+				// 		var column = this;
+				// 		var select = $('<select><option value=""></option></select>')
+				// 			.appendTo( $(column.footer()).empty() )
+				// 			.on( 'change', function () {
+				// 				var val = $.fn.dataTable.util.escapeRegex(
+				// 					$(this).val()
+				// 				);
+		
+				// 				column
+				// 					.search( val ? val : '', true, false )
+				// 					.draw();
+				// 			} );
+
+							
+						
+				// 	} );
+				// },
+				"columns":[
+					{"data":"name"},
+					{"data":"category"},
+					{"data":"quantity"},
+					{"data":"quantity_available"},
+					{"data":"quantity_in_use"},
+					{"data":"created_at"},
+					{"data":"action","searchable":false,"orderable":false}
+				],
+				"columnDefs": [
+					{
+						"targets": [1,5],   // target column
+						"className": "textCenter",
+					},
+					{
+						"targets": [2,3,4],   // target column
+						"className": "textRight",
+					}
+				]
+			});
+
+			$.ajax({
+				url:"<?= route('activeInventoryV2') ?>",
+				dataType:"json",
+				type:"POST",
+				data:{"_token":"<?= csrf_token() ?>"},
+				success:function(data)
+				{
+					console.log(data.data);
+					table.clear().draw();
+            		table.rows.add(data.data).draw();
+ 
+					table.columns().every( function () {
 						var column = this;
 						var select = $('<select><option value=""></option></select>')
 							.appendTo( $(column.footer()).empty() )
@@ -156,26 +309,7 @@
 							select.append( '<option value="'+d+'">'+d+'</option>' )
 						} );
 					} );
-				},
-				"columns":[
-					{"data":"name"},
-					{"data":"category"},
-					{"data":"quantity"},
-					{"data":"quantity_available"},
-					{"data":"quantity_in_use"},
-					{"data":"created_at"},
-					{"data":"action","searchable":false,"orderable":false}
-				],
-				"columnDefs": [
-					{
-						"targets": [0,1,5],   // target column
-						"className": "textCenter",
-					},
-					{
-						"targets": [2,3,4],   // target column
-						"className": "textRight",
-					}
-				]
+				}
 			});
 
 			$(document).on('click', '#show', function(){
@@ -204,11 +338,164 @@
 					{
 						setTimeout(function(){
 							$('#confirmModal').modal('hide');
+							$('#ok_button').text('OK');
 							table.ajax.reload();
+							tableInactiveInventory.ajax.reload();
 						}, 2000);
 					}
 				})
 			});
+
+			var tableInactiveInventory = $('#inactive-inventory-lists').DataTable({
+				"responsive": true, 
+				"lengthChange": false, 
+				"autoWidth": false,
+				"buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+				"processing": true,
+				"serverSide": true,
+				"ajax": {
+					"url":"<?= route('InactiveInventory') ?>",
+					"dataType":"json",
+					"type":"POST",
+					"data":{"_token":"<?= csrf_token() ?>"}
+				},
+				"dom": 'Bfrtip',
+				"buttons": [
+					{
+						"extend": 'collection',
+						"text": 'Export',
+						"buttons": [
+							// {
+							// 	"extend": 'csv',
+							// 	'title' :`ARCHIVED-INVENTORY-LISTS`,
+							// 	"exportOptions": {
+							// 		"columns": [0,1,2,3,4,5]
+							// 	}
+							// },
+							// {
+							// 	"extend": 'pdf',
+							// 	'title' :`ARCHIVED-INVENTORY-LISTS`,
+							// 	"exportOptions": {
+							// 		"columns": [0,1,2,3,4,5]
+							// 	}
+							// },
+							{
+								"extend": 'print',
+								'title' :`ARCHIVED-INVENTORY-LISTS`,
+								"exportOptions": {
+									"columns": [0,1,2,3,4,5]
+								},
+								"customize": function ( win ) {
+									$(win.document.body)
+										.css( 'font-size', '10pt' )
+										.prepend(
+											`
+											<div style="display:flex;justify-content: space-between;margin-bottom: 20px;">
+												<div class="title-header">
+													<h2>ARCHIVED-INVENTORY-LISTS</h2>
+													<h5>Date Issued: ${dateToday.toDateString()}</h5>
+													<h5>Prepared By: ${user_login}</h5>
+												</div>
+												<div class="image-header">
+													<img src="${logo}" style=""/>
+												</div>
+											</div>
+											`
+										);
+				
+									$(win.document.body).find( 'table' )
+										.addClass( 'compact' )
+										.css( 'font-size', 'inherit' );
+								}
+							}
+						],
+					}
+				],
+				// initComplete: function () {
+				// 	this.api().columns().every( function () {
+				// 		var column = this;
+				// 		var select = $('<select><option value=""></option></select>')
+				// 			.appendTo( $(column.footer()).empty() )
+				// 			.on( 'change', function () {
+				// 				var val = $.fn.dataTable.util.escapeRegex(
+				// 					$(this).val()
+				// 				);
+		
+				// 				column
+				// 					.search( val ? val : '', true, false )
+				// 					.draw();
+				// 			} );
+		
+				// 		column.data().unique().sort().each( function ( d, j ) {
+				// 			select.append( '<option value="'+d+'">'+d+'</option>' )
+				// 		} );
+				// 	} );
+				// },
+				"columns":[
+					{"data":"name"},
+					{"data":"category"},
+					{"data":"quantity"},
+					{"data":"quantity_available"},
+					{"data":"quantity_in_use"},
+					{"data":"created_at"},
+					{"data":"action","searchable":false,"orderable":false}
+				],
+				"columnDefs": [
+					{
+						"targets": [1,5],   // target column
+						"className": "textCenter",
+					},
+					{
+						"targets": [2,3,4],   // target column
+						"className": "textRight",
+					}
+				]
+			});
+
+			$.ajax({
+				url:"<?= route('InactiveInventoryV2') ?>",
+				dataType:"json",
+				type:"POST",
+				data:{"_token":"<?= csrf_token() ?>"},
+				success:function(data)
+				{
+					console.log(data.data);
+					tableInactiveInventory.clear().draw();
+            		tableInactiveInventory.rows.add(data.data).draw();
+ 
+					tableInactiveInventory.columns().every( function () {
+						var column = this;
+						var select = $('<select><option value=""></option></select>')
+							.appendTo( $(column.footer()).empty() )
+							.on( 'change', function () {
+								var val = $.fn.dataTable.util.escapeRegex(
+									$(this).val()
+								);
+		
+								column
+									.search( val ? val : '', true, false )
+									.draw();
+							} );
+		
+						column.data().unique().sort().each( function ( d, j ) {
+							select.append( '<option value="'+d+'">'+d+'</option>' )
+						} );
+					} );
+				}
+			});
+
+			$(document).on('click', '#restore-inventory', function(){
+				const inventoryId = $(this).attr('data-id');
+				$.ajax({
+                    url:"inventories/restore/"+inventoryId,
+                    success:function(data)
+                    {
+						tableInactiveInventory.ajax.reload();
+                    	table.ajax.reload();
+                    }
+                })
+			});
+
 		</script>
         @endpush('scripts')
 @endsection

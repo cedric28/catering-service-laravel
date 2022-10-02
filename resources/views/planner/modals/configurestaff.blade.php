@@ -146,6 +146,7 @@
             $("#select_user_id").removeClass("is-invalid");
             $('#generalTaskStaffError').text("");
             tableTaskStaff.destroy();
+            // location.reload();
         }
 
         $(document).on('click','#add_task_staff_button', function(event){

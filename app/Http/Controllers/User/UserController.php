@@ -206,6 +206,31 @@ class UserController extends Controller
         $user->delete();
     }
 
+     /**
+     * Restore the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function restore($id)
+    {
+        \DB::beginTransaction();
+        try {
+
+            $user = User::onlyTrashed()->findOrFail($id);
+
+            /* Restore user */
+            $user->restore();
+
+
+            \DB::commit();
+            return back()->with("successMsg", "Successfully Restore the data");
+        } catch (\Exception $e) {
+            \DB::rollback();
+            return back()->withErrors($e->getMessage());
+        }
+    }
+
     public function viewProfile()
     {
         $user = \Auth::user();

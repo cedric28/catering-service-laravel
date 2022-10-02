@@ -51,7 +51,7 @@
 									<th>{{ Str::number_comma($package->package_pax) }}</th>
 								</tr>
 								<tr>
-									<th>Package Pax</th>
+									<th>Package Price</th>
 									<th>{{ Str::currency($package->package_price) }}</th>
 								</tr>
 								<tr>
@@ -180,6 +180,9 @@
 			let packageId = {!! json_encode($package->id) !!};
     		let packageName = {!! json_encode($package->name) !!};
 			let isShow = {!! json_encode($isShow) !!};
+			let logo = window.location.origin + '/assets/img/logo-pink.png';
+			let user_login = {!! json_encode( ucwords(Auth::user()->name)) !!};
+			let dateToday = new Date();
 		</script>
 	@endpush('scripts')
 	@include('package.modals.delete_modal')

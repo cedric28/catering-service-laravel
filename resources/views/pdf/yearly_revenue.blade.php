@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="utf-8" />
-		<title>INVOICE-{{ $planner->or_no }}-{{ strtoupper($planner->event_name) }}</title>
+		<title>YEARLY-REVENUE-REPORT</title>
 
 		<style>
 			footer {
@@ -54,14 +54,9 @@
 			}
 
 			.invoice-box table tr.information table th {
-				padding-bottom: 2px;
                 text-align: left;
                 width: 50%;
-                font-size: 15px;
-			}
-
-			.invoice-box table tr.information table th.address {
-				font-style: normal !important;  
+                font-size: 13px;
 			}
 
 			.invoice-box table tr.information table  {
@@ -139,10 +134,14 @@
 						<table>
 							<tr>
                 				<td>
-									<h4 class="title">INVOICE</h5>
-									<div class="title2">INVOICE NUMBER: {{ $planner->or_no }}</div>
+									<h4 class="title">YEARLY REVENUE REPORT</h5>
+                                    <!-- <div class="title2">CREATIVE MOMENTS CATERING SERVICES</div>
+                                    <div class="title2">2nd floor, Miranda Plaza Building</div>
+                                    <div class="title2">Binan City, Laguna</div>
+                                    <div class="title2">creativemomentscatering@yahoo.com</div>
 									<div class="title2">DATE ISSUED: {{ $formattedDate }}</div>
-									<div class="title2">PREPARED BY: {{ ucwords(Auth::user()->name) }}</div>
+                                    <div class="title2">DATE RANGE: {{ $startDate }} - {{ $endDate }}</div>
+									<div class="title2">PREPARED BY: {{ ucwords(Auth::user()->name) }}</div> -->
 								</td>
 								<td class="title">
 									<img src="assets/img/logo-pink.png" style="width: 100%; max-width: 100px;height: 100px;" />
@@ -154,20 +153,20 @@
 					</td>
 				</tr>
 
-				<tr class="information">
+                <tr class="information">
 					<td colspan="2">
 						<table>
 							<tr>
-                                <th>BILLED TO: {{ ucwords($planner->customer_fullname) }}</th>
+                                <th>DATE ISSUED: {{ $formattedDate }}</th>
 								<th>CREATIVE MOMENTS CATERING SERVICES</th>
 							</tr>
                             <tr>
-                                <th>+63{{ ($planner->contact_number) }}</th>
-								<th class="address">2nd floor, Miranda Plaza Building</th>
+                                <th>DATE RANGE: {{ $startDate }} - {{ $endDate }}</th>
+								<th>2nd floor, Miranda Plaza Building</th>
 							</tr>
 							<tr>
-                                <th></th>
-								<th class="address">Binan City, Laguna</th>
+                                <th>PREPARED BY: {{ ucwords(Auth::user()->name) }}</th>
+								<th>Binan City, Laguna</th>
 							</tr>
 							<tr>
                                 <th></th>
@@ -178,35 +177,24 @@
 				</tr>
 
 				<tr class="heading">
-					<td>DESCRIPTION</td>
-					<td>AMOUNT</td>
+					<td>INVOICE NO</td>
+					<td>PAYMENT</td>
 				</tr>
 
-				<tr class="item">
-					<td>{{ ucwords($planner->package->name)}}</td>
-					<td>{{ Str::currency($planner->package->package_price) }}</td>
-				</tr>
-				@foreach($plannerOther as $other)
+				@foreach($sales as $sale)
 					<tr class="item">
-						<td>{{ $other->package_other->name }}</td>
-						<td>{{ Str::currency($other->package_other->service_price) }}</td>
+						<td >{{$sale->planner->or_no}}</td>
+						<td>{{ Str::currency($sale->payment_price) }}</td>
 					</tr>
                 @endforeach
-				
-
-				<!-- <tr class="item last">
-					<td>Domain name (1 year)</td>
-
-					<td>$10.00</td>
-					<td>$75.00</td>
-				</tr> -->
+			
 
 				<tr class="total">
 					<td></td>
-					<td>Total: {{ Str::currency($totalBalance) }}</td>
+					<td>Total: {{ Str::currency($totalPrice) }}</td>
 				</tr>
 			</table>
-			<footer>
+            <footer>
                 <div id="legalcopy" class="clearfix">
                     <p class="col-right">Copyright © CREATIVE MOMENTS CATERING SERVICES 2022
                     </p>

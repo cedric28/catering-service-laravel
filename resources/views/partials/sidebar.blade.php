@@ -87,6 +87,12 @@
             <i class="fas fa-fw fa-calendar"></i>
             <span>Monthly Revenue</span></a>
     </li>
+
+    <li class="nav-item {{ (request()->is('revenueYearly')) ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('revenueYearly')}}">
+            <i class="fas fa-fw fa-calendar"></i>
+            <span>Yearly Revenue</span></a>
+    </li>
     @endcan
     @canany(['isHeadStaff','isAdmin'])
      <!-- Divider -->

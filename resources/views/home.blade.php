@@ -33,11 +33,11 @@
 					<div class="card-body">
 						<div class="row no-gutters align-items-center">
 							<div class="col mr-2">
-								<div class="text-xs font-weight-bold text-success text-uppercase mb-1">DONE EVENTS
+								<div class="text-xs font-weight-bold text-success text-uppercase mb-1">COMPLETED EVENTS
 								</div>
 								<div class="row no-gutters align-items-center">
 									<div class="col-auto">
-										<div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ $plannerDone }}</div>
+										<div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ $plannerCompleted }}</div>
 									</div>
 								</div>
 							</div>
@@ -94,9 +94,16 @@
 			<div class="col-xl-8 col-lg-7">
 				<div class="card shadow mb-4">
 					<!-- Card Header - Dropdown -->
-					<div
-						class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-						<h6 class="m-0 font-weight-bold text-primary">Calendar Events</h6>
+					<div class="card-header py-3">
+						<h6 class="m-0 font-weight-bold text-primary mb-3">Calendar Events</h6>
+						<div class="row">
+							<div class="col-md-12">
+								<div class="callout callout-info">
+									<h5><i class="fas fa-info"></i> Note:</h5>
+									Click an event in the calendar to see its details.
+								</div>
+							</div>
+						</div>
 					</div>
 					<!-- Card Body -->
 					<div class="card-body">
@@ -113,7 +120,7 @@
 					</div>
 					<div class="card-body">
 						<div id="external-events">
-							<div class="external-event bg-success ui-draggable ui-draggable-handle" style="position: relative;">Done</div>
+							<div class="external-event bg-success ui-draggable ui-draggable-handle" style="position: relative;">Completed</div>
 							<!-- <div class="external-event bg-warning ui-draggable ui-draggable-handle" style="position: relative;">G</div> -->
 							<div class="external-event bg-info ui-draggable ui-draggable-handle" style="position: relative;">On Going Event</div>			
 						</div>
@@ -132,7 +139,7 @@
 								<div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
 									<span id="event_date"></span>
 								</div>
-								<div class="h5 mb-0 font-weight-bold text-gray-800"><span id="event_name">No Event</span></div>
+								<div class="h5 mb-0 font-weight-bold text-gray-800"><span id="event_name">No Selected</span></div>
 							</div>
 							<div class="col-auto">
 								<i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -162,6 +169,15 @@
         <!-- Javascript -->
 		<script src="{{ asset('assets/js/fullcalendar.min.js') }}"></script>
 		<script>
+			$("#event_date").html("-");
+			$("#event_package").html("-");
+			$("#event_place").html("-");
+			$("#event_time").html("-");
+			$("#event_note").html("-");
+			$("#customer").html("-");
+			$("#contact_no").html("-");
+			$("#payment_method").html("-");
+			$("#payment_status").html("-");
 			let planners = {!! json_encode($planners) !!};
 			const filteredPlanners = planners.reduce((prevPlan, currPlan) => {
 				prevPlan.push({

@@ -29,8 +29,17 @@ class PackageEquipmentController extends Controller
                 'package_id.required' => 'The Package ID is required.',
             ];
 
-          
+            $uniqueRule = Rule::unique('package_equipments')->where(function ($query) use($request) {
+                return $query->where('inventory_id', $request->inventory_id)
+                ->where('package_id', $request->package_id);
+            });
 
+            if($request->equipment_id != 0){
+                $uniqueRule = Rule::unique('package_equipments')->where(function ($query) use($request) {
+                    return $query->where('inventory_id', $request->inventory_id)
+                    ->where('package_id', $request->package_id);
+                })->ignore($request->equipment_id);
+            } 
             $user = \Auth::user()->id;
             // if($request->equipment_id){
                 $validator = Validator::make($request->all(), [
@@ -38,12 +47,10 @@ class PackageEquipmentController extends Controller
                     'package_id' => 'required|integer',
                     'inventory_id' => [
                         'required',
-                        Rule::unique('package_equipments')->where(function ($query) use($request) {
-                            return $query->where('inventory_id', $request->inventory_id)
-                            ->where('package_id', $request->package_id);
-                        }),
+                        $uniqueRule
+                       ,
                     ],
-                    // 'quantity' => 'required|numeric',
+                    'quantity' => 'required|numeric|gt:1',
         
                     
                 ], $messages);
@@ -53,49 +60,23 @@ class PackageEquipmentController extends Controller
                         'data' => $validator->errors()
                     ], 422);
                 }
-                $package = Package::find($request->package_id);
-                $equipmentPackage = new PackageEquipments();
-                $equipmentPackage->inventory_id = $request->inventory_id;
-                $equipmentPackage->quantity =  $package->package_pax;
-                $equipmentPackage->package_id = $request->package_id;
-                $equipmentPackage->creator_id = $user;
-                $equipmentPackage->updater_id = $user;
-                $equipmentPackage->save();
-            // } else {
-            //     $validator = Validator::make($request->all(), [
-            //         'inventory_id' => 'required|integer',
-            //         'package_id' => 'required|integer',
-            //         // 'quantity' => 'required|numeric|gt:0',
-                    
-            //     ], $messages);
-    
-            //     if ($validator->fails()) {
-            //         return response()->json([
-            //             'data' => $validator->errors()
-            //         ], 422);
-            //     }
-            //     $package = Package::find($request->package_id);
-            //     $equipmentPackage = PackageEquipments::where([
-            //         'inventory_id' => $request->inventory_id,
-            //         'package_id' => $request->package_id
-            //     ])->first();
-     
-            //     if ($equipmentPackage === null) {
-            //         $equipmentPackage = new PackageEquipments([
-            //             'inventory_id' => $request->inventory_id,
-            //             'package_id' => $request->package_id,
-            //             'quantity' =>  $package->package_pax,
-            //             'creator_id' => $user,
-            //             'updater_id' => $user
-            //         ]);
-            //     } else {
-            //         $equipmentPackage->quantity = ($equipmentPackage->quantity + $request->quantity);
-            //     }
-            
-            //     $equipmentPackage->updater_id = $user;
-            //     $equipmentPackage->save();
-            // }
 
+                if($request->equipment_id == 0){
+                    $package = Package::find($request->package_id);
+                    $equipmentPackage = new PackageEquipments();
+                    $equipmentPackage->inventory_id = $request->inventory_id;
+                    $equipmentPackage->quantity =  $request->quantity;
+                    $equipmentPackage->package_id = $request->package_id;
+                    $equipmentPackage->creator_id = $user;
+                    $equipmentPackage->updater_id = $user;
+                    $equipmentPackage->save();
+                } else {
+                    $equipmentPackage = PackageEquipments::find($request->equipment_id);
+                    $equipmentPackage->inventory_id = $request->inventory_id;
+                    $equipmentPackage->quantity =  $request->quantity;
+                    $equipmentPackage->updater_id = $user;
+                    $equipmentPackage->save();
+                }
 
              /*
             | @End Transaction
@@ -124,5 +105,30 @@ class PackageEquipmentController extends Controller
 
          $package = PackageEquipments::findOrFail($id);
          $package->delete();
+    }
+
+     /**
+     * Restore the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function restore($id)
+    {
+        \DB::beginTransaction();
+        try {
+
+            $package = PackageEquipments::onlyTrashed()->findOrFail($id);
+
+            /* Restore package */
+            $package->restore();
+
+
+            \DB::commit();
+            return back()->with("successMsg", "Successfully Restore the data");
+        } catch (\Exception $e) {
+            \DB::rollback();
+            return back()->withErrors($e->getMessage());
+        }
     }
 }

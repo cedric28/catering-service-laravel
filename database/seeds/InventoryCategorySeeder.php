@@ -31,7 +31,6 @@ class InventoryCategorySeeder extends Seeder
             [
                 'name' => 'Misc'
             ]
-
         ];
 
         /*
@@ -46,7 +45,6 @@ class InventoryCategorySeeder extends Seeder
 
                 // Create Category
                 $categoryObj = InventoryCategory::create([
-
                     'name' => $category['name'],
                     'creator_id' => 1,
                     'updater_id' => 1

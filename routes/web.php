@@ -50,7 +50,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', 'User\UserController@viewProfile')->name('user-profile');
     Route::patch('/profile-update', 'User\UserController@updateProfile')->name('update-profile');
     Route::post('/users/fetch/q', 'User\UserFetchController@fetchUser')->name('activeUser');
+    Route::post('/inactive-users/fetch/q', 'User\UserFetchController@fetchInactiveUser')->name('InactiveUser');
     Route::get('users/destroy/{id}', 'User\UserController@destroy');
+    Route::get('users/restore/{id}', 'User\UserController@restore');
+
 
     Route::resource('my-tasks', 'User\MyTaskController');
     
@@ -62,47 +65,71 @@ Route::middleware('auth')->group(function () {
     //Inventories
     Route::resource('inventories', 'Inventory\InventoryController');
     Route::post('inventories/fetch/q', 'Inventory\InventoryFetchController@fetchInventory')->name('activeInventory');
+    Route::post('inventories-v2/fetch/q', 'Inventory\InventoryFetchController@fetchInventoryV2')->name('activeInventoryV2');
+    Route::post('inactive-inventories/fetch/q', 'Inventory\InventoryFetchController@fetchInactiveInventory')->name('InactiveInventory');
+    Route::post('inactive-inventories-v2/fetch/q', 'Inventory\InventoryFetchController@fetchInactiveInventoryV2')->name('InactiveInventoryV2');
     Route::get('inventories/destroy/{id}', 'Inventory\InventoryController@destroy');
+    Route::get('inventories/restore/{id}', 'Inventory\InventoryController@restore');
 
     //Inventory Category
     Route::resource('inventory-category', 'Inventory\InventoryCategoryController');
     Route::post('inventory-category/fetch/q', 'Inventory\InventoryFetchController@fetchInventoryCategory')->name('activeInventoryCategory');
+    Route::post('inactive-inventory-category/fetch/q', 'Inventory\InventoryFetchController@fetchInactiveInventoryCategory')->name('InactiveInventoryCategory');
     Route::get('inventory-category/destroy/{id}', 'Inventory\InventoryCategoryController@destroy');
+    Route::get('inventory-category/restore/{id}', 'Inventory\InventoryCategoryController@restore');
 
     //foods
     Route::resource('foods', 'Food\FoodController');
     Route::post('foods/fetch/q', 'Food\FoodFetchController@fetchFood')->name('activeFood');
+    Route::post('inactive-foods/fetch/q', 'Food\FoodFetchController@fetchInactiveFood')->name('InactiveFood');
     Route::get('foods/destroy/{id}', 'Food\FoodController@destroy');
+    Route::get('foods/restore/{id}', 'Food\FoodController@restore');
 
     //Food Category
     Route::resource('food-category', 'Food\FoodCategoryController');
     Route::post('food-category/fetch/q', 'Food\FoodFetchController@fetchFoodCategory')->name('activeFoodCategory');
+    Route::post('inactive-food-category/fetch/q', 'Food\FoodFetchController@fetchInactiveFoodCategory')->name('InactiveFoodCategory');
     Route::get('food-category/destroy/{id}', 'Food\FoodCategoryController@destroy');
+    Route::get('food-category/restore/{id}', 'Food\FoodCategoryController@restore');
 
     //packages
     Route::resource('packages', 'Package\PackageController');
     Route::post('packages/fetch/q', 'Package\PackageFetchController@fetchPackage')->name('activePackage');
+    Route::post('inactive-packages/fetch/q', 'Package\PackageFetchController@fetchInactivePackage')->name('InactivePackage');
     Route::get('packages/destroy/{id}', 'Package\PackageController@destroy');
+    Route::get('packages/restore/{id}', 'Package\PackageController@restore');
+
+    Route::get('/packages-show/{id}', 'Package\PackageController@showPackage')->name('showPackage');
 
     //package task
     Route::post('packages-task/add-task', 'Package\PackageTaskController@addTask')->name('addTask');
     Route::get('packages-task/destroy/{id}', 'Package\PackageTaskController@destroy');
+    Route::get('packages-task/restore/{id}', 'Package\PackageTaskController@restore');
     Route::post('packages-task/fetch/q', 'Package\PackageFetchController@fetchPackageTask')->name('activePackageTask');
+    Route::post('inactive-packages-task/fetch/q', 'Package\PackageFetchController@fetchInactivePackageTask')->name('InactivePackageTask');
+   
+
 
     //package food
     Route::post('packages-food/add-food', 'Package\PackageFoodController@addFood')->name('addFood');
     Route::get('packages-food/destroy/{id}', 'Package\PackageFoodController@destroy');
     Route::post('packages-food/fetch/q', 'Package\PackageFetchController@fetchPackageFood')->name('activePackageFood');
+    Route::get('packages-food/restore/{id}', 'Package\PackageFoodController@restore');
+    Route::post('inactive-packages-food/fetch/q', 'Package\PackageFetchController@fetchInactivePackageFood')->name('InactivePackageFood');
 
     //package equipments
     Route::post('packages-equipment/add-equipment', 'Package\PackageEquipmentController@addEquipment')->name('addEquipment');
     Route::get('packages-equipment/destroy/{id}', 'Package\PackageEquipmentController@destroy');
     Route::post('packages-equipment/fetch/q', 'Package\PackageFetchController@fetchPackageEquipment')->name('activePackageEquipment');
+    Route::post('inactive-packages-equipment/fetch/q', 'Package\PackageFetchController@fetchInactivePackageEquipment')->name('InactivePackageEquipment');
+    Route::get('packages-equipment/restore/{id}', 'Package\PackageEquipmentController@restore');
 
     //package others
     Route::post('packages-other/add-other', 'Package\PackageOtherController@addOther')->name('addOther');
     Route::get('packages-other/destroy/{id}', 'Package\PackageOtherController@destroy');
     Route::post('packages-other/fetch/q', 'Package\PackageFetchController@fetchPackageOther')->name('activePackageOther');
+    Route::post('inactive-packages-other/fetch/q', 'Package\PackageFetchController@fetchInactivePackageOther')->name('InactivePackageOther');
+    Route::get('packages-other/restore/{id}', 'Package\PackageOtherController@restore');
 
     //planner
     Route::resource('planners', 'Planner\PlannerController');
@@ -121,6 +148,7 @@ Route::middleware('auth')->group(function () {
     Route::post('planners/destroy-staffing', 'Planner\PlannerController@destroyStaffing')->name('destroyStaffing');
     Route::post('planners/change-attendace-staffing', 'Planner\PlannerController@changeAttendanaceStaffing')->name('changeAttendanaceStaffing');
     Route::post('planners/store-time-table', 'Planner\PlannerController@storeTimeTable')->name('storeTimeTable');
+    Route::post('planners/update-time-table', 'Planner\PlannerController@updateTimeTable')->name('updateTimeTable');
     Route::post('planners/destroy-time-table', 'Planner\PlannerController@destroyTimeTable')->name('destroyTimeTable');
     Route::post('planners/store-payment', 'Planner\PlannerController@storePayment')->name('storePayment');
     Route::post('planners/destroy-payment', 'Planner\PlannerController@destroyPayment')->name('destroyPayment');
@@ -144,14 +172,17 @@ Route::middleware('auth')->group(function () {
 
     //Reports
     Route::get('revenue-report-monthly', 'Report\RevenueController@revenueMonthly')->name('revenueMonthly');
+    Route::get('revenue-report-yearly', 'Report\RevenueController@revenueYearly')->name('revenueYearly');
     Route::get('user-activities-report-monthly', 'Report\UserActivityController@usersActiveTracker')->name('usersActiveTracker');
 
 
     //PDF
     Route::get('invoice/{id}', 'PDF\PDFController@generateInvoice')->name('generateInvoice');
     Route::get('contract/{id}', 'PDF\PDFController@generateContract')->name('generateContract');
-    Route::get('generate-pdf-monthy-sales', 'PDF\PDFController@generateMonthlyRevenue')->name('generateMonthlyRevenue');
+    Route::get('generate-pdf-monthly-sales', 'PDF\PDFController@generateMonthlyRevenue')->name('generateMonthlyRevenue');
     Route::get('print-monthly-sales', 'PDF\PDFController@printMonthlyRevenue')->name('printMonthlyRevenue');
+    Route::get('generate-pdf-yearly-sales', 'PDF\PDFController@generateYearlyRevenue')->name('generateYearlyRevenue');
+    Route::get('print-yearly-sales', 'PDF\PDFController@printYearlyRevenue')->name('printYearlyRevenue');
     Route::get('print-beo/{id}', 'PDF\PDFController@printBEO')->name('printBEO');
 
     Route::get('generate-pdf-employee-activities', 'PDF\PDFController@generateEmployeeActivity')->name('generateEmployeeActivity');

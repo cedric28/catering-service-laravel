@@ -28,6 +28,7 @@
 
 @push('scripts')
 <script>
+    
      const columnsTask = isShow == 0 ? [ 
             {"data":"name"},
             {"data":"created_at"},
@@ -59,25 +60,47 @@
                 "extend": 'collection',
                 "text": 'Export',
                 "buttons": [
-                    {
-                        "extend": 'csv',
-                        'title' :`PACKAGE-${packageName}-TASK-LISTS`,
-                        "exportOptions": {
-                            "columns": [0,1]
-                        }
-                    },
-                    {
-                        "extend": 'pdf',
-                        'title' :`PACKAGE-${packageName}-TASK-LISTS`,
-                        "exportOptions": {
-                            "columns": [0,1]
-                        }
-                    },
+                    // {
+                    //     "extend": 'csv',
+                    //     'title' :`PACKAGE-${packageName}-TASK-LISTS`,
+                    //     "exportOptions": {
+                    //         "columns": [0,1]
+                    //     }
+                    // },
+                    // {
+                    //     "extend": 'pdf',
+                    //     'title' :`PACKAGE-${packageName}-TASK-LISTS`,
+                    //     "exportOptions": {
+                    //         "columns": [0,1]
+                    //     }
+                    // },
                     {
                         "extend": 'print',
-                        'title' :`PACKAGE-${packageName}-TASK-LISTS`,
+                        'title' :``,
                         "exportOptions": {
                             "columns": [0,1]
+                        },
+                        "customize": function ( win ) {
+                            $(win.document.body)
+                                .css( 'font-size', '10pt' )
+                                .prepend(
+                                    `
+                                    <div style="display:flex;justify-content: space-between;margin-bottom: 20px;">
+                                        <div class="title-header">
+                                            <h2>PACKAGE-${packageName}-TASK-LISTS</h2>
+                                            <h5>Date Issued: ${dateToday.toDateString()}</h5>
+                                            <h5>Prepared By: ${user_login}</h5>
+                                        </div>
+                                        <div class="image-header">
+                                            <img src="${logo}" style=""/>
+                                        </div>
+                                    </div>
+                                    `
+                                );
+        
+                            $(win.document.body).find( 'table' )
+                                .addClass( 'compact' )
+                                .css( 'font-size', 'inherit' );
                         }
                     }
                 ],
@@ -86,7 +109,7 @@
         "columns":columnsTask,
         "columnDefs": [
         {
-            "targets": [0,1],   // target column
+            "targets": [1],   // target column
             "className": "textCenter",
         }
         ]
@@ -109,6 +132,7 @@
                     $('#confirmModal').modal('hide');
                     $('#ok_button').text('OK');
                     table.ajax.reload();
+                    tableInactivePackageTask.ajax.reload();
                 }
             })
         });
@@ -179,6 +203,98 @@
                     $("#task-name").addClass("is-invalid");
                     $('#add_button').text('Save');
                 }
+            }
+        })
+    });
+
+
+
+    var tableInactivePackageTask = $('#inactive-package-tasks-lists').DataTable({
+        "responsive": true, 
+        "lengthChange": false, 
+        "autoWidth": false,
+        "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+            "url":"<?= route('InactivePackageTask') ?>",
+            "dataType":"json",
+            "type":"POST",
+            "data":{
+                "_token":"<?= csrf_token() ?>",
+                "package_id": packageId,
+                "is_show" : isShow
+            }
+        },
+        "dom": 'Bfrtip',
+        "buttons": [
+            {
+                "extend": 'collection',
+                "text": 'Export',
+                "buttons": [
+                    // {
+                    //     "extend": 'csv',
+                    //     'title' :`ARCHIVED-PACKAGE-${packageName}-TASK-LISTS`,
+                    //     "exportOptions": {
+                    //         "columns": [0,1]
+                    //     }
+                    // },
+                    // {
+                    //     "extend": 'pdf',
+                    //     'title' :`ARCHIVED-PACKAGE-${packageName}-TASK-LISTS`,
+                    //     "exportOptions": {
+                    //         "columns": [0,1]
+                    //     }
+                    // },
+                    {
+                        "extend": 'print',
+                        'title' :``,
+                        "exportOptions": {
+                            "columns": [0,1]
+                        },
+                        "customize": function ( win ) {
+                            $(win.document.body)
+                                .css( 'font-size', '10pt' )
+                                .prepend(
+                                    `
+                                    <div style="display:flex;justify-content: space-between;margin-bottom: 20px;">
+                                        <div class="title-header">
+                                            <h2>ARCHIVED-PACKAGE-${packageName}-TASK-LISTS</h2>
+                                            <h5>Date Issued: ${dateToday.toDateString()}</h5>
+                                            <h5>Prepared By: ${user_login}</h5>
+                                        </div>
+                                        <div class="image-header">
+                                            <img src="${logo}" style=""/>
+                                        </div>
+                                    </div>
+                                    `
+                                );
+        
+                            $(win.document.body).find( 'table' )
+                                .addClass( 'compact' )
+                                .css( 'font-size', 'inherit' );
+                        }
+                    }
+                ],
+            }
+        ],
+        "columns":columnsTask,
+        "columnDefs": [
+        {
+            "targets": [1],   // target column
+            "className": "textCenter",
+        }
+        ]
+    });
+
+    $(document).on('click', '#restore-package-task', function(){
+        const packageTaskId = $(this).attr('data-id');
+        $.ajax({
+            url:"/packages-task/restore/"+packageTaskId,
+            success:function(data)
+            {
+                tableInactivePackageTask.ajax.reload();
+                table.ajax.reload();
             }
         })
     });

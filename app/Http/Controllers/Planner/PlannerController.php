@@ -26,6 +26,8 @@ use App\PaymentType;
 use App\User;
 use App\TaskStaffNotification;
 use App\TaskNotification;
+use App\MainPackage;
+use App\Category;
 use Validator;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
@@ -53,10 +55,15 @@ class PlannerController extends Controller
     {
         $packages = Package::all();
         $paymentStatus = PaymentStatus::all();
-
+        $package_categories = MainPackage::all();
+        $food_categories = Category::all();
+        $inventories = Inventory::all();
         return view("planner.create", [
             'packages' => $packages,
-            'paymentStatus' => $paymentStatus
+            'paymentStatus' => $paymentStatus,
+            'package_categories' => $package_categories,
+            'food_categories' => $food_categories,
+            'inventories' => $inventories,
         ]);
     }
 
@@ -85,12 +92,14 @@ class PlannerController extends Controller
             $validator = Validator::make($request->all(), [
                 'event_name' => 'required|string|max:50|unique:planners,event_name',
                 'event_venue' => 'required|string|max:200',
-                'event_date' => 'required|string|unique:planners,event_date',
+                // 'event_date' => 'required|string|unique:planners,event_date',
+                'event_date' => 'required|string',
                 'package_id' => 'required|integer',
                 'no_of_guests' => 'numeric|gt:0',
                 'note' => 'max:200',
                 'payment_status_id' => 'required|integer',
-                'customer_fullname' => 'required|string|max:50',
+                'customer_firstname' => 'required|string|max:50',
+                'customer_lastname' => 'required|string|max:50',
                 'contact_number' => 'required|digits:10'
             ], $messages);
 
@@ -118,12 +127,61 @@ class PlannerController extends Controller
             $planner->package_id = $package->id;
             $planner->note = $request->note;
             $planner->payment_status_id = $request->payment_status_id;
-            $planner->customer_fullname = $request->customer_fullname;
+            $planner->customer_fullname = $request->customer_firstname . ' ' . $request->customer_lastname;
             $planner->contact_number = $request->contact_number;
             $planner->total_price = $package->package_price;
             $planner->creator_id = $user;
             $planner->updater_id = $user;
             $planner->save();
+
+            $plannerTime = [
+                [
+                    'task_name' => 'Truck Departure',
+                    'task_time' => '12:01 AM'
+                ],
+                [
+                    'task_name' => 'Truck Arrival',
+                    'task_time' => '12:02 AM'
+                ],
+                [
+                    'task_name' => 'Equipment Checklist',
+                    'task_time' => '12:03 AM'
+                ],
+                [
+                    'task_name' => 'Venue Ready Time',
+                    'task_time' => '12:04 AM'
+                ],
+                [
+                    'task_name' => 'Buffet Service',
+                    'task_time' => '12:05 AM'
+                ],
+                [
+                    'task_name' => 'Pack-up',
+                    'task_time' => '12:06 AM'
+                ],
+                [
+                    'task_name' => 'Equipment Checklist (Packup)',
+                    'task_time' => '12:07 AM'
+                ],
+                [
+                    'task_name' => 'End Time',
+                    'task_time' => '12:08 AM'
+                ],
+                [
+                    'task_name' => 'Staff Departure',
+                    'task_time' => '12:09 AM'
+                ],
+            ];
+
+            foreach ($plannerTime as $key => $time) {
+
+                // Create Role
+                $timeObj = PlannerTimeTable::create([
+                    'planner_id' => $planner->id,
+                    'task_name' => $time['task_name'],
+                    'task_time' => $time['task_time'],
+                ]);
+            }
 
             /*
             | @End Transaction
@@ -155,7 +213,14 @@ class PlannerController extends Controller
         $package_tasks = PackageTask::where('package_id', $planner->package_id)->get();
         $package_equipments = PackageEquipments::where('package_id', $planner->package_id)->get();
         $package_others = PackageOther::where('package_id', $planner->package_id)->get();
-        $package_menus = PackageMenu::where('package_id', $planner->package_id)->get();
+        $package_menus_beo = PackageMenu::where('package_id', $planner->package_id)
+            ->whereHas('planners', function ($query) use ($planner) {
+                $query->where('planner_id', $planner->id);
+            })
+            ->get();
+
+        $package_menus = PackageMenu::where('package_id', $planner->package_id)
+            ->get();
         $plannerStaffingsServer = PlannerStaffing::where('planner_id', $planner->id)
             ->whereHas('user', function ($query) {
                 $query->where('job_type_id', 5);
@@ -178,6 +243,7 @@ class PlannerController extends Controller
             'plannerStaffingsServer' => $plannerStaffingsServer,
             'plannerStaffingsBusboy' => $plannerStaffingsBusboy,
             'plannerStaffingsDishwasher' => $plannerStaffingsDishwasher,
+            'package_menus_beo' => $package_menus_beo
         ]);
     }
 
@@ -197,7 +263,21 @@ class PlannerController extends Controller
         $package_tasks = PackageTask::where('package_id', $planner->package_id)->get();
         $package_equipments = PackageEquipments::where('package_id', $planner->package_id)->get();
         $package_others = PackageOther::where('package_id', $planner->package_id)->get();
-        $package_menus = PackageMenu::where('package_id', $planner->package_id)->get();
+        $package_menus_beo = PackageMenu::where('package_id', $planner->package_id)
+            ->whereHas('planners', function ($query) use ($planner) {
+                $query->where('planner_id', $planner->id);
+            })
+            ->get();
+
+        $package_menus = PackageMenu::where('package_id', $planner->package_id)
+            ->get();
+
+        // $planner_package_menu_planner = PackageMenuPlanner::where('planner_id', $planner->id)->get();
+
+        // PackageMenu::where('package_id',$planner->package_id)
+        //                     ->whereHas('planners', function($query) use ($planner){
+        //                         $query->where('package_menu_id',$planner->package_id);
+        //                     })->get();
         $plannerStaffingsServer = PlannerStaffing::where('planner_id', $planner->id)
             ->whereHas('user', function ($query) {
                 $query->where('job_type_id', 5);
@@ -210,7 +290,19 @@ class PlannerController extends Controller
             ->whereHas('user', function ($query) {
                 $query->where('job_type_id', 4);
             })->get();
-        $usersHeadStaff = User::where('job_type_id', 2)->get();
+        // $usersHeadStaff = User::whereDoesntHave('planner_task_staffs', function($query) use ($planner){
+        //                         $query->whereHas('planner_task', function($query) use($planner) {
+        //                             $query->where('planner_id', $planner->id);
+        //                         })
+        //                         ->where('task_date', $planner->event_date);
+        //                 })
+        //                 ->where('job_type_id',2)
+        //                 ->get();
+        // $usersHeadStaff = User::whereDoesntHave('planner_task_staffs')
+        //                         ->where('job_type_id',2)
+        //                         ->get();
+        $usersHeadStaff = User::where('job_type_id', 2)
+            ->get();
         $paymentTypes = PaymentType::all();
         $usersStaffJobTypes = User::whereIn('job_type_id', [3, 4, 5])->whereDoesntHave('planner_staffings', function (Builder $query) use ($plannerDate) {
             $query->where('task_date', '=', $plannerDate);
@@ -224,6 +316,18 @@ class PlannerController extends Controller
             ['type' => 'Post-Event']
         ];
 
+        $time_tables_lists = [
+            ['task_name' => 'Truck Departure'],
+            ['task_name' => 'Truck Arrival'],
+            ['task_name' => 'Equipment Checklist'],
+            ['task_name' => 'Venue Ready Time'],
+            ['task_name' => 'Buffet Service'],
+            ['task_name' => 'Pack-up'],
+            ['task_name' => 'Equipment Checklist (Packup)'],
+            ['task_name' => 'End Time'],
+            ['task_name' => 'Staff Departure'],
+        ];
+
         $taskStatus = [
             ['status' => 'pending'],
             ['status' => 'finished']
@@ -232,7 +336,7 @@ class PlannerController extends Controller
         $plannerStatus = [
             ['status' => 'pending'],
             ['status' => 'on-going'],
-            ['status' => 'done']
+            ['status' => 'completed']
         ];
 
         $equipmentStatus = [
@@ -240,6 +344,26 @@ class PlannerController extends Controller
             ['status' => 'in-use'],
             ['status' => 'returned']
         ];
+
+        $plannerOther = PlannerOther::where('planner_id', $planner->id)->get();
+
+        $servicePriceTotal = 0;
+        if (count($plannerOther) > 0) {
+            foreach ($plannerOther as $other) {
+                $packageOtherServicePrice = PackageOther::select(\DB::raw("SUM(service_price) as price"))->where('id', $other->package_other_id)->get();
+                $servicePriceTotal += $packageOtherServicePrice[0]->price;
+            }
+        }
+
+        $overallPayment  = 0;
+        $payments = Payment::select(\DB::raw("SUM(payment_price) as price"))->where('planner_id', $planner->id)->get();
+        if (count($payments) > 0) {
+            foreach ($payments as $payment) {
+                $overallPayment += $payment->price;
+            }
+        }
+
+        $totalBalance = $planner->total_price + $servicePriceTotal - $overallPayment;
 
         return view('planner.edit', [
             'planner' => $planner,
@@ -258,7 +382,10 @@ class PlannerController extends Controller
             'plannerStaffingsDishwasher' => $plannerStaffingsDishwasher,
             'taskStatus' => $taskStatus,
             'equipmentStatus' => $equipmentStatus,
-            'plannerStatus' => $plannerStatus
+            'plannerStatus' => $plannerStatus,
+            'time_tables_lists' => $time_tables_lists,
+            'totalBalance' => $totalBalance,
+            'package_menus_beo' => $package_menus_beo
         ]);
     }
 
@@ -291,7 +418,8 @@ class PlannerController extends Controller
                 'event_name' => 'required|unique:planners,event_name,' . $planner->id,
                 'event_venue' => 'required|string|max:200',
                 'date_today' => '',
-                'event_date' => 'string|unique:planners,event_date,' . $planner->id,
+                // 'event_date' => 'string|unique:planners,event_date,' . $planner->id,
+                'event_date' => 'required|string',
                 'package_id' => 'required|integer',
                 'no_of_guests' => 'numeric|gt:0',
                 'note' => 'max:200',
@@ -344,11 +472,10 @@ class PlannerController extends Controller
             $planner->status = $request->planner_status;
             $planner->updater_id = $user;
 
-
-            if ($request->planner_status == 'done') {
+            if ($request->planner_status == 'completed') {
                 $payments = Payment::where('planner_id', $planner->id)->get();
                 if (count($payments) <= 0) {
-                    return back()->withErrors(['planner_status' => 'Please make a payment first and set other details before changing the status to DONE'])->withInput();
+                    return back()->withErrors(['planner_status' => 'Please make a payment first and set other details before changing the status to completed'])->withInput();
                 } else {
                     $planner->save();
                 }
@@ -469,18 +596,19 @@ class PlannerController extends Controller
                             ->where('package_task_id', $request->package_task_id);
                     }),
                 ],
-                'task_date' => [
-                    'required',
-                    'string',
-                    Rule::unique('planner_tasks')->where(function ($query) use ($request) {
-                        $taskDateTime = explode(" | ", $request->task_date);
-                        $taskDate = $taskDateTime[0];
-                        $taskTime = $taskDateTime[1];
-                        return $query->where('planner_id', $request->planner_id)
-                            ->where('task_time', $taskTime)
-                            ->where('task_date', $taskDate);
-                    }),
-                ],
+                // 'task_date' => [
+                //     'required',
+                //     'string',
+                //     Rule::unique('planner_tasks')->where(function ($query) use($request) {
+                //         $taskDateTime = explode(" | ", $request->task_date);
+                //         $taskDate = $taskDateTime[0];
+                //         $taskTime = $taskDateTime[1];
+                //         return $query->where('planner_id', $request->planner_id)
+                //         ->where('task_time', $taskTime)
+                //         ->where('task_date', $taskDate);
+                //     }),
+                // ],
+                'task_date' => 'required|string',
                 'task_type' => 'required|string',
                 'planner_id' => 'required|integer'
             ], $messages);
@@ -545,18 +673,19 @@ class PlannerController extends Controller
                             ->where('package_task_id', $request->package_task_id);
                     })->ignore($request->planner_task_ids),
                 ],
-                'task_date' => [
-                    'required',
-                    'string',
-                    Rule::unique('planner_tasks')->where(function ($query) use ($request) {
-                        $taskDateTime = explode(" | ", $request->task_date);
-                        $taskDate = $taskDateTime[0];
-                        $taskTime = $taskDateTime[1];
-                        return $query->where('planner_id', $request->planner_id)
-                            ->where('task_time', $taskTime)
-                            ->where('task_date', $taskDate);
-                    })->ignore($request->planner_task_ids),
-                ],
+                // 'task_date' => [
+                //     'required',
+                //     'string',
+                //     Rule::unique('planner_tasks')->where(function ($query) use($request) {
+                //         $taskDateTime = explode(" | ", $request->task_date);
+                //         $taskDate = $taskDateTime[0];
+                //         $taskTime = $taskDateTime[1];
+                //         return $query->where('planner_id', $request->planner_id)
+                //         ->where('task_time', $taskTime)
+                //         ->where('task_date', $taskDate);
+                //     })->ignore($request->planner_task_ids),
+                // ],
+                'task_date' => 'required|string',
                 'task_type' => 'required|string',
                 'task_status' => 'required|string',
                 'planner_id' => 'required|integer'
@@ -663,8 +792,11 @@ class PlannerController extends Controller
                     Rule::unique('planner_task_staff')->where(function ($query) use ($request) {
                         $plannerTask = PlannerTask::find($request->planner_task_id);
                         return $query->where('user_id', $request->user_id)
-                            ->orWhere('planner_task_id', $request->planner_task_id)
+                            ->where('planner_task_id', $request->planner_task_id)
                             ->orWhere('task_date', $plannerTask->task_date);
+                        // return $query->where('planner_task_id', $request->planner_task_id)
+                        //             ->where('user_id', $request->user_id)
+                        //             ->where('task_date', $plannerTask->task_date);
                     }),
                     // Rule::unique('planner_tasks')->where(function ($query) use($request) {
                     //     $planner_task = PlannerTask::find($request->planner_task_id);
@@ -1039,7 +1171,7 @@ class PlannerController extends Controller
     public function changeAttendanaceStaffing(Request $request)
     {
         ////prevent other user to access to this page
-        $this->authorize("isAdmin");
+
 
         //delete category
         $plannerStaffing = PlannerStaffing::findOrFail($request->id);
@@ -1100,6 +1232,51 @@ class PlannerController extends Controller
         } catch (\Exception $e) {
             \DB::rollback();
             return back()->withErrors($e->getMessage());
+        }
+    }
+
+    public function updateTimeTable(Request $request)
+    {
+        \DB::beginTransaction();
+        try {
+
+            $messages = [
+                'task_time.unique' => 'The Time in Time Table has already been taken',
+            ];
+
+            //validate request value
+            $validator = Validator::make($request->all(), [
+                'task_time' => [
+                    'required',
+                    Rule::unique('planner_time_tables')->where(function ($query) use ($request) {
+                        return $query->where('planner_id', $request->planner_id)
+                            ->where('task_time', $request->task_time);
+                    })->ignore($request->time_table_id),
+                ],
+                'planner_id' => 'required|integer'
+            ], $messages);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'data' => $validator->errors()
+                ], 422);
+            }
+
+            $plannerTimeTable = PlannerTimeTable::find($request->time_table_id);
+            $plannerTimeTable->task_time = $request->task_time;
+            $plannerTimeTable->save();
+
+            \DB::commit();
+
+            return response()->json([
+                'data' => $plannerTimeTable,
+                'status' => 'success'
+            ], 200);
+        } catch (\Exception $e) {
+            \DB::rollback();
+            return response()->json([
+                'data' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -1173,6 +1350,11 @@ class PlannerController extends Controller
             $plannerPayment->creator_id = $user;
             $plannerPayment->updater_id = $user;
             $plannerPayment->save();
+
+            if ($totalPayment == $totalBalance) {
+                $planner->payment_status_id = 2;
+                $planner->save();
+            }
 
             \DB::commit();
 

@@ -201,13 +201,23 @@
                 <tr>
                     <td>
                         <h4 class="title2">COORDINATION WITH VENUE</h4>
-                        @forelse ($timeTable as $time)
-                            <p class="description">Caterer will need to have access to the Venue no later than @if($loop->first){{ $time->task_time}} @endif hours in advance of the Start Time for the Event, and @if($loop->last){{ $time->task_time}} @endif  hours after the End Time for cleanup. Client will make all necessary arrangements, at Client’s expense, to get this access arranged.
-                            </p>
-                        @empty
-                            <p class="description">Caterer will need to have access to the Venue no later than [Not yet set] hours in advance of the Start Time for the Event, and [Not yet set] hours after the End Time for cleanup. Client will make all necessary arrangements, at Client’s expense, to get this access arranged. 
-                            </p>
-                        @endforelse
+						@php
+							$firstTime = "[Not yet set]";
+							$lastTime = "[Not yet set]";
+							
+						@endphp
+						@foreach ($timeTable as $time)
+								@if($loop->first)
+									@php $firstTime = $time->task_time; @endphp
+								@endif
+
+								@if($loop->last)
+									@php $lastTime = $time->task_time; @endphp
+								@endif
+							
+						@endforeach
+						<p class="description">Caterer will need to have access to the Venue no later than {{ $firstTime }} hours in advance of the Start Time for the Event, and {{ $lastTime }}  hours after the End Time for cleanup. Client will make all necessary arrangements, at Client’s expense, to get this access arranged.</p>
+                          
                     </td>
                 </tr>
 

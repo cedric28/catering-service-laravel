@@ -195,12 +195,110 @@ class PDFController extends Controller
         ]);
     }
 
+
+    public function generateYearlyRevenue(Request $request)
+    {
+        $messages = [
+            'lte' => 'The :attribute year must be less than end date.',
+        ];
+        //validate request value
+        $validator = Validator::make($request->all(), [
+            'end_date' => '',
+            'start_date' => 'lte:end_date',
+        ], $messages);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator->errors())->withInput();
+        }
+
+        $now = Carbon::now();
+        $formattedDate = Carbon::now()->format('F d Y');
+
+        $sales = new Payment();
+        $startDate = $request->start_date;
+        $endDate = $request->end_date;
+        if ($startDate) {
+            $sales = $sales->whereYear('created_at', '>=', $request->start_date);
+        }
+        if ($endDate) {
+            $sales = $sales->whereYear('created_at', '<=', $request->end_date);
+        }
+
+        $sales = $sales->latest()->get();
+
+        $totalPrice = $sales->sum('payment_price');
+        view()->share('sales', $sales);
+
+        $pdf = \PDF::loadView('pdf.monthly_revenue', [
+            'sales' => $sales,
+            'totalPrice' => $totalPrice,
+            'formattedDate' => $formattedDate,
+            "startDate" => $startDate,
+            "endDate" => $endDate
+        ]);
+        // return view("pdf.monthly_revenue",[
+        //     'sales' => $sales,
+        //     'totalPrice' => $totalPrice,
+        //     'formattedDate' => $formattedDate
+        // ]);
+
+        return $pdf->download("Yearly-Sales-" . Carbon::now()->format('m-d-Y') . ".pdf");
+    }
+
+
+    public function printYearlyRevenue(Request $request)
+    {
+
+        $messages = [
+            'lte' => 'The :attribute year must be less than end date.',
+        ];
+        //validate request value
+        $validator = Validator::make($request->all(), [
+            'end_date' => '',
+            'start_date' => 'lte:end_date',
+        ], $messages);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator->errors())->withInput();
+        }
+
+        $now = Carbon::now();
+        $yearNow =  $now->year;
+        $formattedDate = Carbon::now()->format('F d Y');
+
+        $sales = new Payment();
+        $startDate = $request->start_date;
+        $endDate = $request->end_date;
+        if ($startDate) {
+            $sales = $sales->whereYear('created_at', '>=', $request->start_date);
+        }
+        if ($endDate) {
+            $sales = $sales->whereYear('created_at', '<=', $request->end_date);
+        }
+
+        $sales = $sales->latest()->get();
+
+        $totalPrice = $sales->sum('payment_price');
+
+        return view("pdf.yearly_revenue", [
+            'sales' => $sales,
+            'totalPrice' => $totalPrice,
+            'formattedDate' => $formattedDate,
+            "startDate" => $startDate,
+            "endDate" => $endDate
+        ]);
+    }
+
     public function printBEO(Request $request, $id)
     {
         ini_set('max_execution_time', 100);
         $planner = Planner::find($id);
         $formattedDate = Carbon::now()->format('F d Y');
-        $package_menus = PackageMenu::where('package_id', $planner->package_id)->get();
+        $package_menus = PackageMenu::where('package_id', $planner->package_id)
+            ->whereHas('planners', function ($query) use ($planner) {
+                $query->where('planner_id', $planner->id);
+            })
+            ->get();
 
         $plannerStaffingsServer = PlannerStaffing::where('planner_id', $planner->id)
             ->whereHas('user', function ($query) {

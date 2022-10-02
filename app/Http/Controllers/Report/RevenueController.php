@@ -53,4 +53,42 @@ class RevenueController extends Controller
             'totalPrice' => $totalPrice
         ]);
     }
+
+    public function revenueYearly(Request $request)
+    {
+        $messages = [
+            'lte' => 'The :attribute year must be less than end date.',
+        ];
+        //validate request value
+        $validator = Validator::make($request->all(), [
+            'end_date' => '',
+            'start_date' => 'lte:end_date',
+       ], $messages);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator->errors())->withInput();
+        }
+        
+        $now = Carbon::now();
+        $yearNow =  $now->year;
+
+        $sales = new Payment();
+        $startDate = $request->start_date;
+        $endDate = $request->end_date;
+        if($startDate) {
+            $sales = $sales->whereYear('created_at', '>=', $request->start_date);
+        }
+        if($endDate) {
+            $sales = $sales->whereYear('created_at', '<=', $request->end_date);
+        }
+    
+        $sales = $sales->latest()->paginate(10);
+
+        $totalPrice = $sales->sum('payment_price');
+    
+        return view("revenue.yearly",[
+            'sales' => $sales,
+            'totalPrice' => $totalPrice
+        ]);
+    }
 }

@@ -1,4 +1,4 @@
-@if($planner->status != 'done' && Auth::user()->job_type_id == 1)
+@if($planner->status != 'completed' && Auth::user()->job_type_id == 1)
 <form action="{{ route('storeStaffing')}}" method="POST" class="mb-2">
     @csrf
     <input type="hidden" name="planner_id" value="{{ $planner->id }}"/>
@@ -68,25 +68,47 @@
                     "extend": 'collection',
                     "text": 'Export',
                     "buttons": [
-                        {
-                            "extend": 'csv',
-                            'title' :`EVENT-${event_name}-EMPLOYEE-STAFF-LISTS`,
-                            "exportOptions": {
-                                "columns": [0,1,2,3]
-                            }
-                        },
-                        {
-                            "extend": 'pdf',
-                            'title' :`EVENT-${event_name}-EMPLOYEE-STAFF-LISTS`,
-                            "exportOptions": {
-                                "columns": [0,1,2,3]
-                            }
-                        },
+                        // {
+                        //     "extend": 'csv',
+                        //     'title' :`EVENT-${event_name}-EMPLOYEE-STAFF-LISTS`,
+                        //     "exportOptions": {
+                        //         "columns": [0,1,2,3]
+                        //     }
+                        // },
+                        // {
+                        //     "extend": 'pdf',
+                        //     'title' :`EVENT-${event_name}-EMPLOYEE-STAFF-LISTS`,
+                        //     "exportOptions": {
+                        //         "columns": [0,1,2,3]
+                        //     }
+                        // },
                         {
                             "extend": 'print',
-                            'title' :`EVENT-${event_name}-EMPLOYEE-STAFF-LISTS`,
+                            'title' :``,
                             "exportOptions": {
                                 "columns": [0,1,2,3]
+                            },
+                            "customize": function ( win ) {
+                                $(win.document.body)
+                                    .css( 'font-size', '10pt' )
+                                    .prepend(
+                                        `
+                                        <div style="display:flex;justify-content: space-between;margin-bottom: 20px;">
+                                            <div class="title-header">
+                                                <h2>EVENT-${event_name}-EMPLOYEE-STAFF-LISTS</h2>
+                                                <h5>Date Issued: ${dateToday.toDateString()}</h5>
+                                                <h5>Prepared By: ${user_login}</h5>
+                                            </div>
+                                            <div class="image-header">
+                                                <img src="${logo}" style=""/>
+                                            </div>
+                                        </div>
+                                        `
+                                    );
+            
+                                $(win.document.body).find( 'table' )
+                                    .addClass( 'compact' )
+                                    .css( 'font-size', 'inherit' );
                             }
                         }
                     ],
@@ -140,7 +162,7 @@
                 success:function(data)
                 {
                     tablePlannerStaffing.ajax.reload();
-                    location.reload();
+                    // location.reload();
                 }
             })
             

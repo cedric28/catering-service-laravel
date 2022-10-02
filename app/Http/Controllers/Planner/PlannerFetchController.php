@@ -41,7 +41,8 @@ class PlannerFetchController extends Controller
 			$posts = DB::table('planners')
 				->leftJoin('packages', 'planners.package_id', '=', 'packages.id')
 				->leftJoin('main_packages', 'packages.main_package_id', '=', 'main_packages.id')
-				->select('planners.*', 'packages.name as package_name', 'main_packages.name as main_package_name')
+				->leftJoin('payment_statuses', 'planners.payment_status_id', '=', 'payment_statuses.id')
+				->select('planners.*', 'packages.name as package_name', 'main_packages.name as main_package_name', 'payment_statuses.name as payment_status')
 				->where([
 					['planners.status', 'pending'],
 					['planners.deleted_at', '=', null]
@@ -59,7 +60,8 @@ class PlannerFetchController extends Controller
 			$posts = DB::table('planners')
 				->leftJoin('packages', 'planners.package_id', '=', 'planners.id')
 				->leftJoin('main_packages', 'packages.main_package_id', '=', 'main_packages.id')
-				->select('planners.*', 'packages.name as package_name', 'main_packages.name as main_package_name')
+				->leftJoin('payment_statuses', 'planners.payment_status_id', '=', 'payment_statuses.id')
+				->select('planners.*', 'packages.name as package_name', 'main_packages.name as main_package_name', 'payment_statuses.name as payment_status')
 				->where(function ($query) use ($search) {
 					$query->where('planners.event_name', 'like', '%' . $search . '%')
 						->orWhere('planners.event_venue', 'like', "%{$search}%")
@@ -85,7 +87,8 @@ class PlannerFetchController extends Controller
 			$totalFiltered = DB::table('planners')
 				->leftJoin('packages', 'planners.package_id', '=', 'planners.id')
 				->leftJoin('main_packages', 'packages.main_package_id', '=', 'main_packages.id')
-				->select('planners.*', 'packages.name as package_name', 'main_packages.name as main_package_name')
+				->leftJoin('payment_statuses', 'planners.payment_status_id', '=', 'payment_statuses.id')
+				->select('planners.*', 'packages.name as package_name', 'main_packages.name as main_package_name', 'payment_statuses.name as payment_status')
 				->where(function ($query) use ($search) {
 					$query->where('planners.event_name', 'like', '%' . $search . '%')
 						->orWhere('planners.event_venue', 'like', "%{$search}%")
@@ -117,6 +120,7 @@ class PlannerFetchController extends Controller
 				$nestedData['no_of_guests'] = $r->no_of_guests;
 				$nestedData['customer_fullname'] = ucwords($r->customer_fullname);
 				$nestedData['event_status'] = '<span title="Danger" class="badge bg-info">PENDING</span>';
+				$nestedData['payment_status'] = $r->payment_status;
 				$nestedData['created_at'] = date('d-m-Y', strtotime($r->created_at));
 				$nestedData['action'] = '
                     <button name="show" id="show-pending-planner" data-id="' . $r->id . '" class="btn btn-primary btn-xs">Show</button>
@@ -169,7 +173,8 @@ class PlannerFetchController extends Controller
 			$posts = DB::table('planners')
 				->leftJoin('packages', 'planners.package_id', '=', 'packages.id')
 				->leftJoin('main_packages', 'packages.main_package_id', '=', 'main_packages.id')
-				->select('planners.*', 'packages.name as package_name', 'main_packages.name as main_package_name')
+				->leftJoin('payment_statuses', 'planners.payment_status_id', '=', 'payment_statuses.id')
+				->select('planners.*', 'packages.name as package_name', 'main_packages.name as main_package_name', 'payment_statuses.name as payment_status')
 				->where([
 					['planners.status', '=', 'on-going'],
 					['planners.deleted_at', '=', null]
@@ -187,7 +192,8 @@ class PlannerFetchController extends Controller
 			$posts = DB::table('planners')
 				->leftJoin('packages', 'planners.package_id', '=', 'planners.id')
 				->leftJoin('main_packages', 'packages.main_package_id', '=', 'main_packages.id')
-				->select('planners.*', 'packages.name as package_name', 'main_packages.name as main_package_name')
+				->leftJoin('payment_statuses', 'planners.payment_status_id', '=', 'payment_statuses.id')
+				->select('planners.*', 'packages.name as package_name', 'main_packages.name as main_package_name', 'payment_statuses.name as payment_status')
 				->where(function ($query) use ($search) {
 					$query->where('planners.event_name', 'like', '%' . $search . '%')
 						->orWhere('planners.event_venue', 'like', "%{$search}%")
@@ -226,6 +232,7 @@ class PlannerFetchController extends Controller
 				$nestedData['no_of_guests'] = $r->no_of_guests;
 				$nestedData['customer_fullname'] = ucwords($r->customer_fullname);
 				$nestedData['event_status'] = '<span title="Danger" class="badge bg-primary">ON-GOING</span>';
+				$nestedData['payment_status'] = $r->payment_status;
 				$nestedData['created_at'] = date('d-m-Y', strtotime($r->created_at));
 				$nestedData['action'] = '
                     <button name="show" id="show-on-going-planner" data-id="' . $r->id . '" class="btn btn-primary btn-xs">Show</button>
@@ -262,7 +269,7 @@ class PlannerFetchController extends Controller
 		);
 
 		//get the total number of data in Category table
-		$totalData = Planner::where('status', 'done')->count();
+		$totalData = Planner::where('status', 'completed')->count();
 		//total number of data that will show in the datatable default 10
 		$limit = $request->input('length');
 		//start number for pagination ,default 0
@@ -278,9 +285,10 @@ class PlannerFetchController extends Controller
 			$posts = DB::table('planners')
 				->leftJoin('packages', 'planners.package_id', '=', 'packages.id')
 				->leftJoin('main_packages', 'packages.main_package_id', '=', 'main_packages.id')
-				->select('planners.*', 'packages.name as package_name', 'main_packages.name as main_package_name')
+				->leftJoin('payment_statuses', 'planners.payment_status_id', '=', 'payment_statuses.id')
+				->select('planners.*', 'packages.name as package_name', 'main_packages.name as main_package_name', 'payment_statuses.name as payment_status')
 				->where([
-					['planners.status', 'done'],
+					['planners.status', 'completed'],
 					['planners.deleted_at', '=', null]
 				])
 				->offset($start)
@@ -289,14 +297,15 @@ class PlannerFetchController extends Controller
 				->get();
 
 			//total number of filtered data
-			$totalFiltered = Planner::where('status', 'done')->count();
+			$totalFiltered = Planner::where('status', 'completed')->count();
 		} else {
 			$search = $request->input('search.value');
 
 			$posts = DB::table('planners')
 				->leftJoin('packages', 'planners.package_id', '=', 'planners.id')
 				->leftJoin('main_packages', 'packages.main_package_id', '=', 'main_packages.id')
-				->select('planners.*', 'packages.name as package_name', 'main_packages.name as main_package_name')
+				->leftJoin('payment_statuses', 'planners.payment_status_id', '=', 'payment_statuses.id')
+				->select('planners.*', 'packages.name as package_name', 'main_packages.name as main_package_name', 'payment_statuses.name as payment_status')
 				->where(function ($query) use ($search) {
 					$query->where('planners.event_name', 'like', '%' . $search . '%')
 						->orWhere('planners.event_venue', 'like', "%{$search}%")
@@ -310,7 +319,7 @@ class PlannerFetchController extends Controller
 						->orWhere('planners.created_at', 'like', "%{$search}%");
 				})
 				->where([
-					['planners.status', 'done'],
+					['planners.status', 'completed'],
 					['planners.deleted_at', '=', null]
 				])
 				->offset($start)
@@ -319,7 +328,7 @@ class PlannerFetchController extends Controller
 				->get();
 
 			//total number of filtered data matching the search value request in the Category table	
-			$totalFiltered = Planner::where('status', 'done')->count();
+			$totalFiltered = Planner::where('status', 'completed')->count();
 		}
 
 
@@ -334,11 +343,12 @@ class PlannerFetchController extends Controller
 				$nestedData['event_type_and_package'] = $r->package_name . ' - ' . $r->main_package_name;
 				$nestedData['no_of_guests'] = $r->no_of_guests;
 				$nestedData['customer_fullname'] = ucwords($r->customer_fullname);
-				$nestedData['event_status'] = '<span title="Danger" class="badge bg-success">DONE</span>';
+				$nestedData['event_status'] = '<span title="Danger" class="badge bg-success">COMPLETED</span>';
+				$nestedData['payment_status'] = $r->payment_status;
 				$nestedData['created_at'] = date('d-m-Y', strtotime($r->created_at));
 				$nestedData['action'] = '
-                    <button name="show" id="show-done-planner" data-id="' . $r->id . '" class="btn btn-primary btn-xs">Show</button>
-					<button name="edit" id="edit-done-planner" data-id="' . $r->id . '" class="btn btn-warning btn-xs">Edit</button>
+                    <button name="show" id="show-completed-planner" data-id="' . $r->id . '" class="btn btn-primary btn-xs">Show</button>
+					<button name="edit" id="edit-completed-planner" data-id="' . $r->id . '" class="btn btn-warning btn-xs">Edit</button>
 				';
 				$data[] = $nestedData;
 			}
@@ -386,7 +396,8 @@ class PlannerFetchController extends Controller
 			$posts = DB::table('planners')
 				->leftJoin('packages', 'planners.package_id', '=', 'packages.id')
 				->leftJoin('main_packages', 'packages.main_package_id', '=', 'main_packages.id')
-				->select('planners.*', 'packages.name as package_name', 'main_packages.name as main_package_name')
+				->leftJoin('payment_statuses', 'planners.payment_status_id', '=', 'payment_statuses.id')
+				->select('planners.*', 'packages.name as package_name', 'main_packages.name as main_package_name', 'payment_statuses.name as payment_status')
 				->where([
 					['planners.deleted_at', '<>', null]
 				])
@@ -403,7 +414,8 @@ class PlannerFetchController extends Controller
 			$posts = DB::table('planners')
 				->leftJoin('packages', 'planners.package_id', '=', 'planners.id')
 				->leftJoin('main_packages', 'packages.main_package_id', '=', 'main_packages.id')
-				->select('planners.*', 'packages.name as package_name', 'main_packages.name as main_package_name')
+				->leftJoin('payment_statuses', 'planners.payment_status_id', '=', 'payment_statuses.id')
+				->select('planners.*', 'packages.name as package_name', 'main_packages.name as main_package_name', 'payment_statuses.name as payment_status')
 				->where(function ($query) use ($search) {
 					$query->where('planners.event_name', 'like', '%' . $search . '%')
 						->orWhere('planners.event_venue', 'like', "%{$search}%")
@@ -435,8 +447,8 @@ class PlannerFetchController extends Controller
 			//loop posts collection to transfer in another array $nestedData
 			foreach ($posts as $r) {
 				$status = "";
-				if ($r->status == 'done') {
-					$status = '<span title="Danger" class="badge bg-success">DONE</span>';
+				if ($r->status == 'completed') {
+					$status = '<span title="Danger" class="badge bg-success">COMPLETED</span>';
 				} else if ($r->status == 'on-going') {
 					$status = '<span title="Danger" class="badge bg-primary">ON-GOING</span>';
 				} else {
@@ -450,6 +462,7 @@ class PlannerFetchController extends Controller
 				$nestedData['event_venue'] = $r->no_of_guests;
 				$nestedData['customer_fullname'] = ucwords($r->customer_fullname);
 				$nestedData['event_status'] = $status;
+				$nestedData['payment_status'] = $r->payment_status;
 				$nestedData['created_at'] = date('d-m-Y', strtotime($r->created_at));
 				$nestedData['action'] = '
 					<button name="restore" id="restore-planner" data-id="' . $r->id . '" class="btn btn-success btn-xs">Restore</button>

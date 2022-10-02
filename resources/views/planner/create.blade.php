@@ -70,13 +70,16 @@
 						</div>
 						<div class="form-group row">
 							<label class="col-lg-3 col-form-label">Package:</label>
-							<div class="col-lg-9">
+							<div class="col-lg-7">
 								<select id="package_id" name="package_id" class="@error('package_id') is-invalid @enderror form-control select2">
 									<option data-guest="0" value="">Select Package</option>
 									@foreach ($packages as $package)
-										<option data-guest="{{ $package->package_pax }}" value="{{ $package->id }}"{{ ($package->id == old('package_id')) ? ' selected' : '' }}>{{ ucwords($package->name) }} - {{ $package->main_package->name }}</option>
+										<option data-guest="{{ $package->package_pax }}" data-package-name="{{ $package->name }}" value="{{ $package->id }}"{{ ($package->id == old('package_id')) ? ' selected' : '' }}>{{ ucwords($package->name) }} - {{ $package->main_package->name }}</option>
 									@endforeach
 								</select>
+							</div>
+							<div class="col-lg-2">
+								<a href="#" name="see-details" id="see-details" class="btn btn-success btn-xs">See Details</a>
 							</div>
 						</div>
 
@@ -107,9 +110,16 @@
 						</div>
 
 						<div class="form-group row">
-							<label class="col-lg-3 col-form-label">Customer Fullname:</label>
+							<label class="col-lg-3 col-form-label">Customer Firstname:</label>
 							<div class="col-lg-9">
-								<input type="text" name="customer_fullname" value="{{ old('customer_fullname') }}" class="@error('customer_fullname') is-invalid @enderror form-control" placeholder="e.g Yash Lozano">
+								<input type="text" name="customer_firstname" value="{{ old('customer_firstname') }}" class="@error('customer_firstname') is-invalid @enderror form-control" placeholder="e.g Yash">
+							</div>
+						</div>	
+
+						<div class="form-group row">
+							<label class="col-lg-3 col-form-label">Customer Lastname:</label>
+							<div class="col-lg-9">
+								<input type="text" name="customer_lastname" value="{{ old('customer_lastname') }}" class="@error('customer_lastname') is-invalid @enderror form-control" placeholder="e.g Lozano">
 							</div>
 						</div>	
 
@@ -136,12 +146,18 @@
 	<!-- /page content -->
 	@push('scripts')
 	<script>	
+	 let isShow = 1;
 	let packagePaxValue = $("#package_id option:selected" ).data('guest');
+	let packageName = $("#package_id option:selected" ).data('package-name');
+	let packageId = $("#package_id option:selected" ).val();
 	$('#no_of_guests').val(packagePaxValue);
 	$('#package_id').on('change', function() {
 		let packagePaxValues = $(this).find(":selected").data('guest');
+		packageId = $(this).find(":selected").val();
 		$('#no_of_guests').val(packagePaxValues);
 	});
+
+	console.log(packageId);
 	
 	$(function () {
 		var bindDatePicker = function() {
@@ -196,5 +212,6 @@
 		bindDatePicker();
  	});
 	</script>
+	@include('planner.modals.seedetails_modal')
 	@endpush('scripts')
 @endsection

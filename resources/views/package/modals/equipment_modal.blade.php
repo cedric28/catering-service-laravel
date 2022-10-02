@@ -21,7 +21,13 @@
                             </select>
                         </div>
                     </div>
-                    <h5 align="center" class="w-100"><span class="text-danger" id="generalQuantityError"></span></h5>			
+                    <h5 align="center" class="w-100"><span class="text-danger" id="generalQuantityError"></span></h5>
+                    <div class="form-group row">
+                        <label class="col-lg-3 col-form-label">Quantity:</label>
+                        <div class="col-lg-9 col-sm-9">	
+                            <input type="text" id="equipment-quantity" name="quantity" class="@error('quantity') is-invalid @enderror form-control" placeholder="e.g 100" >
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                 <button type="button" name="add_equipment_button" id="add_equipment_button" class="btn btn-danger">Save</button>
@@ -35,7 +41,7 @@
 @push('scripts')
 <script>
         //add equipment
-      
+       
         const columnsEquipment = isShow == 0 ? [ 
                 {"data":"name"},
                 {"data":"quantity"},
@@ -69,25 +75,47 @@
                     "extend": 'collection',
                     "text": 'Export',
                     "buttons": [
-                        {
-                            "extend": 'csv',
-                            'title' :`PACKAGE-${packageName}-EQUIPMENTS-LISTS`,
-                            "exportOptions": {
-                                "columns": [0,1,2]
-                            }
-                        },
-                        {
-                            "extend": 'pdf',
-                            'title' :`PACKAGE-${packageName}-EQUIPMENTS-LISTS`,
-                            "exportOptions": {
-                                "columns": [0,1,2]
-                            }
-                        },
+                        // {
+                        //     "extend": 'csv',
+                        //     'title' :`PACKAGE-${packageName}-EQUIPMENTS-LISTS`,
+                        //     "exportOptions": {
+                        //         "columns": [0,1,2]
+                        //     }
+                        // },
+                        // {
+                        //     "extend": 'pdf',
+                        //     'title' :`PACKAGE-${packageName}-EQUIPMENTS-LISTS`,
+                        //     "exportOptions": {
+                        //         "columns": [0,1,2]
+                        //     }
+                        // },
                         {
                             "extend": 'print',
-                            'title' :`PACKAGE-${packageName}-EQUIPMENTS-LISTS`,
+                            'title' : ``,
                             "exportOptions": {
                                 "columns": [0,1,2]
+                            },
+                            "customize": function ( win ) {
+                                $(win.document.body)
+                                    .css( 'font-size', '10pt' )
+                                    .prepend(
+                                        `
+                                        <div style="display:flex;justify-content: space-between;margin-bottom: 20px;">
+                                            <div class="title-header">
+                                                <h2>PACKAGE-${packageName}-EQUIPMENTS-LISTS</h2>
+                                                <h5>Date Issued: ${dateToday.toDateString()}</h5>
+                                                <h5>Prepared By: ${user_login}</h5>
+                                            </div>
+                                            <div class="image-header">
+                                                <img src="${logo}" style=""/>
+                                            </div>
+                                        </div>
+                                        `
+                                    );
+            
+                                $(win.document.body).find( 'table' )
+                                    .addClass( 'compact' )
+                                    .css( 'font-size', 'inherit' );
                             }
                         }
                     ],
@@ -96,7 +124,7 @@
             "columns": columnsEquipment,
             "columnDefs": [
                 {
-                    "targets": [0],   // target column
+                    "targets": [2],   // target column
                     "className": "textCenter",
                 },
                 {
@@ -109,29 +137,30 @@
         var package_equipment_id;
         $(document).on('click', '#delete-equipment-package', function(){
             package_equipment_id = $(this).attr('data-id');
-            $('#confirmModal').modal('show');
+            $('#confirmEquipmentModal').modal('show');
         });
 
-        $('#ok_button').click(function(){
+        $('#ok_equipment_button').click(function(){
             $.ajax({
                 url:"/packages-equipment/destroy/"+package_equipment_id,
                 beforeSend:function(){
-                    $('#ok_button').text('Deleting...');
+                    $('#ok_equipment_button').text('Deleting...');
                 },
                 success:function(data)
                 {
-                    $('#confirmModal').modal('hide');
-                    $('#ok_button').text('OK');
+                    $('#confirmEquipmentModal').modal('hide');
+                    $('#ok_equipment_button').text('OK');
                     tableEquipments.ajax.reload();
+                    tableInactiveEquipments.ajax.reload();
                 }
             })
         });
 
         function closeEquipmentModal() {
-                $('#ok_button').text('OK');
+                $('#ok_equipment_button').text('OK');
                 $("#equipmentData").trigger("reset");
                 $("#equipmentData input:hidden").val("");
-                $("#equipment_id").removeClass("is-invalid");
+                $("#equipment-quantity").removeClass("is-invalid");
                 $('#generalEquipmentError').text("");
                 $('#generalQuantityError').text("");
                 $("#equipment-quantity").removeClass("is-invalid");
@@ -153,7 +182,7 @@
             let quantity = $(this).attr('data-quantity');
             let inventoryId = $(this).attr('data-inventory-id');
             console.log(inventoryId);
-            $('#select-equipment').hide();
+            // $('#select-equipment').hide();
             $('#equipment_id').val(equipmentId);
             $('#equipment-quantity').val(quantity);
             $(`select[name^="inventory_id"] option[value=${inventoryId}]`).attr("selected","selected");
@@ -178,7 +207,7 @@
                     "_token":"<?= csrf_token() ?>",
                     "inventory_id": inventory_id,
                     "package_id": packageId,
-                    // "equipment_id": equipment_id,
+                    "equipment_id": equipment_id ? equipment_id : 0,
                     "quantity" : quantity
                 },
                 beforeSend:function(){
@@ -186,17 +215,16 @@
                 },
                 success:function(data)
                 {
-                   
-                        $("#equipmentData").trigger("reset");
-                        $('#addEquipmentModal').modal('hide');
-                        tableEquipments.ajax.reload();
-                        $('#add_equipment_button').text('OK');
-                        $("#inventory_id").removeClass("is-invalid");
-                        $("#equipment-quantity").removeClass("is-invalid");
-                        $('#generalEquipmentError').text("");
-                        $('#generalQuantityError').text("");
-                        $("#equipmentData input:hidden").val("");
-                        $(`select[name^="inventory_id"] option:selected`).removeAttr("selected");
+                    $("#equipmentData").trigger("reset");
+                    $('#addEquipmentModal').modal('hide');
+                    tableEquipments.ajax.reload();
+                    $('#add_equipment_button').text('OK');
+                    $("#inventory_id").removeClass("is-invalid");
+                    $("#equipment-quantity").removeClass("is-invalid");
+                    $('#generalEquipmentError').text("");
+                    $('#generalQuantityError').text("");
+                    $("#equipmentData input:hidden").val("");
+                    $(`select[name^="inventory_id"] option:selected`).removeAttr("selected");
                     
                 },
                 error:function(err){
@@ -219,6 +247,101 @@
                         
                         $('#add_equipment_button').text('Save');
                     }
+                }
+            })
+        });
+
+
+        var tableInactiveEquipments = $('#inactive-package-equipments-lists').DataTable({
+            "responsive": true, 
+            "lengthChange": false, 
+            "autoWidth": false,
+            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url":"<?= route('InactivePackageEquipment') ?>",
+                "dataType":"json",
+                "type":"POST",
+                "data":{
+                    "_token":"<?= csrf_token() ?>",
+                    "package_id": packageId,
+                    "is_show" : isShow
+                }
+            },
+            "dom": 'Bfrtip',
+            "buttons": [
+                {
+                    "extend": 'collection',
+                    "text": 'Export',
+                    "buttons": [
+                        // {
+                        //     "extend": 'csv',
+                        //     'title' :`ARCHIVED-PACKAGE-${packageName}-EQUIPMENTS-LISTS`,
+                        //     "exportOptions": {
+                        //         "columns": [0,1,2]
+                        //     }
+                        // },
+                        // {
+                        //     "extend": 'pdf',
+                        //     'title' :`ARCHIVED-PACKAGE-${packageName}-EQUIPMENTS-LISTS`,
+                        //     "exportOptions": {
+                        //         "columns": [0,1,2]
+                        //     }
+                        // },
+                        {
+                            "extend": 'print',
+                            'title' : ``,
+                            "exportOptions": {
+                                "columns": [0,1,2]
+                            },
+                            "customize": function ( win ) {
+                                $(win.document.body)
+                                    .css( 'font-size', '10pt' )
+                                    .prepend(
+                                        `
+                                        <div style="display:flex;justify-content: space-between;margin-bottom: 20px;">
+                                            <div class="title-header">
+                                                <h2>ARCHIVED-PACKAGE-${packageName}-EQUIPMENTS-LISTS</h2>
+                                                <h5>Date Issued: ${dateToday.toDateString()}</h5>
+                                                <h5>Prepared By: ${user_login}</h5>
+                                            </div>
+                                            <div class="image-header">
+                                                <img src="${logo}" style=""/>
+                                            </div>
+                                        </div>
+                                        `
+                                    );
+            
+                                $(win.document.body).find( 'table' )
+                                    .addClass( 'compact' )
+                                    .css( 'font-size', 'inherit' );
+                            }
+                        }
+                    ],
+                }
+            ],
+            "columns": columnsEquipment,
+            "columnDefs": [
+                {
+                    "targets": [2],   // target column
+                    "className": "textCenter",
+                },
+                {
+                    "targets": [1],   // target column
+                    "className": "textRight",
+                }
+            ]
+        });
+
+        $(document).on('click', '#restore-package-equipment', function(){
+            const packageEquipmentId = $(this).attr('data-id');
+            $.ajax({
+                url:"/packages-equipment/restore/"+packageEquipmentId,
+                success:function(data)
+                {
+                    tableInactiveEquipments.ajax.reload();
+                    tableEquipments.ajax.reload();
                 }
             })
         });

@@ -5,7 +5,7 @@
 		<div class="page-header page-header-light">
 			<div class="page-header-content header-elements-md-inline">
 				<div class="page-title d-flex">
-					<h4><i class="icon-arrow-left52 mr-2"></i> <span class="font-weight-semibold">Monthly Revenue</span></h4>
+					<h4><i class="icon-arrow-left52 mr-2"></i> <span class="font-weight-semibold">Yearly Revenue</span></h4>
 					<a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
 				</div>
 			</div>
@@ -14,7 +14,7 @@
 				<div class="d-flex">
 					<div class="breadcrumb">
 						<a href="{{ route('home')}}" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Dashboard</a>
-						<a href="{{ route('revenueMonthly')}}" class="breadcrumb-item"> Monthly Revenue</a>
+						<a href="{{ route('revenueYearly')}}" class="breadcrumb-item"> Yearly Revenue</a>
 					</div>
 
 					<a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
@@ -30,11 +30,11 @@
 		<div class="card-body">
             <div class="row col-md-12">
                 <div class="col-md-7">
-                    <a href="/generate-pdf-monthly-sales?start_date={{request('start_date')}}&end_date={{request('end_date')}}" class="btn btn-danger" id="generateMonthlySales">Generate PDF</a>
-                    <a href="/print-monthly-sales?start_date={{request('start_date')}}&end_date={{request('end_date')}}" class="btn btn-primary" id="printMonthlySales">Print</a>
+                    <a href="/generate-pdf-yearly-sales?start_date={{request('start_date')}}&end_date={{request('end_date')}}" class="btn btn-danger" id="generateYearlySales">Generate PDF</a>
+                    <a href="/print-yearly-sales?start_date={{request('start_date')}}&end_date={{request('end_date')}}" class="btn btn-primary" id="printYearlySales">Print</a>
                 </div>
                 <div class="col-md-5">
-                <form action="{{ route('revenueMonthly')}}">
+                <form action="{{ route('revenueYearly')}}">
                     <div class="row">
                         <div class="col-md-5">
                             <div class="input-group date" id="start_date" data-target-input="nearest">
@@ -92,24 +92,20 @@
     <script src="{{ asset('assets/js/jquery.printPage.js') }}"></script>
     <script type="text/javascript">
         $(document).ready(function(){
-            $('#printMonthlySales').printPage();
+            $('#printYearlySales').printPage();
         });
     </script>
 	<script>
 		$(function () {
-			var d = new Date();
-            var year = d.getFullYear() - 18;
-            d.setFullYear(year);
+			
         	//Date picker
 			$('#start_date').datetimepicker({
-                viewMode: 'months',
-                format: 'MM',
-                defaultDate: d
+                viewMode: 'years',
+                format: 'YYYY'
 			});
             $('#end_date').datetimepicker({
-                viewMode: 'months',
-                format: 'MM',
-                defaultDate: d,
+                viewMode: 'years',
+                format: 'YYYY',
                 useCurrent: false 
 			});
 
@@ -119,6 +115,8 @@
             $("#end_date").on("dp.change", function (e) {
                 $('#start_date').data("DateTimePicker").maxYear(e.date);
             });
+
+           
 
         });
 	</script>

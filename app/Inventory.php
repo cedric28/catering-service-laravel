@@ -3,12 +3,15 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Inventory extends Model
 {
+    use SoftDeletes;
     public function inventory_category()
     {
-        return $this->belongsTo(InventoryCategory::class, 'inventory_category_id');
+        return $this->belongsTo(InventoryCategory::class, 'inventory_category_id')->withDefault([
+            "name" => "Default Category"]);
     }
 
     public function package_equipments()
