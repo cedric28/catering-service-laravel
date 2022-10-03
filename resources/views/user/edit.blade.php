@@ -95,7 +95,7 @@
 											<select id="job-id" name="job_type_id" class="form-control @error('job_type_id') is-invalid @enderror">
 												<option value="">Select Job Type</option>
 												@foreach ($job_types as $job)
-													<option value="{{ $job->id }}"{{ ($job->name === old('jo_types', $user->job_type->name)) ? ' selected' : '' }}>{{ strtoupper($job->name) }}</option>
+													<option value="{{ $job->id }}"{{ ($job->name === old('job_type_id', $user->job_type->name)) ? ' selected' : '' }}>{{ strtoupper($job->name) }}</option>
 												@endforeach
 											</select>
 										</div>

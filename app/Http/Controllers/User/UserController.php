@@ -175,6 +175,7 @@ class UserController extends Controller
             $user->name = $request->name;
             $user->email = $request->email;
             $user->role_id = $request->role_id;
+            $user->job_type_id = $request->job_type_id;
             $user->save();
 
             /*
@@ -206,7 +207,7 @@ class UserController extends Controller
         $user->delete();
     }
 
-     /**
+    /**
      * Restore the specified resource from storage.
      *
      * @param  int  $id
