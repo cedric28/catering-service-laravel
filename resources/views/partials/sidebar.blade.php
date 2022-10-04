@@ -109,7 +109,8 @@
             <i class="fas fa-fw fa-users"></i>
             <span>System Users</span></a>
     </li>
-
+    @endcan
+    @can('isAdmin')
      <!-- Nav Item - Charts -->
      <li class="nav-item {{ (request()->is('logs*')) ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('logs.index')}}">
@@ -123,9 +124,10 @@
             <i class="fas fa-fw fa-cube"></i>
             <span>User Role</span></a>
     </li> -->
+    @endcan
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
-    @endcan
+  
     <!-- Sidebar Toggler (Sidebar) -->
     <!-- <div class="text-center d-none d-md-inline">
         <button class="rounded-circle border-0" id="sidebarToggle"></button>
