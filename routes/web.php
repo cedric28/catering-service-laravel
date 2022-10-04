@@ -56,7 +56,7 @@ Route::middleware('auth')->group(function () {
 
 
     Route::resource('my-tasks', 'User\MyTaskController');
-    
+
 
     //TASK USERS
     Route::post('/users-task-staff/fetch/q', 'User\UserFetchController@fetchUserTaskStaff')->name('activeUserTaskStaff');
@@ -107,7 +107,7 @@ Route::middleware('auth')->group(function () {
     Route::get('packages-task/restore/{id}', 'Package\PackageTaskController@restore');
     Route::post('packages-task/fetch/q', 'Package\PackageFetchController@fetchPackageTask')->name('activePackageTask');
     Route::post('inactive-packages-task/fetch/q', 'Package\PackageFetchController@fetchInactivePackageTask')->name('InactivePackageTask');
-   
+
 
 
     //package food
@@ -187,4 +187,11 @@ Route::middleware('auth')->group(function () {
 
     Route::get('generate-pdf-employee-activities', 'PDF\PDFController@generateEmployeeActivity')->name('generateEmployeeActivity');
     Route::get('print-employee-activities', 'PDF\PDFController@printEmployeeActivity')->name('printEmployeeActivity');
+
+
+    //Logs
+    Route::post('logs/fetch/q', 'Logs\LogController@fetchLogs')->name('activityLogs');
+
+    //Logs
+    Route::resource('logs', 'Logs\LogController');
 });

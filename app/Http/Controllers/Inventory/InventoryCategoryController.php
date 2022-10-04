@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Inventory;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\InventoryCategory;
+use Carbon\Carbon;
+use App\Log;
 use Validator;
 
 class InventoryCategoryController extends Controller
@@ -73,6 +75,12 @@ class InventoryCategoryController extends Controller
             $inventory_category->creator_id = $user;
             $inventory_category->updater_id = $user;
             $inventory_category->save();
+
+            $log = new Log();
+            $log->log = "User " . \Auth::user()->email . " create inventory category " . $inventory_category->name . " at " . Carbon::now();
+            $log->creator_id =  \Auth::user()->id;
+            $log->updater_id =  \Auth::user()->id;
+            $log->save();
 
             /*
             | @End Transaction
@@ -158,6 +166,12 @@ class InventoryCategoryController extends Controller
             $inventory_category->updater_id = $user;
             $inventory_category->save();
 
+            $log = new Log();
+            $log->log = "User " . \Auth::user()->email . " edit inventory category " . $inventory_category->name . " at " . Carbon::now();
+            $log->creator_id =  \Auth::user()->id;
+            $log->updater_id =  \Auth::user()->id;
+            $log->save();
+
             /*
         | @End Transaction
         |---------------------------------------------*/
@@ -184,9 +198,15 @@ class InventoryCategoryController extends Controller
 
         $inventory_category = InventoryCategory::findOrFail($id);
         $inventory_category->delete();
+
+        $log = new Log();
+        $log->log = "User " . \Auth::user()->email . " delete inventory category " . $inventory_category->name . " at " . Carbon::now();
+        $log->creator_id =  \Auth::user()->id;
+        $log->updater_id =  \Auth::user()->id;
+        $log->save();
     }
 
-     /**
+    /**
      * Restore the specified resource from storage.
      *
      * @param  int  $id
@@ -201,6 +221,12 @@ class InventoryCategoryController extends Controller
 
             /* Restore inventory_category */
             $inventory_category->restore();
+
+            $log = new Log();
+            $log->log = "User " . \Auth::user()->email . " restore inventory category " . $inventory_category->name . " at " . Carbon::now();
+            $log->creator_id =  \Auth::user()->id;
+            $log->updater_id =  \Auth::user()->id;
+            $log->save();
 
 
             \DB::commit();

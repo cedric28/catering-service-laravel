@@ -110,6 +110,13 @@
             <span>System Users</span></a>
     </li>
 
+     <!-- Nav Item - Charts -->
+     <li class="nav-item {{ (request()->is('logs*')) ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('logs.index')}}">
+            <i class="fas fa-fw fa-book"></i>
+            <span>System Logs</span></a>
+    </li>
+
     <!-- Nav Item - Tables -->
     <!--  <li class="nav-item">
         <a class="nav-link {{ (request()->is('roles*')) ? 'nav-link active' : '' }}" href="{{ route('roles.index')}}">

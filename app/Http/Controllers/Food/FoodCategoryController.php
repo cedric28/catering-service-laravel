@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\DishCategory;
 use App\Category;
+use Carbon\Carbon;
+use App\Log;
 use Validator;
 
 class FoodCategoryController extends Controller
@@ -23,7 +25,7 @@ class FoodCategoryController extends Controller
         $food_categories = Category::all();
 
         return view('food.category.index', [
-        'food_categories' => $food_categories
+            'food_categories' => $food_categories
         ]);
     }
 
@@ -80,6 +82,12 @@ class FoodCategoryController extends Controller
             $food_category->creator_id = $user;
             $food_category->updater_id = $user;
             $food_category->save();
+
+            $log = new Log();
+            $log->log = "User " . \Auth::user()->email . " create food category " . $food_category->name . " at " . Carbon::now();
+            $log->creator_id =  \Auth::user()->id;
+            $log->updater_id =  \Auth::user()->id;
+            $log->save();
 
             /*
             | @End Transaction
@@ -170,6 +178,12 @@ class FoodCategoryController extends Controller
             $food_category->updater_id = $user;
             $food_category->save();
 
+            $log = new Log();
+            $log->log = "User " . \Auth::user()->email . " edit food category " . $food_category->name . " at " . Carbon::now();
+            $log->creator_id =  \Auth::user()->id;
+            $log->updater_id =  \Auth::user()->id;
+            $log->save();
+
             /*
         | @End Transaction
         |---------------------------------------------*/
@@ -196,9 +210,15 @@ class FoodCategoryController extends Controller
 
         $food_category = Category::findOrFail($id);
         $food_category->delete();
+
+        $log = new Log();
+        $log->log = "User " . \Auth::user()->email . " delete food category " . $food_category->name . " at " . Carbon::now();
+        $log->creator_id =  \Auth::user()->id;
+        $log->updater_id =  \Auth::user()->id;
+        $log->save();
     }
 
-     /**
+    /**
      * Restore the specified resource from storage.
      *
      * @param  int  $id
@@ -213,6 +233,12 @@ class FoodCategoryController extends Controller
 
             /* Restore food_category */
             $food_category->restore();
+
+            $log = new Log();
+            $log->log = "User " . \Auth::user()->email . " restore food category " . $food_category->name . " at " . Carbon::now();
+            $log->creator_id =  \Auth::user()->id;
+            $log->updater_id =  \Auth::user()->id;
+            $log->save();
 
 
             \DB::commit();

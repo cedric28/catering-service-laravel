@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Package;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\PackageMenu;
+use Carbon\Carbon;
+use App\Log;
 use Validator;
 
 class PackageFoodController extends Controller
@@ -31,9 +33,9 @@ class PackageFoodController extends Controller
                 // 'category_id' => 'required|integer',
                 'category_id' => 'required|integer|unique:package_menus,category_id,' . $request->food_id . ',id,package_id,' . $request->package_id,
                 'package_id' => 'required|integer',
-                
+
             ], $messages);
-           
+
             if ($validator->fails()) {
                 return response()->json([
                     'data' => $validator->errors()
@@ -42,12 +44,18 @@ class PackageFoodController extends Controller
 
             $user = \Auth::user()->id;
 
-            if($request->food_id){
+            if ($request->food_id) {
 
                 $foodPackage = PackageMenu::find($request->food_id);
                 $foodPackage->category_id = $request->category_id;
                 $foodPackage->updater_id = $user;
                 $foodPackage->save();
+
+                $log = new Log();
+                $log->log = "User " . \Auth::user()->email . " update package food at " . Carbon::now();
+                $log->creator_id =  \Auth::user()->id;
+                $log->updater_id =  \Auth::user()->id;
+                $log->save();
             } else {
                 $foodPackage = new PackageMenu();
                 $foodPackage->package_id = $request->package_id;
@@ -55,10 +63,16 @@ class PackageFoodController extends Controller
                 $foodPackage->creator_id = $user;
                 $foodPackage->updater_id = $user;
                 $foodPackage->save();
-            }
-           
 
-             /*
+                $log = new Log();
+                $log->log = "User " . \Auth::user()->email . " create package food at " . Carbon::now();
+                $log->creator_id =  \Auth::user()->id;
+                $log->updater_id =  \Auth::user()->id;
+                $log->save();
+            }
+
+
+            /*
             | @End Transaction
             |---------------------------------------------*/
             \DB::commit();
@@ -67,7 +81,6 @@ class PackageFoodController extends Controller
                 'data' => $foodPackage,
                 'status' => 'success'
             ], 200);
-
         } catch (\Exception $e) {
             //if error occurs rollback the data from it's previos state
             \DB::rollback();
@@ -75,19 +88,24 @@ class PackageFoodController extends Controller
                 'data' => $e->getMessage()
             ], 500);
         }
-       
     }
-    
+
     public function destroy($id)
     {
-         //prevent other user to access to this page
-         $this->authorize("isAdmin");
+        //prevent other user to access to this page
+        $this->authorize("isAdmin");
 
-         $package = PackageMenu::findOrFail($id);
-         $package->delete();
+        $package = PackageMenu::findOrFail($id);
+        $package->delete();
+
+        $log = new Log();
+        $log->log = "User " . \Auth::user()->email . " delete package food at " . Carbon::now();
+        $log->creator_id =  \Auth::user()->id;
+        $log->updater_id =  \Auth::user()->id;
+        $log->save();
     }
 
-     /**
+    /**
      * Restore the specified resource from storage.
      *
      * @param  int  $id
@@ -102,6 +120,12 @@ class PackageFoodController extends Controller
 
             /* Restore package */
             $package->restore();
+
+            $log = new Log();
+            $log->log = "User " . \Auth::user()->email . " restore package food at " . Carbon::now();
+            $log->creator_id =  \Auth::user()->id;
+            $log->updater_id =  \Auth::user()->id;
+            $log->save();
 
 
             \DB::commit();

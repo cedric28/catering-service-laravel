@@ -18,6 +18,6 @@ class PlannerTask extends Model
 
     public function planner_task_staffs()
     {
-        return $this->hasMany(PlannerTaskStaff::class,'planner_task_id','id');
+        return $this->hasMany(PlannerTaskStaff::class, 'planner_task_id', 'id');
     }
 }

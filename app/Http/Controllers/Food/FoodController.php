@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Foods;
 use App\Category;
+use Carbon\Carbon;
+use App\Log;
 use Validator;
 
 class FoodController extends Controller
@@ -23,7 +25,7 @@ class FoodController extends Controller
         $foods = Foods::all();
 
         return view('food.index', [
-        'foods' => $foods
+            'foods' => $foods
         ]);
     }
 
@@ -80,6 +82,12 @@ class FoodController extends Controller
             $food->creator_id = $user;
             $food->updater_id = $user;
             $food->save();
+
+            $log = new Log();
+            $log->log = "User " . \Auth::user()->email . " create food " . $food->name . " at " . Carbon::now();
+            $log->creator_id =  \Auth::user()->id;
+            $log->updater_id =  \Auth::user()->id;
+            $log->save();
 
             /*
             | @End Transaction
@@ -170,6 +178,12 @@ class FoodController extends Controller
             $food->updater_id = $user;
             $food->save();
 
+            $log = new Log();
+            $log->log = "User " . \Auth::user()->email . " edit food " . $food->name . " at " . Carbon::now();
+            $log->creator_id =  \Auth::user()->id;
+            $log->updater_id =  \Auth::user()->id;
+            $log->save();
+
             /*
         | @End Transaction
         |---------------------------------------------*/
@@ -196,6 +210,12 @@ class FoodController extends Controller
 
         $food = Foods::findOrFail($id);
         $food->delete();
+
+        $log = new Log();
+        $log->log = "User " . \Auth::user()->email . " delete food " . $food->name . " at " . Carbon::now();
+        $log->creator_id =  \Auth::user()->id;
+        $log->updater_id =  \Auth::user()->id;
+        $log->save();
     }
 
     /**
@@ -213,6 +233,12 @@ class FoodController extends Controller
 
             /* Restore food */
             $food->restore();
+
+            $log = new Log();
+            $log->log = "User " . \Auth::user()->email . " restore food " . $food->name . " at " . Carbon::now();
+            $log->creator_id =  \Auth::user()->id;
+            $log->updater_id =  \Auth::user()->id;
+            $log->save();
 
 
             \DB::commit();

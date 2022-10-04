@@ -19,6 +19,6 @@ class PlannerTaskStaff extends Model
 
     public function task_staff_notifications()
     {
-        return $this->hasMany(TaskStaffNotification::class,'planner_task_staff_id','id');
+        return $this->hasMany(TaskStaffNotification::class, 'planner_task_staff_id', 'id');
     }
 }

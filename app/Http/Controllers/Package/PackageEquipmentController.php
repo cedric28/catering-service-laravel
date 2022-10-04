@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\PackageEquipments;
 use App\Package;
+use Carbon\Carbon;
+use App\Log;
 use Validator;
 
 class PackageEquipmentController extends Controller
@@ -29,56 +31,67 @@ class PackageEquipmentController extends Controller
                 'package_id.required' => 'The Package ID is required.',
             ];
 
-            $uniqueRule = Rule::unique('package_equipments')->where(function ($query) use($request) {
+            $uniqueRule = Rule::unique('package_equipments')->where(function ($query) use ($request) {
                 return $query->where('inventory_id', $request->inventory_id)
-                ->where('package_id', $request->package_id);
+                    ->where('package_id', $request->package_id);
             });
 
-            if($request->equipment_id != 0){
-                $uniqueRule = Rule::unique('package_equipments')->where(function ($query) use($request) {
+            if ($request->equipment_id != 0) {
+                $uniqueRule = Rule::unique('package_equipments')->where(function ($query) use ($request) {
                     return $query->where('inventory_id', $request->inventory_id)
-                    ->where('package_id', $request->package_id);
+                        ->where('package_id', $request->package_id);
                 })->ignore($request->equipment_id);
-            } 
+            }
             $user = \Auth::user()->id;
             // if($request->equipment_id){
-                $validator = Validator::make($request->all(), [
-                    // 'inventory_id' => 'required|integer|unique:package_equipments,inventory_id,' . $request->inventory_id . 'package_id,' . $request->package_id,
-                    'package_id' => 'required|integer',
-                    'inventory_id' => [
-                        'required',
-                        $uniqueRule
-                       ,
-                    ],
-                    'quantity' => 'required|numeric|gt:1',
-        
-                    
-                ], $messages);
-    
-                if ($validator->fails()) {
-                    return response()->json([
-                        'data' => $validator->errors()
-                    ], 422);
-                }
+            $validator = Validator::make($request->all(), [
+                // 'inventory_id' => 'required|integer|unique:package_equipments,inventory_id,' . $request->inventory_id . 'package_id,' . $request->package_id,
+                'package_id' => 'required|integer',
+                'inventory_id' => [
+                    'required',
+                    $uniqueRule,
+                ],
+                'quantity' => 'required|numeric|gt:1',
 
-                if($request->equipment_id == 0){
-                    $package = Package::find($request->package_id);
-                    $equipmentPackage = new PackageEquipments();
-                    $equipmentPackage->inventory_id = $request->inventory_id;
-                    $equipmentPackage->quantity =  $request->quantity;
-                    $equipmentPackage->package_id = $request->package_id;
-                    $equipmentPackage->creator_id = $user;
-                    $equipmentPackage->updater_id = $user;
-                    $equipmentPackage->save();
-                } else {
-                    $equipmentPackage = PackageEquipments::find($request->equipment_id);
-                    $equipmentPackage->inventory_id = $request->inventory_id;
-                    $equipmentPackage->quantity =  $request->quantity;
-                    $equipmentPackage->updater_id = $user;
-                    $equipmentPackage->save();
-                }
 
-             /*
+            ], $messages);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'data' => $validator->errors()
+                ], 422);
+            }
+
+            if ($request->equipment_id == 0) {
+                $package = Package::find($request->package_id);
+                $equipmentPackage = new PackageEquipments();
+                $equipmentPackage->inventory_id = $request->inventory_id;
+                $equipmentPackage->quantity =  $request->quantity;
+                $equipmentPackage->package_id = $request->package_id;
+                $equipmentPackage->creator_id = $user;
+                $equipmentPackage->updater_id = $user;
+                $equipmentPackage->save();
+
+                $log = new Log();
+                $log->log = "User " . \Auth::user()->email . " create package equipment at " . Carbon::now();
+                $log->creator_id =  \Auth::user()->id;
+                $log->updater_id =  \Auth::user()->id;
+                $log->save();
+            } else {
+                $equipmentPackage = PackageEquipments::find($request->equipment_id);
+                $equipmentPackage->inventory_id = $request->inventory_id;
+                $equipmentPackage->quantity =  $request->quantity;
+                $equipmentPackage->updater_id = $user;
+                $equipmentPackage->save();
+
+                $log = new Log();
+                $log->log = "User " . \Auth::user()->email . " update package equipment at " . Carbon::now();
+                $log->creator_id =  \Auth::user()->id;
+                $log->updater_id =  \Auth::user()->id;
+                $log->save();
+            }
+
+            /*
             | @End Transaction
             |---------------------------------------------*/
             \DB::commit();
@@ -87,7 +100,6 @@ class PackageEquipmentController extends Controller
                 'data' => $equipmentPackage,
                 'status' => 'success'
             ], 200);
-
         } catch (\Exception $e) {
             //if error occurs rollback the data from it's previos state
             \DB::rollback();
@@ -95,19 +107,24 @@ class PackageEquipmentController extends Controller
                 'data' => $e->getMessage()
             ], 500);
         }
-       
     }
 
     public function destroy($id)
     {
-         //prevent other user to access to this page
-         $this->authorize("isAdmin");
+        //prevent other user to access to this page
+        $this->authorize("isAdmin");
 
-         $package = PackageEquipments::findOrFail($id);
-         $package->delete();
+        $package = PackageEquipments::findOrFail($id);
+        $package->delete();
+
+        $log = new Log();
+        $log->log = "User " . \Auth::user()->email . " delete package equipment at " . Carbon::now();
+        $log->creator_id =  \Auth::user()->id;
+        $log->updater_id =  \Auth::user()->id;
+        $log->save();
     }
 
-     /**
+    /**
      * Restore the specified resource from storage.
      *
      * @param  int  $id
@@ -122,6 +139,12 @@ class PackageEquipmentController extends Controller
 
             /* Restore package */
             $package->restore();
+
+            $log = new Log();
+            $log->log = "User " . \Auth::user()->email . " restore package equipment at " . Carbon::now();
+            $log->creator_id =  \Auth::user()->id;
+            $log->updater_id =  \Auth::user()->id;
+            $log->save();
 
 
             \DB::commit();

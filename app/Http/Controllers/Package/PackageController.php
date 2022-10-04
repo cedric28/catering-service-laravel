@@ -8,6 +8,8 @@ use App\Package;
 use App\MainPackage;
 use App\Category;
 use App\Inventory;
+use Carbon\Carbon;
+use App\Log;
 use Validator;
 
 class PackageController extends Controller
@@ -35,7 +37,7 @@ class PackageController extends Controller
         //prevent other user to access to this page
         $this->authorize("isAdmin");
         $package_categories = MainPackage::all();
-        
+
 
         return view('package.create', [
             'package_categories' => $package_categories
@@ -83,13 +85,19 @@ class PackageController extends Controller
             $package->updater_id = $user;
             $package->save();
 
+            $log = new Log();
+            $log->log = "User " . \Auth::user()->email . " create package " . $package->name . " at " . Carbon::now();
+            $log->creator_id =  \Auth::user()->id;
+            $log->updater_id =  \Auth::user()->id;
+            $log->save();
+
             /*
             | @End Transaction
             |---------------------------------------------*/
             \DB::commit();
 
             return redirect()->route('packages.edit', $package->id)
-            ->with('successMsg', 'Package created successfully');
+                ->with('successMsg', 'Package created successfully');
         } catch (\Exception $e) {
             \DB::rollback();
             return back()->withErrors($e->getMessage());
@@ -125,25 +133,24 @@ class PackageController extends Controller
             $this->authorize("isAdmin");
 
 
-            $validator = Validator::make(['package' => $id ],[
+            $validator = Validator::make(['package' => $id], [
                 'package' => 'required|integer',
             ]);
 
             if ($validator->fails()) {
                 return response()->json([
                     'data' => $validator->errors()
-                ], 422); 
+                ], 422);
             }
 
             $package = Package::findOrFail($id);
             $package_main = $package->main_package->name;
-            
+
             return response()->json([
                 'package' => $package,
                 'package_main' => $package_main,
                 'status' => 'success'
             ], 200);
-    
         } catch (\Exception $e) {
             return response()->json([
                 'data' => $e->getMessage()
@@ -216,6 +223,12 @@ class PackageController extends Controller
             $package->updater_id = $user;
             $package->save();
 
+            $log = new Log();
+            $log->log = "User " . \Auth::user()->email . " edit package " . $package->name . " at " . Carbon::now();
+            $log->creator_id =  \Auth::user()->id;
+            $log->updater_id =  \Auth::user()->id;
+            $log->save();
+
             /*
         | @End Transaction
         |---------------------------------------------*/
@@ -237,14 +250,20 @@ class PackageController extends Controller
      */
     public function destroy($id)
     {
-         //prevent other user to access to this page
-         $this->authorize("isAdmin");
+        //prevent other user to access to this page
+        $this->authorize("isAdmin");
 
-         $package = Package::findOrFail($id);
-         $package->delete();
+        $package = Package::findOrFail($id);
+        $package->delete();
+
+        $log = new Log();
+        $log->log = "User " . \Auth::user()->email . " delete package " . $package->name . " at " . Carbon::now();
+        $log->creator_id =  \Auth::user()->id;
+        $log->updater_id =  \Auth::user()->id;
+        $log->save();
     }
 
-     /**
+    /**
      * Restore the specified resource from storage.
      *
      * @param  int  $id
@@ -260,6 +279,12 @@ class PackageController extends Controller
             /* Restore package */
             $package->restore();
 
+            $log = new Log();
+            $log->log = "User " . \Auth::user()->email . " restore package " . $package->name . " at " . Carbon::now();
+            $log->creator_id =  \Auth::user()->id;
+            $log->updater_id =  \Auth::user()->id;
+            $log->save();
+
 
             \DB::commit();
             return back()->with("successMsg", "Successfully Restore the data");
@@ -268,5 +293,4 @@ class PackageController extends Controller
             return back()->withErrors($e->getMessage());
         }
     }
-
 }

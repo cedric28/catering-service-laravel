@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Package;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\PackageTask;
+use Carbon\Carbon;
+use App\Log;
 use Validator;
 
 class PackageTaskController extends Controller
@@ -32,7 +34,7 @@ class PackageTaskController extends Controller
                 'name' => 'required|string|max:50|unique:package_tasks,name,' . $request->name . ',id,package_id,' . $request->package_id,
                 // 'name' => 'required|string|max:50',
                 'package_id' => 'required|integer',
-                
+
             ], $messages);
 
             if ($validator->fails()) {
@@ -48,7 +50,7 @@ class PackageTaskController extends Controller
                 [
                     'id' => $request->task_id
                 ],
-                [ 
+                [
                     'name'       => $request->name,
                     'package_id' => $request->package_id,
                     'creator_id' =>  $user,
@@ -56,7 +58,13 @@ class PackageTaskController extends Controller
                 ]
             );
 
-             /*
+            $log = new Log();
+            $log->log = "User " . \Auth::user()->email . " update or create package task " . $packageTask->name . " at " . Carbon::now();
+            $log->creator_id =  \Auth::user()->id;
+            $log->updater_id =  \Auth::user()->id;
+            $log->save();
+
+            /*
             | @End Transaction
             |---------------------------------------------*/
             \DB::commit();
@@ -65,7 +73,6 @@ class PackageTaskController extends Controller
                 'data' => $packageTask,
                 'status' => 'success'
             ], 200);
-
         } catch (\Exception $e) {
             //if error occurs rollback the data from it's previos state
             \DB::rollback();
@@ -73,7 +80,6 @@ class PackageTaskController extends Controller
                 'data' => $e->getMessage()
             ], 500);
         }
-       
     }
 
     public function destroy($id)
@@ -83,9 +89,15 @@ class PackageTaskController extends Controller
 
         $package = PackageTask::findOrFail($id);
         $package->delete();
+
+        $log = new Log();
+        $log->log = "User " . \Auth::user()->email . " delete package task " . $package->name . " at " . Carbon::now();
+        $log->creator_id =  \Auth::user()->id;
+        $log->updater_id =  \Auth::user()->id;
+        $log->save();
     }
 
-     /**
+    /**
      * Restore the specified resource from storage.
      *
      * @param  int  $id
@@ -100,6 +112,12 @@ class PackageTaskController extends Controller
 
             /* Restore package */
             $package->restore();
+
+            $log = new Log();
+            $log->log = "User " . \Auth::user()->email . " restore package task " . $package->name . " at " . Carbon::now();
+            $log->creator_id =  \Auth::user()->id;
+            $log->updater_id =  \Auth::user()->id;
+            $log->save();
 
 
             \DB::commit();

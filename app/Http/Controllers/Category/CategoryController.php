@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\User;
 use App\Category;
 use Carbon\Carbon;
+use App\Log;
 use Validator;
 
 class CategoryController extends Controller
@@ -17,10 +18,10 @@ class CategoryController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {   
+    {
         $categories = Category::all();
-        
-        return view("category.index",[
+
+        return view("category.index", [
             'categories' => $categories
         ]);
     }
@@ -46,7 +47,7 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-       //prevent other user to access to this page
+        //prevent other user to access to this page
         $this->authorize("isAdmin");
         /*
         | @Begin Transaction
@@ -54,19 +55,19 @@ class CategoryController extends Controller
         \DB::beginTransaction();
 
         try {
-             //validate request value
-             $validator = Validator::make($request->all(), [
+            //validate request value
+            $validator = Validator::make($request->all(), [
                 'title' => 'required|string|max:50|unique:categories,title',
                 'description' => 'required|string|max:200'
             ]);
-    
+
             if ($validator->fails()) {
                 return back()->withErrors($validator->errors())->withInput();
             }
-            
+
             //check current user
             $user = \Auth::user()->id;
-           
+
             //save category
             $category = new Category();
             $category->title = $request->title;
@@ -74,19 +75,24 @@ class CategoryController extends Controller
             $category->creator_id = $user;
             $category->updater_id = $user;
             $category->save();
+
+            $log = new Log();
+            $log->log = "User " . \Auth::user()->email . " create category " . $category->title . " at " . Carbon::now();
+            $log->creator_id =  \Auth::user()->id;
+            $log->updater_id =  \Auth::user()->id;
+            $log->save();
             /*
             | @End Transaction
             |---------------------------------------------*/
             \DB::commit();
 
             return redirect()->route('category.create')
-                        ->with('successMsg','Category Save Successful');
-         
-        } catch(\Exception $e) {
-             //if error occurs rollback the data from it's previos state
+                ->with('successMsg', 'Category Save Successful');
+        } catch (\Exception $e) {
+            //if error occurs rollback the data from it's previos state
             \DB::rollback();
             return back()->withErrors($e->getMessage());
-        }   
+        }
     }
 
     /**
@@ -97,8 +103,8 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-         //prevent other user to access to this page
-         $this->authorize("isAdmin");
+        //prevent other user to access to this page
+        $this->authorize("isAdmin");
 
         $category = Category::withTrashed()->findOrFail($id);
 
@@ -115,8 +121,8 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
-         //prevent other user to access to this page
-         $this->authorize("isAdmin");
+        //prevent other user to access to this page
+        $this->authorize("isAdmin");
 
         $category = Category::withTrashed()->findOrFail($id);
 
@@ -135,8 +141,8 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-         //prevent other user to access to this page
-         $this->authorize("isAdmin");
+        //prevent other user to access to this page
+        $this->authorize("isAdmin");
 
         /*
         | @Begin Transaction
@@ -149,13 +155,13 @@ class CategoryController extends Controller
 
             //validate the request value
             $validator = Validator::make($request->all(), [
-                'title' => 'required|string|unique:categories,title,'.$category->id,
+                'title' => 'required|string|unique:categories,title,' . $category->id,
                 'description' => 'required|string|max:200'
             ]);
             if ($validator->fails()) {
                 return back()->withErrors($validator->errors())->withInput();
             }
-            
+
             //check current user
             $user = \Auth::user()->id;
 
@@ -164,15 +170,20 @@ class CategoryController extends Controller
             $category->description = $request->description;
             $category->updater_id = $user;
             $category->update();
+
+            $log = new Log();
+            $log->log = "User " . \Auth::user()->email . " edit category " . $category->title . " at " . Carbon::now();
+            $log->creator_id =  \Auth::user()->id;
+            $log->updater_id =  \Auth::user()->id;
+            $log->save();
             /*
             | @End Transaction
             |---------------------------------------------*/
             \DB::commit();
 
-            return back()->with("successMsg","Category Update Successfully");
-         
-        } catch(\Exception $e) {
-             //if error occurs rollback the data from it's previos state
+            return back()->with("successMsg", "Category Update Successfully");
+        } catch (\Exception $e) {
+            //if error occurs rollback the data from it's previos state
             \DB::rollback();
             return back()->withErrors($e->getMessage());
         }
@@ -192,9 +203,15 @@ class CategoryController extends Controller
         //delete category
         $category = Category::findOrFail($id);
         $category->delete();
+
+        $log = new Log();
+        $log->log = "User " . \Auth::user()->email . " delete category " . $category->title . " at " . Carbon::now();
+        $log->creator_id =  \Auth::user()->id;
+        $log->updater_id =  \Auth::user()->id;
+        $log->save();
     }
 
-     /**
+    /**
      * Restore the specified resource from storage.
      *
      * @param  int  $id
@@ -209,6 +226,14 @@ class CategoryController extends Controller
 
             /* Restore category */
             $category->restore();
+
+
+            $log = new Log();
+            $log->log = "User " . \Auth::user()->email . " restore category " . $category->title . " at " . Carbon::now();
+            $log->creator_id =  \Auth::user()->id;
+            $log->updater_id =  \Auth::user()->id;
+            $log->save();
+
 
 
             \DB::commit();

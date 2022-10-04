@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Role;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Role;
+use App\Log;
+use Carbon\Carbon;
 use Validator;
 
 class RoleController extends Controller
@@ -69,6 +71,12 @@ class RoleController extends Controller
             $role = new Role();
             $role->name = $request->name;
             $role->save();
+
+            $log = new Log();
+            $log->log = "User " . \Auth::user()->email . " add role " .  $role->name . " at " . Carbon::now();
+            $log->creator_id =  \Auth::user()->id;
+            $log->updater_id =  \Auth::user()->id;
+            $log->save();
 
             /*
             | @End Transaction
@@ -148,6 +156,12 @@ class RoleController extends Controller
             $role->name = $request->input('name');
             $role->save();
 
+            $log = new Log();
+            $log->log = "User " . \Auth::user()->email . " update role " .  $role->name . " at " . Carbon::now();
+            $log->creator_id =  \Auth::user()->id;
+            $log->updater_id =  \Auth::user()->id;
+            $log->save();
+
             /*
             | @End Transaction
             |---------------------------------------------*/
@@ -174,5 +188,11 @@ class RoleController extends Controller
 
         $role = Role::findOrFail($id);
         $role->delete();
+
+        $log = new Log();
+        $log->log = "User " . \Auth::user()->email . " delete role " .  $role->name . " at " . Carbon::now();
+        $log->creator_id =  \Auth::user()->id;
+        $log->updater_id =  \Auth::user()->id;
+        $log->save();
     }
 }

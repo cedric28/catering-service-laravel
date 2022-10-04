@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\User;
 use App\Role;
+use App\Log;
 use App\JobType;
 use Validator, Hash, DB, Carbon\Carbon;
 
@@ -83,6 +84,12 @@ class UserController extends Controller
             $user->role_id = $request->role_id;
             $user->job_type_id = $request->job_type_id;
             $user->save();
+
+            $log = new Log();
+            $log->log = "User " . \Auth::user()->email . " add user " .  $user->email . " at " . Carbon::now();
+            $log->creator_id =  \Auth::user()->id;
+            $log->updater_id =  \Auth::user()->id;
+            $log->save();
             /*
             | @End Transaction
             |---------------------------------------------*/
@@ -178,6 +185,12 @@ class UserController extends Controller
             $user->job_type_id = $request->job_type_id;
             $user->save();
 
+            $log = new Log();
+            $log->log = "User " . \Auth::user()->email . " edit user " .  $user->email . " at " . Carbon::now();
+            $log->creator_id =  \Auth::user()->id;
+            $log->updater_id =  \Auth::user()->id;
+            $log->save();
+
             /*
             | @End Transaction
             |---------------------------------------------*/
@@ -205,6 +218,12 @@ class UserController extends Controller
         //delete user
         $user = User::findOrFail($id);
         $user->delete();
+
+        $log = new Log();
+        $log->log = "User " . \Auth::user()->email . " delete user " .  $user->email . " at " . Carbon::now();
+        $log->creator_id =  \Auth::user()->id;
+        $log->updater_id =  \Auth::user()->id;
+        $log->save();
     }
 
     /**
@@ -222,6 +241,12 @@ class UserController extends Controller
 
             /* Restore user */
             $user->restore();
+
+            $log = new Log();
+            $log->log = "User " . \Auth::user()->email . " restore user " .  $user->email . " at " . Carbon::now();
+            $log->creator_id =  \Auth::user()->id;
+            $log->updater_id =  \Auth::user()->id;
+            $log->save();
 
 
             \DB::commit();
@@ -266,6 +291,12 @@ class UserController extends Controller
             $user->name = $request->name;
             $user->email = $request->email;
             $user->save();
+
+            $log = new Log();
+            $log->log = "User " . \Auth::user()->email . " update profile " .  $user->email . " at " . Carbon::now();
+            $log->creator_id =  \Auth::user()->id;
+            $log->updater_id =  \Auth::user()->id;
+            $log->save();
 
             /*
             | @End Transaction

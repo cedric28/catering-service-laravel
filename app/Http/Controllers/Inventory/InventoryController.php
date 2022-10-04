@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Inventory;
 use App\InventoryCategory;
+use App\Log;
 use Validator;
+use Carbon\Carbon;
 
 class InventoryController extends Controller
 {
@@ -84,6 +86,12 @@ class InventoryController extends Controller
             $inventory->creator_id = $user;
             $inventory->updater_id = $user;
             $inventory->save();
+
+            $log = new Log();
+            $log->log = "User " . \Auth::user()->email . " create product " . $inventory->name . " at " . Carbon::now();
+            $log->creator_id =  \Auth::user()->id;
+            $log->updater_id =  \Auth::user()->id;
+            $log->save();
 
             /*
             | @End Transaction
@@ -178,6 +186,12 @@ class InventoryController extends Controller
             $inventory->updater_id = $user;
             $inventory->save();
 
+            $log = new Log();
+            $log->log = "User " . \Auth::user()->email . " adjust product " . $inventory->name . " with a quantity of " . $inventory->quantity . " at " . Carbon::now();
+            $log->creator_id =  \Auth::user()->id;
+            $log->updater_id =  \Auth::user()->id;
+            $log->save();
+
             /*
         | @End Transaction
         |---------------------------------------------*/
@@ -204,6 +218,12 @@ class InventoryController extends Controller
 
         $inventory = Inventory::findOrFail($id);
         $inventory->delete();
+
+        $log = new Log();
+        $log->log = "User " . \Auth::user()->email . " delete product " . $inventory->name . " at " . Carbon::now();
+        $log->creator_id =  \Auth::user()->id;
+        $log->updater_id =  \Auth::user()->id;
+        $log->save();
     }
 
     /**
@@ -221,6 +241,12 @@ class InventoryController extends Controller
 
             /* Restore inventory */
             $inventory->restore();
+
+            $log = new Log();
+            $log->log = "User " . \Auth::user()->email . " restore product " . $inventory->name . " at " . Carbon::now();
+            $log->creator_id =  \Auth::user()->id;
+            $log->updater_id =  \Auth::user()->id;
+            $log->save();
 
 
             \DB::commit();
