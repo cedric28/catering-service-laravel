@@ -34,22 +34,22 @@ class HomeController extends Controller
         $sales = new Payment();
         $sales = $sales->whereYear('created_at', '>=', $yearNow)->whereYear('created_at', '<=', $yearNow);
         $salesPerMonth = $sales->selectRaw('month(created_at) as month, SUM(payment_price) as total_sales')
-        ->groupBy('month')
-        ->orderBy('month', 'asc')
-        ->get();
-        
+            ->groupBy('month')
+            ->orderBy('month', 'asc')
+            ->get();
+
         $filtered_collection = $salesPerMonth->filter(function ($item) use ($monthNow) {
             return $item->month == $monthNow;
         })->values();
 
-        $monthlySales = count($filtered_collection) > 0 ? Str::currency($filtered_collection[0]->total_sales) : Str::currency(0) ;
+        $monthlySales = count($filtered_collection) > 0 ? Str::currency($filtered_collection[0]->total_sales) : Str::currency(0);
         $users = User::count();
         $planners = Planner::where('status', '=', 'on-going')
-        ->orWhere('status', '=', 'completed')->get();
-        $plannerOnGoing = Planner::where('status','on-going')->count();
-        $plannerCompleted = Planner::where('status','completed')->count();
-        
-        return view('home',[
+            ->orWhere('status', '=', 'completed')->orWhere('status', '=', 'pending')->get();
+        $plannerOnGoing = Planner::where('status', 'on-going')->count();
+        $plannerCompleted = Planner::where('status', 'completed')->count();
+
+        return view('home', [
             'totalUsers' => $users,
             'planners' => $planners,
             'plannerOnGoing' => $plannerOnGoing,
@@ -59,6 +59,5 @@ class HomeController extends Controller
     }
     public function showPlannerDetails(Request $request)
     {
-
     }
 }

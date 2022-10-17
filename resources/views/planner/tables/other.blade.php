@@ -1,4 +1,14 @@
 @if($planner->status != 'completed')
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="callout callout-info">
+            <h5><i class="fas fa-info"></i> Note:</h5>
+            This is for the Birthday Package only.
+        </div>
+    </div>
+</div>
+        
 <form action="{{ route('storeOther')}}" method="POST" class="mb-2">
     @csrf
     <input type="hidden" name="planner_id" value="{{ $planner->id }}"/>

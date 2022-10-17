@@ -32,7 +32,7 @@
 			<div class="row">
 				<div class="col-md-10 offset-md-1">
 					<div class="header-elements-inline">
-						<h5 class="card-title">Event Form</h5>
+						<h5 class="card-title">Event Details</h5>
 					</div>
 				</div>
 			</div>
@@ -51,14 +51,14 @@
 						</div>
 
 						<div class="form-group row">
-							<label class="col-lg-3 col-form-label">Event Venue:</label>
+							<label class="col-lg-3 col-form-label">Venue:</label>
 							<div class="col-lg-9">
 								<input type="text" name="event_venue" value="{{ old('event_venue') }}" class="@error('event_venue') is-invalid @enderror form-control" placeholder="e.g Manila Hotel">
 							</div>
 						</div>
 
 						<div class="form-group row">
-							<label class="col-lg-3 col-form-label">Event Date & Time:</label>
+							<label class="col-lg-3 col-form-label">Date & Time:</label>
 							<div class="col-lg-9">
 								<div class="input-group date" id="reservationdate" data-target-input="nearest">
 									<input type="text" name="event_date" value="{{ old('event_date') }}" placeholder="e.g 2022-08-20 8:27 PM" onkeydown="return false;" class="@error('event_date') is-invalid @enderror form-control datetimepicker-input" data-target="#reservationdate"/>

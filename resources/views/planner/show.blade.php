@@ -69,14 +69,14 @@
 									<th>{{ $planner->event_name }}</th>
 								</tr>
 								<tr>
-									<th>Event Venue</th>
+									<th>Venue</th>
 									<th>{{ ucwords($planner->event_venue) }}</th>
 								</tr>
 								<tr>
 									@php
 										$eventDate = $planner->event_date.' | '.$planner->event_time;
 									@endphp
-									<th>Event Date & Time</th>
+									<th>Date & Time</th>
 									<th>{{ $eventDate }}</th>
 								</tr>
 								<tr>

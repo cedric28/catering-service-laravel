@@ -24,7 +24,7 @@
 	<div class="page-header page-header-light">
 		<div class="page-header-content header-elements-md-inline">
 			<div class="page-title d-flex">
-			<h4><i class="icon-arrow-left52 mr-2"></i> <span class="font-weight-semibold">Event</span> - {{ $planner->event_name }} Details</h4>
+			<h4><i class="icon-arrow-left52 mr-2"></i> <span class="font-weight-semibold">{{ ucwords($planner->event_name) }}</span></h4>
 				<a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
 			</div>
 		</div>
@@ -53,7 +53,7 @@
 						<div class="col-md-12">
 							<div class="header-elements-inline">
 								<div style="width: 100%">
-									<h5 class="card-title float-left">Event Form</h5>
+									<h5 class="card-title float-left">Event Details</h5>
 									<a href="{{ route('generateContract', $planner->id)}}" class="btn btn-success float-right ml-2">Generate Contract <i class="fas fa-print ml-2"></i></a>	
 									<a href="{{ route('generateInvoice', $planner->id)}}"  class="btn btn-info float-right">Generate Invoice <i class="fas fa-print ml-2"></i></a>	
 								</div>
@@ -85,14 +85,14 @@
 								</div>
 
 								<div class="form-group row">
-									<label class="col-lg-3 col-form-label">Event Venue:</label>
+									<label class="col-lg-3 col-form-label">Venue:</label>
 									<div class="col-lg-9">
 										<input type="text" @if($planner->status == "completed" || Auth::user()->job_type_id != 1) disabled='disabled' @endif name="event_venue" value="{{ old('event_venue', $planner->event_venue) }}" class="@error('event_venue') is-invalid @enderror form-control" placeholder="e.g Manila Hotel">
 									</div>
 								</div>
 
 								<div class="form-group row">
-									<label class="col-lg-3 col-form-label">Event Date & Time:</label>
+									<label class="col-lg-3 col-form-label">Date & Time:</label>
 									<div class="col-lg-9">
 										@php
 											$eventDate = $planner->event_date.' | '.$planner->event_time;
@@ -191,7 +191,7 @@
 					<div class="row">
 						<div class="col-md-12">
 							<div class="header-elements-inline">
-								<h5 class="card-title">Event Details</h5>
+								<h5 class="card-title">Event Planner</h5>
 							</div>
 						</div>
 					</div>
@@ -207,15 +207,12 @@
 											<a class="nav-link active" id="custom-tabs-four-home-tab" data-toggle="pill" href="#custom-tabs-four-home" role="tab" aria-controls="custom-tabs-four-home" aria-selected="true">Tasks</a>
 										</li>
 										<li class="nav-item">
-											<a class="nav-link" id="custom-tabs-four-profile-tab" data-toggle="pill" href="#custom-tabs-four-profile" role="tab" aria-controls="custom-tabs-four-profile" aria-selected="false">Equipments</a>
+											<a class="nav-link" id="custom-tabs-four-profile-tab" data-toggle="pill" href="#custom-tabs-four-profile" role="tab" aria-controls="custom-tabs-four-profile" aria-selected="false">Equipment</a>
 										</li>
 
 										@if(Auth::user()->job_type_id == 1)
 										<li class="nav-item">
 											<a class="nav-link" id="custom-tabs-four-messages-tab" data-toggle="pill" href="#custom-tabs-four-messages" role="tab" aria-controls="custom-tabs-four-messages" aria-selected="false">Food Menu</a>
-										</li>
-										<li class="nav-item">
-											<a class="nav-link" id="custom-tabs-four-settings-tab" data-toggle="pill" href="#custom-tabs-four-settings" role="tab" aria-controls="custom-tabs-four-settings" aria-selected="false">Other</a>
 										</li>
 										@endif
 										@if(Auth::user()->job_type_id == 1 || Auth::user()->job_type_id == 2)
@@ -233,6 +230,9 @@
 										<li class="nav-item">
 											<a class="nav-link" id="custom-tabs-payment-tab" data-toggle="pill" href="#custom-tabs-payment" role="tab" aria-controls="custom-tabs-payment" aria-selected="false">Payments</a>
 										</li>
+										<li class="nav-item">
+											<a class="nav-link" id="custom-tabs-four-settings-tab" data-toggle="pill" href="#custom-tabs-four-settings" role="tab" aria-controls="custom-tabs-four-settings" aria-selected="false">Other</a>
+										</li>
 										@endif
 									</ul>
 								</div>
@@ -247,9 +247,6 @@
 										<div class="tab-pane fade" id="custom-tabs-four-messages" role="tabpanel" aria-labelledby="custom-tabs-four-messages-tab">
 											@include('planner.tables.food')
 										</div>
-										<div class="tab-pane fade" id="custom-tabs-four-settings" role="tabpanel" aria-labelledby="custom-tabs-four-settings-tab">
-											@include('planner.tables.other')
-										</div>
 										<div class="tab-pane fade" id="custom-tabs-task-distribution" role="tabpanel" aria-labelledby="custom-tabs-task-distribution-tab">
 											@include('planner.tables.staffing')
 										</div>
@@ -261,6 +258,9 @@
 										</div>
 										<div class="tab-pane fade" id="custom-tabs-payment" role="tabpanel" aria-labelledby="custom-tabs-payment-tab">
 											@include('planner.tables.payment')
+										</div>
+										<div class="tab-pane fade" id="custom-tabs-four-settings" role="tabpanel" aria-labelledby="custom-tabs-four-settings-tab">
+											@include('planner.tables.other')
 										</div>
 									</div>
 								</div>

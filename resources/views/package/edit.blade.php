@@ -44,31 +44,31 @@
 						@csrf
 						@method('PATCH')
 						<div class="form-group row">
-							<label class="col-lg-3 col-form-label">Package Name:</label>
+							<label class="col-lg-3 col-form-label">Name:</label>
 							<div class="col-lg-9">
 								<input type="text" name="name" value="{{ old("name" , $package->name)}}" class="@error('name') is-invalid @enderror form-control" placeholder="Package name (e.g Bronze Package)">
 							</div>
 						</div>
 						
 						<div class="form-group row">
-							<label class="col-lg-3 col-form-label">Package Pax:</label>
+							<label class="col-lg-3 col-form-label">Pax:</label>
 							<div class="col-lg-9">
 								<input type="text" name="package_pax" value="{{ old('package_pax', $package->package_pax) }}" class="@error('package_pax') is-invalid @enderror form-control" placeholder="Package pax">
 							</div>
 						</div>
 
 						<div class="form-group row">
-							<label class="col-lg-3 col-form-label">Package Price:</label>
+							<label class="col-lg-3 col-form-label">Price:</label>
 							<div class="col-lg-9">	
 								<input type="text" name="package_price" value="{{ old('package_price', $package->package_price) }}" class="@error('package_price') is-invalid @enderror form-control" placeholder="Package Price" >
 							</div>
 						</div>
 
 						<div class="form-group row">
-							<label class="col-lg-3 col-form-label">Package Category:</label>
+							<label class="col-lg-3 col-form-label">Category:</label>
 							<div class="col-lg-9">
 								<select id="main_package_id" name="main_package_id" class="@error('main_package_id') is-invalid @enderror form-control select2">
-									<option value="">Select Package Category</option>
+									<option value="">Select...</option>
 									@foreach ($package_categories as $category)
 										<option value="{{ $category->id }}" {{ ($category->id == old('main_package_id', $package->main_package_id)) ? ' selected' : '' }}>{{ ucwords($category->name) }}</option>
 									@endforeach

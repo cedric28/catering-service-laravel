@@ -15,7 +15,7 @@
     </div>
 
     <div class="form-group row">
-        <label class="col-lg-3 col-form-label">Payment Price:</label>
+        <label class="col-lg-3 col-form-label">Price:</label>
         <div class="col-lg-9">
             <input type="text" name="payment_price" value="{{ old('payment_price') }}" class="@error('payment_price') is-invalid @enderror form-control" placeholder="e.g 1000">
         </div>

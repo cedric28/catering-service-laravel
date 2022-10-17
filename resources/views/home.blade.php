@@ -51,11 +51,11 @@
 
 			<!-- Pending Requests Card Example -->
 			<div class="col-xl-3 col-md-6 mb-4">
-				<div class="card border-left-info shadow h-100 py-2">
+				<div class="card border-left-warning shadow h-100 py-2">
 					<div class="card-body">
 						<div class="row no-gutters align-items-center">
 							<div class="col mr-2">
-								<div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+								<div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
 									On-Going Events</div>
 								<div class="h5 mb-0 font-weight-bold text-gray-800">{{ $plannerOnGoing }}</div>
 							</div>
@@ -116,13 +116,14 @@
 			<div class="col-xl-4 col-lg-5">
 				<div class="card shadow mb-4">
 					<div class="card-header">
-						Event Labels
+						Event Legend
 					</div>
 					<div class="card-body">
 						<div id="external-events">
-							<div class="external-event bg-success ui-draggable ui-draggable-handle" style="position: relative;">Completed</div>
+							<div class="external-event bg-success ui-draggable ui-draggable-handle" style="position: relative; cursor:default;box-shadow:none;">Completed</div>
 							<!-- <div class="external-event bg-warning ui-draggable ui-draggable-handle" style="position: relative;">G</div> -->
-							<div class="external-event bg-info ui-draggable ui-draggable-handle" style="position: relative;">On Going Event</div>			
+							<div class="external-event bg-warning ui-draggable ui-draggable-handle" style="position: relative; cursor: default;box-shadow:none;">On Going Event</div>	
+							<div class="external-event bg-danger ui-draggable ui-draggable-handle" style="position: relative; cursor: default;box-shadow:none;">Upcoming Event</div>					
 						</div>
 					</div>
 				</div>
@@ -130,7 +131,7 @@
 					<!-- Card Header - Dropdown -->
 					<div
 						class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-						<h6 class="m-0 font-weight-bold text-primary">Event Details</h6>
+						<h6 class="m-0 font-weight-bold text-primary">Event Planner</h6>
 					</div>
 					<!-- Card Body -->
 					<div class="card-body">
@@ -185,7 +186,7 @@
 					title: currPlan.event_name + ' ' + currPlan.event_time,
 					start: currPlan.event_date,
 					end: currPlan.event_date,
-					className: currPlan.status === 'on-going' ?  'bg-gradient-info' : 'bg-gradient-success'
+					className: currPlan.status === 'on-going' ?  'bg-gradient-warning' : currPlan.status === "completed" ? 'bg-gradient-success' : "bg-gradient-danger"
 
 				});
 
