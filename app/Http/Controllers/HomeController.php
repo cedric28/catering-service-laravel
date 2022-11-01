@@ -45,7 +45,7 @@ class HomeController extends Controller
         $monthlySales = count($filtered_collection) > 0 ? Str::currency($filtered_collection[0]->total_sales) : Str::currency(0);
         $users = User::count();
         $planners = Planner::where('status', '=', 'on-going')
-            ->orWhere('status', '=', 'completed')->orWhere('status', '=', 'pending')->get();
+            ->orWhere('status', '=', 'completed')->orWhere('status', '=', 'upcoming')->get();
         $plannerOnGoing = Planner::where('status', 'on-going')->count();
         $plannerCompleted = Planner::where('status', 'completed')->count();
 

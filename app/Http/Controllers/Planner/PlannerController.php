@@ -341,7 +341,7 @@ class PlannerController extends Controller
         ];
 
         $plannerStatus = [
-            ['status' => 'pending'],
+            ['status' => 'upcoming'],
             ['status' => 'on-going'],
             ['status' => 'completed']
         ];

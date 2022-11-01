@@ -23,7 +23,7 @@ class CreatePlannersTable extends Migration
             $table->string('event_time');
             $table->integer('package_id')->unsigned()->index();
             $table->longText("note")->nullable();
-            $table->string("status")->default('pending');
+            $table->string("status")->default('upcoming');
             $table->integer("payment_status_id")->unsigned()->index();
             $table->string("customer_fullname")->nullable();
             $table->string("contact_number");

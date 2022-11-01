@@ -24,7 +24,7 @@ class PlannerFetchController extends Controller
 		);
 
 		//get the total number of data in Category table
-		$totalData = Planner::where('status', 'pending')->count();
+		$totalData = Planner::where('status', 'upcoming')->count();
 		//total number of data that will show in the datatable default 10
 		$limit = $request->input('length');
 		//start number for pagination ,default 0
@@ -43,7 +43,7 @@ class PlannerFetchController extends Controller
 				->leftJoin('payment_statuses', 'planners.payment_status_id', '=', 'payment_statuses.id')
 				->select('planners.*', 'packages.name as package_name', 'main_packages.name as main_package_name', 'payment_statuses.name as payment_status')
 				->where([
-					['planners.status', 'pending'],
+					['planners.status', 'upcoming'],
 					['planners.deleted_at', '=', null]
 				])
 				->offset($start)
@@ -52,7 +52,7 @@ class PlannerFetchController extends Controller
 				->get();
 
 			//total number of filtered data
-			$totalFiltered = Planner::where('status', 'pending')->count();
+			$totalFiltered = Planner::where('status', 'upcoming')->count();
 		} else {
 			$search = $request->input('search.value');
 
@@ -74,7 +74,7 @@ class PlannerFetchController extends Controller
 						->orWhere('planners.created_at', 'like', "%{$search}%");
 				})
 				->where([
-					['planners.status', 'pending'],
+					['planners.status', 'upcoming'],
 					['planners.deleted_at', '=', null]
 				])
 				->offset($start)
@@ -101,7 +101,7 @@ class PlannerFetchController extends Controller
 						->orWhere('planners.created_at', 'like', "%{$search}%");
 				})
 				->where([
-					['planners.status', 'pending'],
+					['planners.status', 'upcoming'],
 					['planners.deleted_at', '=', null]
 				])->count();
 		}
