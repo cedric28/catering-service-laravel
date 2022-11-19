@@ -148,8 +148,8 @@ class PlannerDetailsFetchController extends Controller
             //loop posts collection to transfer in another array $nestedData
             foreach ($posts as $r) {
                 $status = '';
-                if ($r->status == 'pending') {
-                    $status = '<span title="Danger" class="badge bg-info">PENDING</span>';
+                if ($r->status == 'upcoming') {
+                    $status = '<span title="Danger" class="badge bg-info">UPCOMING</span>';
                 } else {
                     $status = '<span title="Danger" class="badge bg-success">FINISHED</span>';
                 }
