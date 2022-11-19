@@ -118,7 +118,7 @@ class PlannerFetchController extends Controller
 				$nestedData['event_type_and_package'] = $r->package_name . ' - ' . $r->main_package_name;
 				$nestedData['no_of_guests'] = $r->no_of_guests;
 				$nestedData['customer_fullname'] = ucwords($r->customer_fullname);
-				$nestedData['event_status'] = '<span title="Danger" class="badge bg-danger">PENDING</span>';
+				$nestedData['event_status'] = '<span title="Danger" class="badge bg-danger">UPCOMING</span>';
 				$nestedData['payment_status'] = $r->payment_status;
 				$nestedData['created_at'] = date('d-m-Y', strtotime($r->created_at));
 				$nestedData['action'] = '
@@ -448,7 +448,7 @@ class PlannerFetchController extends Controller
 				} else if ($r->status == 'on-going') {
 					$status = '<span title="Danger" class="badge bg-primary">ON-GOING</span>';
 				} else {
-					$status =  '<span title="Danger" class="badge bg-info">PENDING</span>';
+					$status =  '<span title="Danger" class="badge bg-info">UPCOMING</span>';
 				}
 				$nestedData['event_name'] = $r->event_name;
 				$nestedData['event_venue'] = $r->event_venue;
