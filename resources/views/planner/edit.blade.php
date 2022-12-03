@@ -55,7 +55,7 @@
 								<div style="width: 100%">
 									<h5 class="card-title float-left">Event Details</h5>
 									<a href="{{ route('generateContract', $planner->id)}}" class="btn btn-success float-right ml-2">Generate Contract <i class="fas fa-print ml-2"></i></a>	
-									<a href="{{ route('generateInvoice', $planner->id)}}"  class="btn btn-info float-right">Generate Invoice <i class="fas fa-print ml-2"></i></a>	
+									<a href="{{ route('generateInvoice', $planner->id)}}"  class="btn btn-warning float-right">Generate Invoice <i class="fas fa-print ml-2"></i></a>	
 								</div>
 							</div>
 						</div>

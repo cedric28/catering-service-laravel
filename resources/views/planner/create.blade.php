@@ -110,14 +110,14 @@
 						</div>
 
 						<div class="form-group row">
-							<label class="col-lg-3 col-form-label">Customer Firstname:</label>
+							<label class="col-lg-3 col-form-label">Customer First name:</label>
 							<div class="col-lg-9">
 								<input type="text" name="customer_firstname" value="{{ old('customer_firstname') }}" class="@error('customer_firstname') is-invalid @enderror form-control" placeholder="e.g Yash">
 							</div>
 						</div>	
 
 						<div class="form-group row">
-							<label class="col-lg-3 col-form-label">Customer Lastname:</label>
+							<label class="col-lg-3 col-form-label">Customer Last name:</label>
 							<div class="col-lg-9">
 								<input type="text" name="customer_lastname" value="{{ old('customer_lastname') }}" class="@error('customer_lastname') is-invalid @enderror form-control" placeholder="e.g Lozano">
 							</div>

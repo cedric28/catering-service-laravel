@@ -177,12 +177,14 @@
 				</tr>
 
 				<tr class="heading">
+					<td>NO</td>
 					<td>INVOICE NO</td>
 					<td>PAYMENT</td>
 				</tr>
 
 				@foreach($sales as $sale)
 					<tr class="item">
+						<td >{{ $loop->index + 1 }}</td>
 						<td >{{$sale->planner->or_no}}</td>
 						<td>{{ Str::currency($sale->payment_price) }}</td>
 					</tr>
