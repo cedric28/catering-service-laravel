@@ -19,6 +19,11 @@ class Planner extends Model
         return $query->where('status', '=', 'done');
     }
 
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'customer_id');
+    }
+
     public function package()
     {
         return $this->belongsTo(Package::class, 'package_id');
@@ -26,27 +31,27 @@ class Planner extends Model
 
     public function package_menus()
     {
-        return $this->belongsToMany('App\PackageMenu','package_menu_planner');
+        return $this->belongsToMany('App\PackageMenu', 'package_menu_planner');
     }
 
     public function planner_tasks()
     {
-        return $this->hasMany(PlannerTask::class,'planner_id','id');
+        return $this->hasMany(PlannerTask::class, 'planner_id', 'id');
     }
 
     public function planner_others()
     {
-        return $this->hasMany(PlannerOther::class,'planner_id','id');
+        return $this->hasMany(PlannerOther::class, 'planner_id', 'id');
     }
 
     public function planner_time_tables()
     {
-        return $this->hasMany(PlannerTimeTable::class,'planner_id','id');
+        return $this->hasMany(PlannerTimeTable::class, 'planner_id', 'id');
     }
 
     public function payments()
     {
-        return $this->hasMany(Payment::class,'planner_id','id');
+        return $this->hasMany(Payment::class, 'planner_id', 'id');
     }
 
     public function payment_status()
@@ -56,6 +61,6 @@ class Planner extends Model
 
     public function planner_staffing()
     {
-        return $this->hasMany(PlannerStaffing::class,'planner_id','id');
+        return $this->hasMany(PlannerStaffing::class, 'planner_id', 'id');
     }
 }

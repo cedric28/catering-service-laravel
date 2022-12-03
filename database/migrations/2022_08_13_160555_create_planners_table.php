@@ -25,9 +25,8 @@ class CreatePlannersTable extends Migration
             $table->longText("note")->nullable();
             $table->string("status")->default('upcoming');
             $table->integer("payment_status_id")->unsigned()->index();
-            $table->string("customer_fullname")->nullable();
-            $table->string("contact_number");
             $table->decimal('total_price', 10, 2);
+            $table->integer('customer_id')->unsigned()->index();
             $table->integer('creator_id')->unsigned()->index();
             $table->integer('updater_id')->unsigned()->index();
             $table->softDeletes();
