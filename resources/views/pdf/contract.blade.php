@@ -142,7 +142,8 @@
 						<table>
 							<tr>
 								<td>
-									<h4 class="title">CATERING CONTRACT</h5>
+									<h4 class="title">CATERING CONTRACT</h4>
+									<h5 class="title">Prepared By: {{ ucwords(Auth::user()->name) }}</h5>
 								</td>
 
                                 <td class="title">
@@ -224,7 +225,7 @@
                 <tr>
                     <td>
                         <h4 class="title2">PAYMENT TERMS</h4>
-                        <p class="description">In exchange for the services of Caterer as specified in this Catering Contract, Client will pay to Caterer depending on the chosen package, one week in advance of the Event. As of the signing of this Contract, the total amount is estimated to be {{ $servicePriceTotal }}.</p>
+                        <p class="description">In exchange for the services of Caterer as specified in this Catering Contract, Client will pay to the Caterer depending on the chosen payment type, 50% upfront payment or 100% full payment. The customer must pay one week before the Event the other 50% of the total price if the first chosen payment type is 50% prior to the package that was chosen. As of the signing of this Contract, the total amount is estimated to be {{ $servicePriceTotal }}.</p>
                     </td>
                 </tr>
 
@@ -279,7 +280,6 @@
 
                 <tr class="signed">
 					<td>
-						<h4 class="prepared-by">Prepared By: {{ ucwords(Auth::user()->name) }}</h4>
                         <h4 class="prepared-by">Client Name: {{ ucwords($planner->customer_fullname) }}</h4>
 					</td>
 				</tr>
