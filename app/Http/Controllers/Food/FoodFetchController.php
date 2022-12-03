@@ -74,7 +74,7 @@ class FoodFetchController extends Controller
                 $nestedData['action'] = '
                     <button name="show" id="show" data-id="' . $r->id . '" class="btn btn-primary btn-xs">Show</button>
 					<button name="edit" id="edit" data-id="' . $r->id . '" class="btn btn-warning btn-xs">Edit</button>
-					<button name="delete" id="delete" data-id="' . $r->id . '" class="btn btn-danger btn-xs">Delete</button>
+					<button name="delete" id="delete" data-id="' . $r->id . '" class="btn btn-danger btn-xs">Remove</button>
 				';
                 $data[] = $nestedData;
             }
@@ -234,7 +234,7 @@ class FoodFetchController extends Controller
                 $nestedData['action'] = '
                     <button name="show" id="show" data-id="' . $r->id . '" class="btn btn-primary btn-xs">Show</button>
 					<button name="edit" id="edit" data-id="' . $r->id . '" class="btn btn-warning btn-xs">Edit</button>
-					<button name="delete" id="delete" data-id="' . $r->id . '" class="btn btn-danger btn-xs">Delete</button>
+					<button name="delete" id="delete" data-id="' . $r->id . '" class="btn btn-danger btn-xs">Remove</button>
 				';
                 $data[] = $nestedData;
             }

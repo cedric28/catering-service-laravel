@@ -245,7 +245,7 @@ class PlannerDetailsFetchController extends Controller
             foreach ($posts as $r) {
                 $nestedData['name'] = $r->user->name;
                 $nestedData['action'] = '
-                    <button name="delete" id="delete-planner-task-staff" data-id="' . $r->id . '" class="btn btn-danger btn-xs">Delete</button>
+                    <button name="delete" id="delete-planner-task-staff" data-id="' . $r->id . '" class="btn btn-danger btn-xs">Remove</button>
                 ';
                 $data[] = $nestedData;
             }
@@ -462,7 +462,7 @@ class PlannerDetailsFetchController extends Controller
                 $nestedData['service_price'] = \Str::currency($r->package_other->service_price);
                 if ($request->planner_show == 0) {
                     $nestedData['action'] = '
-                    <button name="delete" id="delete-planner-other" data-id="' . $r->id . '" class="btn btn-danger btn-xs">Delete</button>
+                    <button name="delete" id="delete-planner-other" data-id="' . $r->id . '" class="btn btn-danger btn-xs">Remove</button>
                 ';
                 }
                 $data[] = $nestedData;
@@ -752,7 +752,7 @@ class PlannerDetailsFetchController extends Controller
                 $nestedData['created_at'] = date('m-d-Y', strtotime($r->created_at));
                 if ($request->planner_show == 0) {
                     $nestedData['action'] = '
-                        <button name="delete" id="delete-planner-time-table" data-id="' . $r->id . '" class="btn btn-danger btn-xs">Delete</button>
+                        <button name="delete" id="delete-planner-time-table" data-id="' . $r->id . '" class="btn btn-danger btn-xs">Remove</button>
                     ';
                 }
                 $data[] = $nestedData;

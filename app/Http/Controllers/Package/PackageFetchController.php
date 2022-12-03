@@ -85,7 +85,7 @@ class PackageFetchController extends Controller
                 $nestedData['action'] = '
                     <button name="show" id="show" data-id="' . $r->id . '" class="btn btn-primary btn-xs">Show</button>
 					<button name="edit" id="edit" data-id="' . $r->id . '" class="btn btn-warning btn-xs">Edit</button>
-					<button name="delete" id="delete" data-id="' . $r->id . '" class="btn btn-danger btn-xs">Delete</button>
+					<button name="delete" id="delete" data-id="' . $r->id . '" class="btn btn-danger btn-xs">Remove</button>
 				';
                 $data[] = $nestedData;
             }
@@ -252,7 +252,7 @@ class PackageFetchController extends Controller
                 if($request->is_show == 0){
                     $nestedData['action'] = '
                         <button name="edit" id="edit" data-name="' . $r->name . '" data-id="' . $r->id . '" class="btn btn-warning btn-xs">Edit</button>
-                        <button name="delete" id="delete-task-package" data-id="' . $r->id . '" class="btn btn-danger btn-xs">Delete</button>
+                        <button name="delete" id="delete-task-package" data-id="' . $r->id . '" class="btn btn-danger btn-xs">Remove</button>
                     ';
                 }
                 $data[] = $nestedData;
@@ -417,7 +417,7 @@ class PackageFetchController extends Controller
                 if($request->is_show == 0){
                     $nestedData['action'] = '
                         <button name="edit" id="edit-food-package" data-category-id="' . $r->category_id . '" data-id="' . $r->id . '" class="btn btn-warning btn-xs">Edit</button>
-                        <button name="delete" id="delete-food-package" data-id="' . $r->id . '" class="btn btn-danger btn-xs">Delete</button>
+                        <button name="delete" id="delete-food-package" data-id="' . $r->id . '" class="btn btn-danger btn-xs">Remove</button>
                     ';
                 }
                 $data[] = $nestedData;
@@ -593,7 +593,7 @@ class PackageFetchController extends Controller
                     // <button name="edit" id="edit-equipment-package" data-quantity="' . $r->quantity . '"  data-inventory-id="' . $r->inventory_id . '" data-id="' . $r->id . '" class="btn btn-warning btn-xs">Edit</button>
                     $nestedData['action'] = '
                         <button name="edit" id="edit-equipment-package" data-quantity="' . $r->quantity . '"  data-inventory-id="' . $r->inventory_id . '" data-id="' . $r->id . '" class="btn btn-warning btn-xs">Edit</button>
-                        <button name="delete" id="delete-equipment-package" data-id="' . $r->id . '" class="btn btn-danger btn-xs">Delete</button>
+                        <button name="delete" id="delete-equipment-package" data-id="' . $r->id . '" class="btn btn-danger btn-xs">Remove</button>
                     ';
                 }
                 $data[] = $nestedData;
@@ -767,7 +767,7 @@ class PackageFetchController extends Controller
                 if($request->is_show == 0){
                     $nestedData['action'] = '
                     <button name="edit" id="edit-other-package" data-price="' . $r->service_price . '" data-name="' . $r->name . '" data-id="' . $r->id . '" class="btn btn-warning btn-xs">Edit</button>
-                    <button name="delete" id="delete-other-package" data-id="' . $r->id . '" class="btn btn-danger btn-xs">Delete</button>
+                    <button name="delete" id="delete-other-package" data-id="' . $r->id . '" class="btn btn-danger btn-xs">Remove</button>
                     ';
                 }
                   

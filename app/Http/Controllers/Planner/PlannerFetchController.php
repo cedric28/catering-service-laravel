@@ -124,7 +124,7 @@ class PlannerFetchController extends Controller
 				$nestedData['action'] = '
                     <button name="show" id="show-pending-planner" data-id="' . $r->id . '" class="btn btn-primary btn-xs">Show</button>
 					<button name="edit" id="edit-pending-planner" data-id="' . $r->id . '" class="btn btn-warning btn-xs">Edit</button>
-					<button name="delete" id="delete-pending-planner" data-id="' . $r->id . '" class="btn btn-danger btn-xs">Delete</button>
+					<button name="delete" id="delete-pending-planner" data-id="' . $r->id . '" class="btn btn-danger btn-xs">Remove</button>
 				';
 				$data[] = $nestedData;
 			}
@@ -235,7 +235,7 @@ class PlannerFetchController extends Controller
 				$nestedData['action'] = '
                     <button name="show" id="show-on-going-planner" data-id="' . $r->id . '" class="btn btn-primary btn-xs">Show</button>
 					<button name="edit" id="edit-on-going-planner" data-id="' . $r->id . '" class="btn btn-warning btn-xs">Edit</button>
-					<button name="delete" id="delete-on-going-planner" data-id="' . $r->id . '" class="btn btn-danger btn-xs">Delete</button>
+					<button name="delete" id="delete-on-going-planner" data-id="' . $r->id . '" class="btn btn-danger btn-xs">Remove</button>
 				';
 				$data[] = $nestedData;
 			}
