@@ -143,7 +143,7 @@
 							<tr>
 								<td>
 									<h4 class="title">CATERING CONTRACT</h4>
-									<h5 class="title">Prepared By: {{ ucwords(Auth::user()->name) }}</h5>
+									<h4 class="title">Prepared By: {{ ucwords(Auth::user()->name) }}</h4>
 								</td>
 
                                 <td class="title">
@@ -280,6 +280,7 @@
 
                 <tr class="signed">
 					<td>
+						<h4 class="prepared-by">Prepared By: {{ ucwords(Auth::user()->name) }}</h4>
                         <h4 class="prepared-by">Client Name: {{ ucwords($planner->customer_fullname) }}</h4>
 					</td>
 				</tr>
