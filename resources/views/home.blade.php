@@ -234,8 +234,10 @@
 					url: "planners-show/"+planner_id,
 					success:function(data)
 					{
-						console.log(data.data);
-						const { event_name, event_date, event_venue, event_time, no_of_guests, note, customer_fullname, contact_number } = data.data;
+						console.log(data);
+						const { event_name, event_date, event_venue, event_time, no_of_guests, note } = data.data;
+						const customer_fullname = data.customer_fullname;
+						const contact_number = data.contact_number;
 						const payments = data.payments;
 						const payment_method = payments.length > 0 ? payments[0].payment_type : 'No Payment Made';
 						$("#event_date").html(data.formattedDate);

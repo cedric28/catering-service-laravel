@@ -41,7 +41,8 @@ class PlannerFetchController extends Controller
 				->leftJoin('packages', 'planners.package_id', '=', 'packages.id')
 				->leftJoin('main_packages', 'packages.main_package_id', '=', 'main_packages.id')
 				->leftJoin('payment_statuses', 'planners.payment_status_id', '=', 'payment_statuses.id')
-				->select('planners.*', 'packages.name as package_name', 'main_packages.name as main_package_name', 'payment_statuses.name as payment_status')
+				->leftJoin('customers', 'planners.customer_id', '=', 'customers.id')
+				->select('planners.*', 'customers.customer_firstname', 'customers.customer_lastname', 'packages.name as package_name', 'main_packages.name as main_package_name', 'payment_statuses.name as payment_status')
 				->where([
 					['planners.status', 'upcoming'],
 					['planners.deleted_at', '=', null]
@@ -60,7 +61,8 @@ class PlannerFetchController extends Controller
 				->leftJoin('packages', 'planners.package_id', '=', 'planners.id')
 				->leftJoin('main_packages', 'packages.main_package_id', '=', 'main_packages.id')
 				->leftJoin('payment_statuses', 'planners.payment_status_id', '=', 'payment_statuses.id')
-				->select('planners.*', 'packages.name as package_name', 'main_packages.name as main_package_name', 'payment_statuses.name as payment_status')
+				->leftJoin('customers', 'planners.customer_id', '=', 'customers.id')
+				->select('planners.*', 'customers.customer_firstname', 'customers.customer_lastname', 'packages.name as package_name', 'main_packages.name as main_package_name', 'payment_statuses.name as payment_status')
 				->where(function ($query) use ($search) {
 					$query->where('planners.event_name', 'like', '%' . $search . '%')
 						->orWhere('planners.event_venue', 'like', "%{$search}%")
@@ -68,7 +70,8 @@ class PlannerFetchController extends Controller
 						->orWhere('planners.event_date', 'like', "%{$search}%")
 						->orWhere('planners.event_time', 'like', "%{$search}%")
 						->orWhere('planners.status', 'like', "%{$search}%")
-						->orWhere('planners.customer_fullname', 'like', "%{$search}%")
+						->orWhere('customers.customer_firstname', 'like', "%{$search}%")
+						->orWhere('customers.customer_lastname', 'like', "%{$search}%")
 						->orWhere('main_packages.name', 'like', "%{$search}%")
 						->orWhere('packages.name', 'like', "%{$search}%")
 						->orWhere('planners.created_at', 'like', "%{$search}%");
@@ -87,7 +90,8 @@ class PlannerFetchController extends Controller
 				->leftJoin('packages', 'planners.package_id', '=', 'planners.id')
 				->leftJoin('main_packages', 'packages.main_package_id', '=', 'main_packages.id')
 				->leftJoin('payment_statuses', 'planners.payment_status_id', '=', 'payment_statuses.id')
-				->select('planners.*', 'packages.name as package_name', 'main_packages.name as main_package_name', 'payment_statuses.name as payment_status')
+				->leftJoin('customers', 'planners.customer_id', '=', 'customers.id')
+				->select('planners.*', 'customers.customer_firstname', 'customers.customer_lastname', 'packages.name as package_name', 'main_packages.name as main_package_name', 'payment_statuses.name as payment_status')
 				->where(function ($query) use ($search) {
 					$query->where('planners.event_name', 'like', '%' . $search . '%')
 						->orWhere('planners.event_venue', 'like', "%{$search}%")
@@ -95,7 +99,8 @@ class PlannerFetchController extends Controller
 						->orWhere('planners.event_date', 'like', "%{$search}%")
 						->orWhere('planners.event_time', 'like', "%{$search}%")
 						->orWhere('planners.status', 'like', "%{$search}%")
-						->orWhere('planners.customer_fullname', 'like', "%{$search}%")
+						->orWhere('customers.customer_firstname', 'like', "%{$search}%")
+						->orWhere('customers.customer_lastname', 'like', "%{$search}%")
 						->orWhere('main_packages.name', 'like', "%{$search}%")
 						->orWhere('packages.name', 'like', "%{$search}%")
 						->orWhere('planners.created_at', 'like', "%{$search}%");
@@ -117,7 +122,7 @@ class PlannerFetchController extends Controller
 				$nestedData['event_date_and_time'] = $r->event_date . ' ' . $r->event_time;
 				$nestedData['event_type_and_package'] = $r->package_name . ' - ' . $r->main_package_name;
 				$nestedData['no_of_guests'] = $r->no_of_guests;
-				$nestedData['customer_fullname'] = ucwords($r->customer_fullname);
+				$nestedData['customer_fullname'] = ucwords($r->customer_lastname) . ', ' . ucwords($r->customer_firstname);
 				$nestedData['event_status'] = '<span title="Danger" class="badge bg-danger">UPCOMING</span>';
 				$nestedData['payment_status'] = $r->payment_status;
 				$nestedData['created_at'] = date('d-m-Y', strtotime($r->created_at));
@@ -172,7 +177,8 @@ class PlannerFetchController extends Controller
 				->leftJoin('packages', 'planners.package_id', '=', 'packages.id')
 				->leftJoin('main_packages', 'packages.main_package_id', '=', 'main_packages.id')
 				->leftJoin('payment_statuses', 'planners.payment_status_id', '=', 'payment_statuses.id')
-				->select('planners.*', 'packages.name as package_name', 'main_packages.name as main_package_name', 'payment_statuses.name as payment_status')
+				->leftJoin('customers', 'planners.customer_id', '=', 'customers.id')
+				->select('planners.*', 'customers.customer_firstname', 'customers.customer_lastname', 'packages.name as package_name', 'main_packages.name as main_package_name', 'payment_statuses.name as payment_status')
 				->where([
 					['planners.status', '=', 'on-going'],
 					['planners.deleted_at', '=', null]
@@ -191,7 +197,8 @@ class PlannerFetchController extends Controller
 				->leftJoin('packages', 'planners.package_id', '=', 'planners.id')
 				->leftJoin('main_packages', 'packages.main_package_id', '=', 'main_packages.id')
 				->leftJoin('payment_statuses', 'planners.payment_status_id', '=', 'payment_statuses.id')
-				->select('planners.*', 'packages.name as package_name', 'main_packages.name as main_package_name', 'payment_statuses.name as payment_status')
+				->leftJoin('customers', 'planners.customer_id', '=', 'customers.id')
+				->select('planners.*', 'customers.customer_firstname', 'customers.customer_lastname', 'packages.name as package_name', 'main_packages.name as main_package_name', 'payment_statuses.name as payment_status')
 				->where(function ($query) use ($search) {
 					$query->where('planners.event_name', 'like', '%' . $search . '%')
 						->orWhere('planners.event_venue', 'like', "%{$search}%")
@@ -199,7 +206,8 @@ class PlannerFetchController extends Controller
 						->orWhere('planners.event_date', 'like', "%{$search}%")
 						->orWhere('planners.event_time', 'like', "%{$search}%")
 						->orWhere('planners.status', 'like', "%{$search}%")
-						->orWhere('planners.customer_fullname', 'like', "%{$search}%")
+						->orWhere('customers.customer_firstname', 'like', "%{$search}%")
+						->orWhere('customers.customer_lastname', 'like', "%{$search}%")
 						->orWhere('main_packages.name', 'like', "%{$search}%")
 						->orWhere('packages.name', 'like', "%{$search}%")
 						->orWhere('planners.created_at', 'like', "%{$search}%");
@@ -228,7 +236,7 @@ class PlannerFetchController extends Controller
 				$nestedData['event_date_and_time'] = $r->event_date . ' ' . $r->event_time;
 				$nestedData['event_type_and_package'] = $r->package_name . ' - ' . $r->main_package_name;
 				$nestedData['no_of_guests'] = $r->no_of_guests;
-				$nestedData['customer_fullname'] = ucwords($r->customer_fullname);
+				$nestedData['customer_fullname'] = ucwords($r->customer_lastname) . ', ' . ucwords($r->customer_firstname);
 				$nestedData['event_status'] = '<span title="Danger" class="badge bg-warning">ON-GOING</span>';
 				$nestedData['payment_status'] = $r->payment_status;
 				$nestedData['created_at'] = date('d-m-Y', strtotime($r->created_at));
@@ -283,7 +291,8 @@ class PlannerFetchController extends Controller
 				->leftJoin('packages', 'planners.package_id', '=', 'packages.id')
 				->leftJoin('main_packages', 'packages.main_package_id', '=', 'main_packages.id')
 				->leftJoin('payment_statuses', 'planners.payment_status_id', '=', 'payment_statuses.id')
-				->select('planners.*', 'packages.name as package_name', 'main_packages.name as main_package_name', 'payment_statuses.name as payment_status')
+				->leftJoin('customers', 'planners.customer_id', '=', 'customers.id')
+				->select('planners.*', 'customers.customer_firstname', 'customers.customer_lastname', 'packages.name as package_name', 'main_packages.name as main_package_name', 'payment_statuses.name as payment_status')
 				->where([
 					['planners.status', 'completed'],
 					['planners.deleted_at', '=', null]
@@ -302,6 +311,7 @@ class PlannerFetchController extends Controller
 				->leftJoin('packages', 'planners.package_id', '=', 'planners.id')
 				->leftJoin('main_packages', 'packages.main_package_id', '=', 'main_packages.id')
 				->leftJoin('payment_statuses', 'planners.payment_status_id', '=', 'payment_statuses.id')
+				->leftJoin('customers', 'planners.customer_id', '=', 'customers.id')
 				->select('planners.*', 'packages.name as package_name', 'main_packages.name as main_package_name', 'payment_statuses.name as payment_status')
 				->where(function ($query) use ($search) {
 					$query->where('planners.event_name', 'like', '%' . $search . '%')
@@ -310,7 +320,8 @@ class PlannerFetchController extends Controller
 						->orWhere('planners.event_date', 'like', "%{$search}%")
 						->orWhere('planners.event_time', 'like', "%{$search}%")
 						->orWhere('planners.status', 'like', "%{$search}%")
-						->orWhere('planners.customer_fullname', 'like', "%{$search}%")
+						->orWhere('customers.customer_firstname', 'like', "%{$search}%")
+						->orWhere('customers.customer_lastname', 'like', "%{$search}%")
 						->orWhere('main_packages.name', 'like', "%{$search}%")
 						->orWhere('packages.name', 'like', "%{$search}%")
 						->orWhere('planners.created_at', 'like', "%{$search}%");
@@ -339,7 +350,7 @@ class PlannerFetchController extends Controller
 				$nestedData['event_date_and_time'] = $r->event_date . ' ' . $r->event_time;
 				$nestedData['event_type_and_package'] = $r->package_name . ' - ' . $r->main_package_name;
 				$nestedData['no_of_guests'] = $r->no_of_guests;
-				$nestedData['customer_fullname'] = ucwords($r->customer_fullname);
+				$nestedData['customer_fullname'] = ucwords($r->customer_lastname) . ', ' . ucwords($r->customer_firstname);
 				$nestedData['event_status'] = '<span title="Danger" class="badge bg-success">COMPLETED</span>';
 				$nestedData['payment_status'] = $r->payment_status;
 				$nestedData['created_at'] = date('d-m-Y', strtotime($r->created_at));
@@ -393,7 +404,8 @@ class PlannerFetchController extends Controller
 				->leftJoin('packages', 'planners.package_id', '=', 'packages.id')
 				->leftJoin('main_packages', 'packages.main_package_id', '=', 'main_packages.id')
 				->leftJoin('payment_statuses', 'planners.payment_status_id', '=', 'payment_statuses.id')
-				->select('planners.*', 'packages.name as package_name', 'main_packages.name as main_package_name', 'payment_statuses.name as payment_status')
+				->leftJoin('customers', 'planners.customer_id', '=', 'customers.id')
+				->select('planners.*', 'customers.customer_firstname', 'customers.customer_lastname', 'packages.name as package_name', 'main_packages.name as main_package_name', 'payment_statuses.name as payment_status')
 				->where([
 					['planners.deleted_at', '<>', null]
 				])
@@ -411,6 +423,7 @@ class PlannerFetchController extends Controller
 				->leftJoin('packages', 'planners.package_id', '=', 'planners.id')
 				->leftJoin('main_packages', 'packages.main_package_id', '=', 'main_packages.id')
 				->leftJoin('payment_statuses', 'planners.payment_status_id', '=', 'payment_statuses.id')
+				->leftJoin('customers', 'planners.customer_id', '=', 'customers.id')
 				->select('planners.*', 'packages.name as package_name', 'main_packages.name as main_package_name', 'payment_statuses.name as payment_status')
 				->where(function ($query) use ($search) {
 					$query->where('planners.event_name', 'like', '%' . $search . '%')
@@ -419,7 +432,8 @@ class PlannerFetchController extends Controller
 						->orWhere('planners.event_date', 'like', "%{$search}%")
 						->orWhere('planners.event_time', 'like', "%{$search}%")
 						->orWhere('planners.status', 'like', "%{$search}%")
-						->orWhere('planners.customer_fullname', 'like', "%{$search}%")
+						->orWhere('customers.customer_firstname', 'like', "%{$search}%")
+						->orWhere('customers.customer_lastname', 'like', "%{$search}%")
 						->orWhere('main_packages.name', 'like', "%{$search}%")
 						->orWhere('packages.name', 'like', "%{$search}%")
 						->orWhere('planners.created_at', 'like', "%{$search}%");
@@ -456,7 +470,7 @@ class PlannerFetchController extends Controller
 				$nestedData['event_type_and_package'] = $r->package_name . ' - ' . $r->main_package_name;
 				$nestedData['no_of_guests'] = $r->no_of_guests;
 				$nestedData['event_venue'] = $r->no_of_guests;
-				$nestedData['customer_fullname'] = ucwords($r->customer_fullname);
+				$nestedData['customer_fullname'] = ucwords($r->customer_lastname) . ', ' . ucwords($r->customer_firstname);
 				$nestedData['event_status'] = $status;
 				$nestedData['payment_status'] = $r->payment_status;
 				$nestedData['created_at'] = date('d-m-Y', strtotime($r->created_at));

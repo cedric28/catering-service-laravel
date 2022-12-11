@@ -101,11 +101,11 @@
 								</tr>
 								<tr>
 									<th>Customer Fullname</th>
-									<th>{{ ucwords($planner->customer_fullname) }}</th>
+									<th>{{ ucwords($planner->customer->customer_firstname) }} {{ ucwords($planner->customer->customer_lastname) }}</th>
 								</tr>
 								<tr>
 									<th>Contact No.</th>
-									<th>+63{{ $planner->contact_number }}</th>
+									<th>+63{{ $planner->customer->contact_number }}</th>
 								</tr>
 							</thead>
 						</table>

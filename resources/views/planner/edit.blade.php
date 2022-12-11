@@ -157,21 +157,14 @@
 								</div>
 
 								<div class="form-group row">
-									<label class="col-lg-3 col-form-label">Customer Fullname:</label>
+									<label class="col-lg-3 col-form-label">Customer:</label>
 									<div class="col-lg-9">
-										<input type="text" name="customer_fullname" @if($planner->status == "completed" || Auth::user()->job_type_id != 1) disabled='disabled' @endif value="{{ old('customer_fullname', $planner->customer_fullname) }}" class="@error('customer_fullname') is-invalid @enderror form-control" placeholder="e.g Yash Lozano">
-									</div>
-								</div>	
-
-								<div class="form-group row">
-									<label class="col-lg-3 col-form-label">Customer Phone:</label>
-									<div class="col-lg-9">	
-										<div class="input-group mb-3">
-											<div class="input-group-prepend">
-												<span class="input-group-text">+63</span>
-											</div>
-											<input type="text" @if($planner->status == "completed" || Auth::user()->job_type_id != 1) disabled='disabled' @endif name="contact_number" value="{{ old('contact_number',  $planner->contact_number) }}" class="@error('contact_number') is-invalid @enderror form-control" placeholder="e.g 9176270449" >
-										</div>
+										<select id="customer_id" @if($planner->status == "completed" || Auth::user()->job_type_id != 1) disabled='disabled' @endif name="customer_id" class="@error('customer_id') is-invalid @enderror form-control select2">
+											<option value="">Select Customer</option>
+											@foreach ($customers as $customer)
+												<option value="{{ $customer->id }}" {{ ($customer->id == old('customer',$planner->customer_id)) ? ' selected' : '' }}>{{ ucwords($customer->customer_lastname) }}, {{ ucwords($customer->customer_firstname) }} - +63{{ $customer->contact_number }}</option>
+											@endforeach
+										</select>
 									</div>
 								</div>
 

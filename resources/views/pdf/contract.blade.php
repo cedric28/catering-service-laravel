@@ -156,7 +156,7 @@
 				</tr>
                 <tr>
                     <td>
-                        <p class="description">This Catering Contract is entered into between the Creating Moments Catering Services and <strong>{{ ucwords($planner->customer_fullname) }}</strong>, sets forth the agreement between the Parties relating to catering services to be provided by the Caterer for Client for the event identified in this Contract.</p>
+                        <p class="description">This Catering Contract is entered into between the Creating Moments Catering Services and <strong>{{ ucwords($planner->customer->customer_firstname) }} {{ ucwords($planner->customer->customer_lastname) }}</strong>, sets forth the agreement between the Parties relating to catering services to be provided by the Caterer for Client for the event identified in this Contract.</p>
                     </td>
                 </tr>
 
@@ -165,11 +165,11 @@
 						<table>
 							<tr>
                                 <th>Event Name: {{ ucwords($planner->event_name) }}</th>
-								<th>Client Name: {{ ucwords($planner->customer_fullname) }}</th>
+								<th>Client Name: {{ ucwords($planner->customer->customer_firstname) }} {{ ucwords($planner->customer->customer_lastname) }}</th>
 							</tr>
                             <tr>
                                 <th>Venue: {{ ucwords($planner->event_venue) }}</th>
-								<th>Contact: +63{{ ucwords($planner->contact_number) }}</th>
+								<th>Contact: +63{{ ucwords($planner->customer->contact_number) }}</th>
 							</tr>
                             <tr>
                                 <th>Date: {{ $formattedDate }}</th>
@@ -274,14 +274,14 @@
                 <tr>
                     <td>
                         <h4 class="title2">ENTIRE AGREEMENT</h4>
-                        <p class="description">This document, along with its exhibits and attachments, constitutes the entire agreement between the Parties. <strong>Creative Moments Catering Services</strong> and <strong>{{ ucwords($planner->customer_fullname) }}</strong></p>
+                        <p class="description">This document, along with its exhibits and attachments, constitutes the entire agreement between the Parties. <strong>Creative Moments Catering Services</strong> and <strong>{{ ucwords($planner->customer->customer_firstname) }} {{ ucwords($planner->customer->customer_lastname) }}</strong></p>
                     </td>
                 </tr>
 
                 <tr class="signed">
 					<td>
 						<h4 class="prepared-by">Prepared By: {{ ucwords(Auth::user()->name) }}</h4>
-                        <h4 class="prepared-by">Client Name: {{ ucwords($planner->customer_fullname) }}</h4>
+                        <h4 class="prepared-by">Client Name: {{ ucwords($planner->customer->customer_firstname) }} {{ ucwords($planner->customer->customer_lastname) }}</h4>
 					</td>
 				</tr>
 

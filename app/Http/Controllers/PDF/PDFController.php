@@ -259,20 +259,22 @@ class PDFController extends Controller
 
         view()->share('sales', $sales);
 
-        $pdf = \PDF::loadView('pdf.monthly_revenue', [
+        // $pdf = \PDF::loadView('pdf.yearly_revenue', [
+        //     'sales' => $sales,
+        //     'totalPrice' => $totalPrice,
+        //     'formattedDate' => $formattedDate,
+        //     "startDate" => $startDate,
+        //     "endDate" => $endDate
+        // ]);
+        return view("pdf.yearly_revenue", [
             'sales' => $sales,
             'totalPrice' => $totalPrice,
             'formattedDate' => $formattedDate,
             "startDate" => $startDate,
             "endDate" => $endDate
         ]);
-        // return view("pdf.monthly_revenue",[
-        //     'sales' => $sales,
-        //     'totalPrice' => $totalPrice,
-        //     'formattedDate' => $formattedDate
-        // ]);
 
-        return $pdf->download("Yearly-Sales-" . Carbon::now()->format('m-d-Y') . ".pdf");
+        // return $pdf->download("Yearly-Sales-" . Carbon::now()->format('m-d-Y') . ".pdf");
     }
 
 

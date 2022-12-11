@@ -196,8 +196,8 @@
 			</table>
             <footer>
                 <div id="legalcopy" class="clearfix">
-                    <p class="col-right">Copyright © CREATIVE MOMENTS CATERING SERVICES 2022
-                    </p>
+                    {{-- <p class="col-right">Copyright © CREATIVE MOMENTS CATERING SERVICES 2022
+                    </p> --}}
                 </div>
             </footer>
 		</div>

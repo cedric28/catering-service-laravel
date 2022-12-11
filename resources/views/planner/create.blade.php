@@ -110,30 +110,21 @@
 						</div>
 
 						<div class="form-group row">
-							<label class="col-lg-3 col-form-label">Customer First name:</label>
-							<div class="col-lg-9">
-								<input type="text" name="customer_firstname" value="{{ old('customer_firstname') }}" class="@error('customer_firstname') is-invalid @enderror form-control" placeholder="e.g Yash">
+							<label class="col-lg-3 col-form-label">Customer:</label>
+							<div class="col-lg-7">
+								<select id="customer_id" name="customer_id" class="@error('customer_id') is-invalid @enderror form-control select2">
+									<option value="">Select Customer</option>
+									@foreach ($customers as $customer)
+										<option data-firstname="{{ $customer->customer_firstname }}" data-lastname="{{ $customer->customer_lastname }}" value="{{ $customer->id }}"{{ ($customer->id == old('customer_id')) ? ' selected' : '' }}>{{ ucwords($customer->customer_lastname) }}, {{ $customer->customer_firstname }}</option>
+									@endforeach
+								</select>
 							</div>
-						</div>	
-
-						<div class="form-group row">
-							<label class="col-lg-3 col-form-label">Customer Last name:</label>
-							<div class="col-lg-9">
-								<input type="text" name="customer_lastname" value="{{ old('customer_lastname') }}" class="@error('customer_lastname') is-invalid @enderror form-control" placeholder="e.g Lozano">
-							</div>
-						</div>	
-
-						<div class="form-group row">
-							<label class="col-lg-3 col-form-label">Customer Phone:</label>
-							<div class="col-lg-9">	
-								<div class="input-group mb-3">
-									<div class="input-group-prepend">
-										<span class="input-group-text">+63</span>
-									</div>
-									<input type="text" name="contact_number" value="{{ old('contact_number') }}" class="@error('contact_number') is-invalid @enderror form-control" placeholder="e.g 9176270449" >
-								</div>
+							<div class="col-lg-2">
+								<a href="#" name="see-customer-detail" id="see-customer-details" class="btn btn-success btn-xs">See Customer Details</a>
 							</div>
 						</div>
+
+
 
 						<div class="text-right">
 							<button type="submit" class="btn btn-primary">Next <i class="icon-paperplane ml-2"></i></button>
@@ -146,7 +137,7 @@
 	<!-- /page content -->
 	@push('scripts')
 	<script>	
-	 let isShow = 1;
+	let isShow = 1;
 	let packagePaxValue = $("#package_id option:selected" ).data('guest');
 	let packageName = $("#package_id option:selected" ).data('package-name');
 	let packageId = $("#package_id option:selected" ).val();
@@ -157,7 +148,17 @@
 		$('#no_of_guests').val(packagePaxValues);
 	});
 
-	console.log(packageId);
+	const customerFirstName = $("#customer_id option:selected" ).data('firstname');
+	const customerLastName = $("#customer_id option:selected" ).data('lastname');
+	let customerId = $("#customer_id option:selected" ).val();
+	$('#customer_id').on('change', function() {
+		const customerFirst = $(this).find(":selected").data('firstname');
+		const customerLast = $(this).find(":selected").data('lastname');
+		customerId = $(this).find(":selected").val();
+		$('#customer_firstname').html(customerFirst);
+		$('#customer_lastname').html(customerLast);
+	});
+
 	
 	$(function () {
 		var bindDatePicker = function() {
@@ -213,5 +214,6 @@
  	});
 	</script>
 	@include('planner.modals.seedetails_modal')
+	@include('planner.modals.seecustomerdetails_modal')
 	@endpush('scripts')
 @endsection

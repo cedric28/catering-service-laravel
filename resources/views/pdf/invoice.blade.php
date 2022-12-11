@@ -158,11 +158,11 @@
 					<td colspan="2">
 						<table>
 							<tr>
-                                <th>BILLED TO: {{ ucwords($planner->customer_fullname) }}</th>
+                                <th>BILLED TO: {{ ucwords($planner->customer->customer_firstname) }} {{ ucwords($planner->customer->customer_lastname) }}</th>
 								<th>CREATIVE MOMENTS CATERING SERVICES</th>
 							</tr>
                             <tr>
-                                <th>+63{{ ($planner->contact_number) }}</th>
+                                <th>+63{{ ($planner->customer->contact_number) }}</th>
 								<th class="address">2nd floor, Miranda Plaza Building</th>
 							</tr>
 							<tr>

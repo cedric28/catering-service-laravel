@@ -110,7 +110,15 @@
             <span>System Users</span></a>
     </li>
     @endcan
+
+    
     @can('isAdmin')
+    <!-- Nav Item - Tables -->
+    <li class="nav-item">
+        <a class="nav-link {{ (request()->is('customers*')) ? 'nav-link active' : '' }}" href="{{ route('customers.index')}}">
+            <i class="fas fa-fw fa-users"></i>
+            <span>Customers</span></a>
+    </li>
      <!-- Nav Item - Charts -->
      <li class="nav-item {{ (request()->is('logs*')) ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('logs.index')}}">
@@ -118,12 +126,6 @@
             <span>System Logs</span></a>
     </li>
 
-    <!-- Nav Item - Tables -->
-    <!--  <li class="nav-item">
-        <a class="nav-link {{ (request()->is('roles*')) ? 'nav-link active' : '' }}" href="{{ route('roles.index')}}">
-            <i class="fas fa-fw fa-cube"></i>
-            <span>User Role</span></a>
-    </li> -->
     @endcan
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">

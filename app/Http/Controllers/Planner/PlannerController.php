@@ -29,6 +29,7 @@ use App\TaskNotification;
 use App\MainPackage;
 use App\Category;
 use Validator;
+use App\Customer;
 use App\Log;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
@@ -59,12 +60,14 @@ class PlannerController extends Controller
         $package_categories = MainPackage::all();
         $food_categories = Category::all();
         $inventories = Inventory::all();
+        $customers = Customer::all();
         return view("planner.create", [
             'packages' => $packages,
             'paymentStatus' => $paymentStatus,
             'package_categories' => $package_categories,
             'food_categories' => $food_categories,
             'inventories' => $inventories,
+            'customers' => $customers
         ]);
     }
 
@@ -99,9 +102,7 @@ class PlannerController extends Controller
                 'no_of_guests' => 'numeric|gt:0',
                 'note' => 'max:200',
                 'payment_status_id' => 'required|integer',
-                'customer_firstname' => 'required|string|max:50',
-                'customer_lastname' => 'required|string|max:50',
-                'contact_number' => 'required|digits:10'
+                'customer_id' => 'required|integer',
             ], $messages);
 
             if ($validator->fails()) {
@@ -128,9 +129,8 @@ class PlannerController extends Controller
             $planner->package_id = $package->id;
             $planner->note = $request->note;
             $planner->payment_status_id = $request->payment_status_id;
-            $planner->customer_fullname = $request->customer_firstname . ' ' . $request->customer_lastname;
-            $planner->contact_number = $request->contact_number;
             $planner->total_price = $package->package_price;
+            $planner->customer_id = $request->customer_id;
             $planner->creator_id = $user;
             $planner->updater_id = $user;
             $planner->save();
@@ -316,6 +316,7 @@ class PlannerController extends Controller
         })->get();
 
         $packages = Package::all();
+        $customers = Customer::all();
         $paymentStatus = PaymentStatus::all();
         $task_types = [
             ['type' => 'Pre-Event'],
@@ -392,7 +393,8 @@ class PlannerController extends Controller
             'plannerStatus' => $plannerStatus,
             'time_tables_lists' => $time_tables_lists,
             'totalBalance' => $totalBalance,
-            'package_menus_beo' => $package_menus_beo
+            'package_menus_beo' => $package_menus_beo,
+            'customers' => $customers
         ]);
     }
 
@@ -431,9 +433,8 @@ class PlannerController extends Controller
                 'no_of_guests' => 'numeric|gt:0',
                 'note' => 'max:200',
                 'payment_status_id' => 'required|integer',
-                'customer_fullname' => 'required|string|max:50',
-                'contact_number' => 'required|digits:10',
-                'planner_status' => 'required|string'
+                'planner_status' => 'required|string',
+                'customer_id' => 'required|integer',
             ], $messages);
 
             if ($validator->fails()) {
@@ -473,8 +474,7 @@ class PlannerController extends Controller
             $planner->package_id = $package->id;
             $planner->note = $request->note;
             $planner->payment_status_id = $request->payment_status_id;
-            $planner->customer_fullname = $request->customer_fullname;
-            $planner->contact_number = $request->contact_number;
+            $planner->customer_id = $request->customer_id;
             $planner->total_price = $package->package_price;
             $planner->status = $request->planner_status;
             $planner->updater_id = $user;
@@ -568,13 +568,16 @@ class PlannerController extends Controller
             $packageName = $planner->package->name;
             $paymentStatus = $planner->payment_status->name;
             $payments = $planner->payments;
-
+            $customerFullName = $planner->customer->customer_firstname . " " .  $planner->customer->customer_lastname;
+            $customerContact = $planner->customer->contact_number;
             return response()->json([
                 'data' => $planner,
                 'formattedDate' => $formattedDate,
                 'package_name' => $packageName,
                 'payment_status' => $paymentStatus,
                 'payments' => $payments,
+                'customer_fullname' => $customerFullName,
+                'contact_number' => $customerContact,
                 'status' => 'success'
             ], 200);
         } catch (\Exception $e) {

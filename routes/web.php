@@ -54,6 +54,16 @@ Route::middleware('auth')->group(function () {
     Route::get('users/destroy/{id}', 'User\UserController@destroy');
     Route::get('users/restore/{id}', 'User\UserController@restore');
 
+    //Customers
+    Route::resource('customers', 'Customer\CustomerController');
+    Route::get('customers/destroy/{id}', 'Customer\CustomerController@destroy');
+    Route::get('customers/restore/{id}', 'Customer\CustomerController@restore');
+
+    Route::post('/customers/fetch/q', 'Customer\CustomerFetchController@fetchCustomer')->name('activeCustomer');
+    Route::post('/inactive-customers/fetch/q', 'Customer\CustomerFetchController@fetchInactiveCustomer')->name('InactiveCustomer');
+
+    Route::post('/customer-history/fetch/q', 'Customer\CustomerFetchController@fetchCustomerPlanner')->name('customerHistory');
+
 
     Route::resource('my-tasks', 'User\MyTaskController');
 
