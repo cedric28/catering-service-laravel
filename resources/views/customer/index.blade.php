@@ -24,7 +24,7 @@
 
 	<div class="card shadow mb-4">
 		<div class="card-header py-3">
-			<a type="button" href="{{ route('customers.create')}}" class="btn btn-outline-success btn-sm float-left"><i class="fas fa-fw fa-plus"></i> Add User</a>
+			<a type="button" href="{{ route('customers.create')}}" class="btn btn-outline-success btn-sm float-left"><i class="fas fa-fw fa-plus"></i> Add Customer</a>
 		</div>
 		<div class="card-body">
 			<div class="card shadow card-primary card-outline card-outline-tabs border-top-primary">
