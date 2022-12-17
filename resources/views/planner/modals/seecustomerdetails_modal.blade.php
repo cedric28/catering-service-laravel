@@ -33,6 +33,7 @@
                                     <thead>
                                         <tr>
                                             <th>EVENT NAME</th>
+                                            <th>EVENT STATUS</th>
                                             <th>EVENT DATE & TIME</th>
                                         </tr>
                                     </thead>
@@ -100,7 +101,7 @@
                                 "extend": 'print',
                                 'title' :``,
                                 "exportOptions": {
-                                    "columns": [0,1]
+                                    "columns": [0,1,2]
                                 },
                                 "customize": function ( win ) {
                                     $(win.document.body)
@@ -130,6 +131,7 @@
                 ],
                 "columns": [ 
                     {"data":"event_name"},
+                    {"data":"event_status"},
                     {"data":"event_date_and_time"}
                 ],
                 "columnDefs": [
