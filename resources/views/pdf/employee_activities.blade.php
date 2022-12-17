@@ -36,6 +36,10 @@
 			}
 
 			.invoice-box table tr td:nth-child(2) {
+				text-align: left;
+			}
+
+			.invoice-box table tr td:nth-child(3) {
 				text-align: right;
 			}
 
@@ -115,6 +119,10 @@
 				text-align: left;
 			}
 
+			.invoice-box.rtl table tr td:nth-child(3) {
+				text-align: left;
+			}
+
 			.title{
                 font-size: 20px;
             }
@@ -130,7 +138,7 @@
 		<div class="invoice-box">
 			<table cellpadding="0" cellspacing="0">
 				<tr class="top">
-					<td colspan="2">
+					<td colspan="3">
 						<table>
 							<tr>
                 				<td>
@@ -147,7 +155,7 @@
 				</tr>
 
                 <tr class="information">
-					<td colspan="2">
+					<td colspan="3">
 						<table>
 							<tr>
                                 <th>DATE ISSUED: {{ $formattedDate }}</th>
@@ -170,6 +178,7 @@
 				</tr>
 
 				<tr class="heading">
+					<td>NO</td>
 					<td>EMPLOYEE FULLNAME</td>
 					<td>STATUS</td>
 				</tr>
@@ -180,6 +189,7 @@
                             $percentage = $att->present / $att->total_days * 100;
                             $status = $percentage > 70 ? 'ACTIVE' : 'INACTIVE';
                         @endphp
+						<td class="textCenter">{{ $loop->index + 1 }}</td>
                         <td class="textCenter">{{ ucwords($att->employee_name) }}</td>
                         <td class="textCenter"> <span title="Danger" class="badge {{ $status == 'ACTIVE' ? 'bg-success' : 'bg-warning' }}">{{ $status }}</span></td>
                     </tr>
@@ -187,8 +197,7 @@
 			</table>
             <footer>
                 <div id="legalcopy" class="clearfix">
-                    <p class="col-right">Copyright © CREATIVE MOMENTS CATERING SERVICES 2022
-                    </p>
+                   
                 </div>
             </footer>
 		</div>
