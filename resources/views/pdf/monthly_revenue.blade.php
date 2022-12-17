@@ -36,6 +36,10 @@
 			}
 
 			.invoice-box table tr td:nth-child(2) {
+				text-align: left;
+			}
+
+			.invoice-box table tr td:nth-child(3) {
 				text-align: right;
 			}
 
@@ -115,6 +119,9 @@
 				text-align: left;
 			}
 
+			.invoice-box.rtl table tr td:nth-child(3) {
+				text-align: left;
+			}
 			.title{
                 font-size: 20px;
             }
@@ -130,7 +137,7 @@
 		<div class="invoice-box">
 			<table cellpadding="0" cellspacing="0">
 				<tr class="top">
-					<td colspan="2">
+					<td colspan="3">
 						<table>
 							<tr>
                 				<td>
@@ -154,7 +161,7 @@
 				</tr>
 
                 <tr class="information">
-					<td colspan="2">
+					<td colspan="3">
 						<table>
 							<tr>
                                 <th>DATE ISSUED: {{ $formattedDate }}</th>
@@ -177,12 +184,14 @@
 				</tr>
 
 				<tr class="heading">
+					<td>NO</td>
 					<td>INVOICE NO</td>
 					<td>PAYMENT</td>
 				</tr>
 
 				@foreach($sales as $sale)
 					<tr class="item">
+						<td class="textCenter">{{ $loop->index + 1 }}</td>
 						<td >{{$sale->planner->or_no}}</td>
 						<td>{{ Str::currency($sale->payment_price) }}</td>
 					</tr>
@@ -190,6 +199,7 @@
 			
 
 				<tr class="total">
+					<td></td>
 					<td></td>
 					<td>Total: {{ Str::currency($totalPrice) }}</td>
 				</tr>
